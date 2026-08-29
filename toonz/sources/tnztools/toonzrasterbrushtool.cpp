@@ -1028,6 +1028,7 @@ void ToonzRasterBrushTool::onActivate() {
 
   updateModifiers();
   m_brushTimer.start();
+  m_skipStrokeUntilDown = false;
   // TODO:app->editImageOrSpline();
 }
 
@@ -1035,9 +1036,10 @@ void ToonzRasterBrushTool::onActivate() {
 
 void ToonzRasterBrushTool::onDeactivate() {
   m_inputmanager.finishTracks();
-  m_enabled   = false;
-  m_workRas   = TRaster32P();
-  m_backupRas = TRasterCM32P();
+  m_enabled             = false;
+  m_workRas             = TRaster32P();
+  m_backupRas           = TRasterCM32P();
+  m_skipStrokeUntilDown = false;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1107,13 +1109,6 @@ bool ToonzRasterBrushTool::preLeftButtonDown() {
 void ToonzRasterBrushTool::handleMouseEvent(MouseEventType type,
                                             const TPointD &pos,
                                             const TMouseEvent &e) {
-  if (m_skipStrokeUntilDown) {
-    if (type == ME_DOWN)
-      m_skipStrokeUntilDown = false;
-    else if (type != ME_MOVE)
-      return;
-  }
-
   TTimerTicks t    = TToolTimer::ticks();
   bool alt         = e.getModifiersMask() & TMouseEvent::ALT_KEY;
   bool shift       = e.getModifiersMask() & TMouseEvent::SHIFT_KEY;
@@ -1142,6 +1137,13 @@ void ToonzRasterBrushTool::handleMouseEvent(MouseEventType type,
     m_inputmanager.keyEvent(shift, TKey::shift, t, nullptr);
   if (control != m_inputmanager.state.isKeyPressed(TKey::control))
     m_inputmanager.keyEvent(control, TKey::control, t, nullptr);
+
+  if (m_skipStrokeUntilDown) {
+    if (type == ME_DOWN)
+      m_skipStrokeUntilDown = false;
+    else if (type != ME_MOVE)
+      return;
+  }
 
   if (type == ME_MOVE) {
     THoverList hovers(1, fixedPos);

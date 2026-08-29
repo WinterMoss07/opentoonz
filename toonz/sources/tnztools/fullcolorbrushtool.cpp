@@ -248,6 +248,7 @@ void FullColorBrushTool::onActivate() {
   setWorkAndBackupImages();
   onColorStyleChanged();
   updateModifiers();
+  m_skipStrokeUntilDown = false;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -256,8 +257,9 @@ void FullColorBrushTool::onDeactivate() {
   if (m_notifier) m_notifier->onDeactivate();
 
   m_inputmanager.finishTracks();
-  m_workRaster = TRaster32P();
-  m_backUpRas  = TRasterP();
+  m_workRaster          = TRaster32P();
+  m_backUpRas           = TRasterP();
+  m_skipStrokeUntilDown = false;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -367,13 +369,6 @@ bool FullColorBrushTool::preLeftButtonDown() {
 void FullColorBrushTool::handleMouseEvent(MouseEventType type,
                                           const TPointD &pos,
                                           const TMouseEvent &e) {
-  if (m_skipStrokeUntilDown) {
-    if (type == ME_DOWN)
-      m_skipStrokeUntilDown = false;
-    else if (type != ME_MOVE)
-      return;
-  }
-
   TTimerTicks t = TToolTimer::ticks();
   bool alt      = e.getModifiersMask() & TMouseEvent::ALT_KEY;
   bool shift    = e.getModifiersMask() & TMouseEvent::SHIFT_KEY;
@@ -397,6 +392,13 @@ void FullColorBrushTool::handleMouseEvent(MouseEventType type,
     m_inputmanager.keyEvent(shift, TKey::shift, t, nullptr);
   if (control != m_inputmanager.state.isKeyPressed(TKey::control))
     m_inputmanager.keyEvent(control, TKey::control, t, nullptr);
+
+  if (m_skipStrokeUntilDown) {
+    if (type == ME_DOWN)
+      m_skipStrokeUntilDown = false;
+    else if (type != ME_MOVE)
+      return;
+  }
 
   if (type == ME_MOVE) {
     THoverList hovers(1, pos);
@@ -667,7 +669,6 @@ void FullColorBrushTool::commitStroke() {
     sl               = level ? level->getSimpleLevel() : 0;
     if (sl) ri = TRasterImageP(sl->getFrame(frameId, true));
   }
-  if (!ri) ri = (TRasterImageP)getImage(true);
   TRasterP ras = ri ? ri->getRaster() : TRasterP();
 
   m_lastRect.empty();
