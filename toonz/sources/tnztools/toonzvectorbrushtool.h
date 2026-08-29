@@ -105,6 +105,7 @@ public:
 
   void onActivate() override;
   void onDeactivate() override;
+  void onImageChanged() override;
 
   bool preLeftButtonDown() override;
   void leftButtonDown(const TPointD &pos, const TMouseEvent &e) override;
