@@ -431,10 +431,6 @@ if (WITH_WINTAB AND BUILD_TARGET_WIN AND (PLATFORM EQUAL 64))
     add_definitions(-DWITH_WINTAB)
 endif()
 
-if(BUILD_ENV_APPLE)
-    include_directories(../../sources/mousedragfilter)
-endif()
-
 if(BUILD_ENV_MSVC)
     set(EXTRA_LIBS)
     if(CMAKE_CXX_FLAGS_DEBUG)
@@ -461,7 +457,7 @@ elseif(BUILD_ENV_APPLE)
         Qt5::Core Qt5::Gui Qt5::Network Qt5::OpenGL Qt5::Svg Qt5::Xml
         Qt5::Script Qt5::Widgets Qt5::PrintSupport Qt5::Multimedia Qt5::UiTools
         ${GL_LIB} ${GLUT_LIB}
-        ${COCOA_LIB} ${EXTRA_LIBS} mousedragfilter
+        ${COCOA_LIB} ${EXTRA_LIBS}
         ${MYPAINT_LIB_LIBRARIES}
     )
 

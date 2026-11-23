@@ -127,7 +127,6 @@ message("Bin: " ${CMAKE_CURRENT_BINARY_DIR})
 include_directories(
     SYSTEM
     ../common/flash
-    ${SDKROOT}/libusb/libusb-1.0.9/include
 )
 
 if(BUILD_ENV_MSVC)
@@ -135,14 +134,11 @@ if(BUILD_ENV_MSVC)
         tnzcore
     )
 elseif(BUILD_ENV_APPLE)
-    find_library(TWAIN_LIB TWAIN)
     find_library(IOKIT_LIB IOKit)
     find_library(COCOA_LIB Cocoa)
 
     set(EXTRA_LIBS
         "$<TARGET_FILE:tnzcore>"
-        ${USB_LIB}
-        ${TWAIN_LIB}
         ${IOKIT_LIB}
         ${COCOA_LIB}
     )

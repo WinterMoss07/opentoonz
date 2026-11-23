@@ -363,10 +363,6 @@ else()
 endif()
 
 include_directories(
-    SYSTEM
-    ${SDKROOT}/libusb/libusb-1.0.9/include
-)
-include_directories(
     ../toonzfarm/include
 )
 
@@ -381,7 +377,6 @@ elseif(BUILD_ENV_APPLE)
         "$<TARGET_FILE:tnzcore>"
 	    "$<TARGET_FILE:tnzbase>"
 	    "$<TARGET_FILE:tnzext>"
-        ${USB_LIB}
         ${MYPAINT_LIB_LDFLAGS}
     )
 

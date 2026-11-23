@@ -379,7 +379,6 @@ if(BUILD_ENV_MSVC)
     set(LZ4_LIB ${SDKROOT}/Lz4/Lz4_131/lz4_${PLATFORM}.lib)
     set(SUPERLU_LIB ${SDKROOT}/superlu/SuperLU_${MSVC_LIB_VERSION}_${PLATFORM}.lib)
     set(OPENBLAS_LIB ${SDKROOT}/openblas/libopenblas_${PLATFORM}.lib)
-    set(USB_LIB)  # unused
 
     set(MYPAINT_LIB_INCLUDE_DIRS ${SDKROOT}/libmypaint/dist/${PLATFORM}/include/libmypaint)
     set(MYPAINT_LIB_LDFLAGS ${SDKROOT}/libmypaint/dist/${PLATFORM}/libmypaint.lib)
@@ -423,7 +422,6 @@ elseif(BUILD_ENV_APPLE)
         add_definitions(-DLZ4_STATIC)
     endif()
 
-    pkg_check_modules(USB_LIB REQUIRED libusb-1.0)
     set(OPENBLAS_LIB) # unused?
 
     set(JPEG_LIB ${JPEG_LIBRARY})
@@ -505,7 +503,6 @@ elseif(BUILD_ENV_UNIXLIKE)
     find_library(PTHREAD_LIBRARY pthread)
 
     if(NOT BUILD_TARGET_WIN)
-        pkg_check_modules(USB_LIB REQUIRED libusb-1.0)
         pkg_check_modules(FREETYPE REQUIRED freetype2)
     endif()
     # Can be 'libmypaint' or 'libmypaint-1.x'
@@ -578,7 +575,6 @@ include_directories(
     SYSTEM
     ${Boost_INCLUDE_DIR}
     ${LZ4_LIB_INCLUDE_DIRS}
-    ${USB_LIB_INCLUDE_DIRS}
     ${SUPERLU_INCLUDE_DIR}
     ${JPEG_INCLUDE_DIR}
     ${MYPAINT_LIB_INCLUDE_DIRS}
@@ -719,10 +715,6 @@ add_subdirectory(${SDKROOT}/lzo/driver lzodriver)
 add_subdirectory(toonz)
 add_subdirectory(tcleanupper)
 add_subdirectory(tcomposer)
-
-if(BUILD_ENV_APPLE)
-    add_subdirectory(mousedragfilter)
-endif()
 
 if(BUILD_ENV_UNIXLIKE AND NOT BUILD_TARGET_WIN)
     add_subdirectory(xdg-data)
