@@ -67,7 +67,6 @@ public:
   void convertToTlv(bool toPainted);
   TFilePath getConvertedPath(TFilePath path) 
   {return m_convertedFileMap[path];};
-  QString getDestinationType() const;
   QString getTlvMode() const;
   QString TlvMode_Unpainted;
   /*- 塗られていないカラー二値画像からTLVへの変換 -*/
@@ -137,7 +136,6 @@ private:
 private:
   TPropertyGroup *getFormatProperties(const std::string &ext);
   QFrame *createTlvSettings();
-  QFrame *createSvgSettings();
 
   bool isSaveTlvBackupToNopaintActive();
 };

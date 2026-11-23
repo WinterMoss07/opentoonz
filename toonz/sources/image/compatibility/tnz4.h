@@ -131,7 +131,6 @@ typedef struct IMAGE {
 
 short swap_short(short s);
 
-TINT32 swap_TINT32(TINT32 s);
 
 USHORT swap_ushort(USHORT x);
 

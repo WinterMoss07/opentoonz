@@ -60,12 +60,6 @@ public:
   void notifyImportPolicyChanged(int policy) {
     emit importPolicyChanged(policy);
   }
-  void notifyRenamePolicyChanged(int policy) {
-    emit renamePolicyChanged(policy);
-  }
-  void notifyConvertPolicyChanged(int policy) {
-    emit convertPolicyChanged(policy);
-  }
 
   void setDirtyFlag(bool dirtyFlag) {
     if (m_dirtyFlag == dirtyFlag) return;

@@ -1063,11 +1063,6 @@ void XsheetViewer::resetScrubHighlight() {
 
 //-----------------------------------------------------------------------------
 
-void XsheetViewer::getScrubHeighlight(int &R0, int &R1) {
-  R0 = m_scrubRow0;
-  R1 = m_scrubRow1;
-  return;
-}
 
 //-----------------------------------------------------------------------------
 

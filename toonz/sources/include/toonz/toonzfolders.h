@@ -35,7 +35,6 @@ DVAPI TFilePath getModuleFile(TFilePath filename);
 DVAPI TFilePath getModuleFile(std::string fn);
 
 DVAPI TFilePathSet getProjectsFolders();
-DVAPI TFilePath getFirstProjectsFolder();
 DVAPI TFilePath getStudioPaletteFolder();
 DVAPI TFilePath getFxPresetFolder();
 DVAPI TFilePath getLibraryFolder();

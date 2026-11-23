@@ -27,15 +27,7 @@ inline bool lel(Scalar a, Scalar b, Scalar c) {
   return a <= c ? a <= b && b < c : c > b || b >= a;
 }
 
-template <typename Scalar>
-inline bool lle(Scalar a, Scalar b, Scalar c) {
-  return a <= c ? a < b && b <= c : c >= b || b > a;
-}
 
-template <typename Scalar>
-inline bool lele(Scalar a, Scalar b, Scalar c) {
-  return a <= c ? a <= b && b <= c : c >= b || b >= a;
-}
 
 //-------------------------------------------------------------------------------------------
 

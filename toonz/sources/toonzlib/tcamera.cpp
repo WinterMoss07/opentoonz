@@ -68,9 +68,6 @@ TPointD TCamera::getDpi() const {
 
 //-------------------------------------------------------------------
 
-bool TCamera::isPixelSquared() const {
-  return areAlmostEqual(m_res.lx * m_size.ly, m_res.ly * m_size.lx);
-}
 
 //-------------------------------------------------------------------
 

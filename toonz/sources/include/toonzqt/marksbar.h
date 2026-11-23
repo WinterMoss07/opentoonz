@@ -53,7 +53,6 @@ public:
   QVector<QColor> &colors() { return m_colors; }
 
   void setMarkSide(bool up);
-  bool markSide() const { return m_markUp; }
 
   void conformValues(bool preferRollDown = true);
 

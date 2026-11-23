@@ -53,16 +53,7 @@ protected:
                               float3 *bubbleColor, const RASTER lightRas,
                               float lightThres, float lightIntensity);
 
-  /*- 素材タイルを０〜１に正規化して格納 -*/
-  template <typename RASTER, typename PIXEL>
-  void setSourceRasters(const RASTER ras, float4 *in_out_tile_host,
-                        const RASTER light_ras, float4 *light_host,
-                        TDimensionI dim, bool useLight);
 
-  /*- 出力結果をChannel値に変換してタイルに格納 -*/
-  template <typename RASTER, typename PIXEL>
-  void outputRasters(const RASTER outRas, float4 *in_out_tile_host,
-                     TDimensionI dim);
 
 public:
   Iwa_SpectrumFx();

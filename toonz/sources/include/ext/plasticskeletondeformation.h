@@ -220,7 +220,6 @@ public:
   // Skeleton-related methods
 
   bool empty() const;
-  int skeletonsCount() const;
 
   //! Acquires <I> shared ownership <\I> of the specified skeleton, under given
   //! skeletonId
@@ -232,8 +231,6 @@ public:
   PlasticSkeletonP skeleton(int skeletonId) const;
   int skeletonId(PlasticSkeleton *skeleton) const;
 
-  //! Returns the ordered range containing the skeleton ids
-  void skeletonIds(skelId_iterator &begin, skelId_iterator &end) const;
 
   TDoubleParamP skeletonIdsParam()
       const;  //!< Returns the skeleton id by frame animatable parameter
@@ -245,7 +242,6 @@ public:
 
   // Vertex deformations-related methods
 
-  int vertexDeformationsCount() const;
 
   SkVD *vertexDeformation(const QString &vertexName)
       const;  //!< Returns the vertex deformation associated to given
@@ -256,9 +252,6 @@ public:
   void vertexDeformations(vd_iterator &begin, vd_iterator &end)
       const;  //!< Returns the ordered range of vertex deformations
 
-  void vdSkeletonVertices(const QString &vertexName, vx_iterator &begin,
-                          vx_iterator &end)
-      const;  //!< Returns the ordered range of skeleton vertices
               //!< (at max one per skeleton id) associated to a
               //!< vertex name
   // Hook number-related methods
@@ -299,9 +292,6 @@ public:
   void updatePosition(const PlasticSkeleton &originalSkeleton,
                       PlasticSkeleton &deformedSkeleton, double frame, int v,
                       const TPointD &pos);
-  void updateAngle(const PlasticSkeleton &originalSkeleton,
-                   PlasticSkeleton &deformedSkeleton, double frame, int v,
-                   const TPointD &pos);
 
 protected:
   void saveData(TOStream &os) override;

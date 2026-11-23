@@ -78,13 +78,6 @@ TFilePathSet ToonzFolder::getProjectsFolders() {
   return fps;
 }
 
-TFilePath ToonzFolder::getFirstProjectsFolder() {
-  TFilePathSet fps = getProjectsFolders();
-  if (fps.empty())
-    return TFilePath();
-  else
-    return *fps.begin();
-}
 
 TFilePath ToonzFolder::getLibraryFolder() {
   TFilePath fp = getSystemVarPathValue(getSystemVarPrefix() + "LIBRARY");

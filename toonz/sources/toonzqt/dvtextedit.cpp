@@ -22,27 +22,6 @@ namespace {
 
 //-----------------------------------------------------------------------------
 
-qreal distanceBetweenPointandRect(const QRect &rect, const QPoint &point) {
-  if (rect.contains(point)) return 0;
-
-  qreal topLeftDistance =
-      sqrt(pow((double)(point.x() - rect.topLeft().x()), 2) +
-           pow((double)(point.y() - rect.topLeft().y()), 2));
-  qreal topRightDistance =
-      sqrt(pow((double)(point.x() - rect.topRight().x()), 2) +
-           pow((double)(point.y() - rect.topRight().y()), 2));
-  qreal bottomLeftDistance =
-      sqrt(pow((double)(point.x() - rect.bottomLeft().x()), 2) +
-           pow((double)(point.y() - rect.bottomLeft().y()), 2));
-  qreal bottomRightDistance =
-      sqrt(pow((double)(point.x() - rect.bottomRight().x()), 2) +
-           pow((double)(point.y() - rect.bottomRight().y()), 2));
-
-  qreal topMax    = std::min(topLeftDistance, topRightDistance);
-  qreal bottomMax = std::min(bottomLeftDistance, bottomRightDistance);
-
-  return std::min(topMax, bottomMax);
-}
 }
 
 using namespace DVGui;

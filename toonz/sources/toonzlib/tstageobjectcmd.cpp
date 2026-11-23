@@ -1615,37 +1615,6 @@ void TStageObjectCmd::renameGroup(const QList<TStageObject *> objs,
 //
 //-------------------------------------------------------------------
 
-void TStageObjectCmd::duplicateObject(const QList<TStageObjectId> ids,
-                                      TXsheetHandle *xshHandle) {
-  TXsheet *xsh              = xshHandle->getXsheet();
-  TStageObjectTree *objTree = xsh->getStageObjectTree();
-  int i, objCount = ids.size();
-  for (i = 0; i < objCount; i++) {
-    TStageObjectId id = ids[i];
-    TStageObject *obj = objTree->getStageObject(id, false);
-    assert(obj);
-    TStageObject *duplicatedObj = 0;
-    if (id.isPegbar() || id.isCamera()) {
-      int index = 0;
-      TStageObjectId newId;
-      for (;;) {
-        newId = id.isPegbar() ? TStageObjectId::PegbarId(index)
-                              : TStageObjectId::CameraId(index);
-        if (objTree->getStageObject(newId, false)) {
-          index++;
-          continue;
-        }
-        break;
-      }
-      duplicatedObj              = xsh->getStageObject(newId);
-      TStageObjectParams *params = obj->getParams();
-      duplicatedObj->assignParams(params);
-      delete params;
-      if (id.isCamera()) *(duplicatedObj->getCamera()) = *(obj->getCamera());
-    }
-  }
-  xshHandle->notifyXsheetChanged();
-}
 
 //-------------------------------------------------------------------
 

@@ -61,9 +61,6 @@ TImageReader::TImageReader(const TFilePath &path)
 
 //-----------------------------------------------------------
 
-void TImageReader::doReadGraytones(bool readThem) {
-  m_readGreytones = readThem;
-}
 
 //-----------------------------------------------------------
 

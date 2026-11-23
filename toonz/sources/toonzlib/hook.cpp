@@ -112,14 +112,6 @@ void Hook::setBPos(const TFrameId &fid, TPointD pos) {
 }
 
 //---------------------------------------------------------
-TRectD Hook::getTrackerRegion(const TFrameId &fid) {
-  TRectD rect;
-  rect.x0 = getPos(fid).x - (getTrackerRegionWidth() * 0.5);
-  rect.y0 = getPos(fid).y - (getTrackerRegionHeight() * 0.5);
-  rect.x1 = getPos(fid).x + (getTrackerRegionWidth() * 0.5);
-  rect.y1 = getPos(fid).y + (getTrackerRegionHeight() * 0.5);
-  return rect;
-}
 
 //---------------------------------------------------------
 
@@ -279,11 +271,6 @@ Hook *HookSet::addHook() {
 
 //---------------------------------------------------------
 
-void HookSet::clearHook(Hook *hook) {
-  for (int i                           = 0; i < (int)m_hooks.size(); i++)
-    if (m_hooks[i] == hook) m_hooks[i] = 0;
-  delete hook;
-}
 
 //---------------------------------------------------------
 
@@ -294,31 +281,6 @@ void HookSet::clearHooks() {
 
 //---------------------------------------------------------
 
-TrackerObjectsSet *HookSet::getTrackerObjectsSet() const {
-  // Ripulisco l'insieme dei tracker objects
-  m_trackerObjectsSet->clearAll();
-
-  // costruisco il tracker object in base agli Hook
-  for (int i = 0; i < getHookCount(); ++i) {
-    Hook *hook = getHook(i);
-    if (!hook || hook->isEmpty()) continue;
-
-    int trackerObjectId = hook->getTrackerObjectId();
-    if (trackerObjectId >= 0)  // se l'Hook ha anche una regione
-    {
-      TrackerObject *trackerObject =
-          m_trackerObjectsSet->getObject(trackerObjectId);
-      if (trackerObject == NULL) {
-        trackerObject = new TrackerObject(trackerObjectId);
-        m_trackerObjectsSet->addObject(trackerObject);
-      }
-      trackerObject = m_trackerObjectsSet->getObject(trackerObjectId);
-      assert(trackerObject != NULL);
-      trackerObject->addHook(hook);
-    }
-  }
-  return m_trackerObjectsSet;
-}
 
 //---------------------------------------------------------
 
@@ -376,10 +338,6 @@ Hook *TrackerObject::getHook(int index) {
 }
 void TrackerObject::addHook(Hook *hook) { m_hooks.push_back(hook); }
 
-void TrackerObject::removeHook(int index) {
-  assert(index >= 0 && index < (int)m_hooks.size());
-  m_hooks.erase(m_hooks.begin() + index);
-}
 
 TrackerObject *TrackerObjectsSet::getObject(int objectId) {
   assert(objectId >= 0);
@@ -390,29 +348,8 @@ TrackerObject *TrackerObjectsSet::getObject(int objectId) {
     return NULL;
 }
 
-TrackerObject *TrackerObjectsSet::getObjectFromIndex(int index) {
-  assert(index >= 0 && index < (int)m_trackerObjects.size());
-  return m_trackerObjects[index];
-}
 
-// return objectIndex, return -1 if objectId doesn't exist
-int TrackerObjectsSet::getIndexFromId(int objectId) {
-  int index = -1;
-  int i     = 0;
-  for (i = 0; i < (int)m_trackerObjects.size(); i++) {
-    int id = m_trackerObjects[i]->getId();
-    if (id == objectId) {
-      index = i;
-      break;
-    }
-  }
-  return index;
-}
 
-int TrackerObjectsSet::getIdFromIndex(int index) {
-  assert(index >= 0 && index < (int)m_trackerObjects.size());
-  return m_trackerObjects[index]->getId();
-}
 
 // add new object, return new object Id
 int TrackerObjectsSet::addObject() {
@@ -438,14 +375,6 @@ void TrackerObjectsSet::addObject(TrackerObject *trackerObject) {
   m_trackerObjects[id] = trackerObject;
 }
 
-void TrackerObjectsSet::removeObject(int objectId) {
-  assert(objectId >= 0);
-  std::map<int, TrackerObject *>::iterator tt = m_trackerObjects.find(objectId);
-  if (tt != m_trackerObjects.end()) {
-    delete tt->second;
-    m_trackerObjects.erase(tt);
-  }
-}
 
 void TrackerObjectsSet::clearAll() {
   std::map<int, TrackerObject *>::iterator tt, tEnd(m_trackerObjects.end());
@@ -456,10 +385,3 @@ void TrackerObjectsSet::clearAll() {
 
 //=========================================================
 
-std::string getHookName(int code) {
-  assert(0 <= code && code < 10);
-  if (code == 0)
-    return "B";
-  else
-    return "H" + std::to_string(code);
-}

@@ -111,8 +111,6 @@ public:
   // icons from toonz levels
   QPixmap getIcon(TXshLevel *sl, const TFrameId &fid, bool filmStrip = true,
                   bool onDemand = false);
-  QPixmap getSizedIcon(TXshLevel *sl, const TFrameId &fid, std::string newId,
-                       TDimension dim = TDimension(0, 0));
   void invalidate(TXshLevel *sl, const TFrameId &fid,
                   bool onlyFilmStrip = false);
   void remove(TXshLevel *sl, const TFrameId &fid, bool onlyFilmStrip = false);
@@ -124,7 +122,6 @@ public:
                   const TFrameId &fid = TFrameId::NO_FRAME);
   void remove(const TFilePath &path, const TFrameId &fid = TFrameId::NO_FRAME);
 
-  QPixmap getSceneIcon(ToonzScene *scene);  // Unused in Toonz
   void invalidateSceneIcon();
 
   void remap(const std::string &newIconId, const std::string &oldIconId);
@@ -140,8 +137,6 @@ public:
                                            const TFrameId &fid);
   static TRaster32P generateSceneFileIcon(const TFilePath &path,
                                           const TDimension &iconSize, int row);
-  static TRaster32P generateSplineFileIcon(const TFilePath &path,
-                                           const TDimension &iconSize);
   static TRaster32P generateMeshFileIcon(const TFilePath &path,
                                          const TDimension &iconSize,
                                          const TFrameId &fid);

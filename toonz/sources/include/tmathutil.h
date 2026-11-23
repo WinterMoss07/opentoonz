@@ -195,16 +195,6 @@ inline bool isAlmostZero(std::complex<double> val, double eps = TConsts::epsilon
 
 //-----------------------------------------------------------------------------
 
-/*!
-  Find number of roots of a poly in interval min max.
-  \par order degree of polynomious
-  \par coeff of poly in crescent order
-  \par lesser extreme
-  \par greater extreme
-  \ret number of root
- */
-DVAPI int numberOfRootsInInterval(int order, const double *polyH, double min,
-                                  double max);
 
 //-----------------------------------------------------------------------------
 

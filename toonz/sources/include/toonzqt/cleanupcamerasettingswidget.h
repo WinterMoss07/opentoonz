@@ -65,7 +65,6 @@ public:
   // CleanupCameraSettingsWidget fields => CleanupParameters
   void getFields(CleanupParameters *cleanupParameters);
 
-  double getClosestFieldValue() const;
 
   void setImageInfo(const TFilePath &imgPath);
   void setImageInfo(int w, int h, double dpix, double dpiy);

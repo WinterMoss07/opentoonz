@@ -348,9 +348,7 @@ public:
   const std::set<int> &getSelectedIndices() const;
 
   void enableSingleColumn(bool enabled) { m_singleColumnEnabled = enabled; }
-  bool isSingleColumnEnabled() const { return m_singleColumnEnabled; }
 
-  void setAlignCenter() { m_centerAligned = true; }
 
   DvItemSelection *getSelection() const { return m_selection; }
   void setSelection(DvItemSelection *selection);  // gets ownership

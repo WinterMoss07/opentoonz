@@ -129,7 +129,6 @@ public:
     m_isRemakingPreviewFx = on;
     update();
   }
-  bool isRemakingPreviewFx() { return m_isRemakingPreviewFx; }
 
   void adaptView(const TRect &imgRect, const TRect &viewRect);
   void adaptView(const QRect &viewerRect);
@@ -170,7 +169,6 @@ protected:
 
 public slots:
 
-  void updateImageViewer();
   void resetView();
   void fitView();
   void showHistogram();

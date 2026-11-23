@@ -121,35 +121,12 @@ Skeleton::Bone *Skeleton::getBone(int index) const {
 
 //-----------------------------------------------------------------------------
 
-Skeleton::Bone *Skeleton::getBoneByColumnIndex(int columnIndex) const {
-  for (int i = 0; i < (int)m_bones.size(); i++)
-    if (m_bones[i]->getColumnIndex() == columnIndex) return m_bones[i];
-  return 0;
-}
 
 //-----------------------------------------------------------------------------
 
-bool Skeleton::isIKEnabled() const {
-  return m_rootBone &&
-         m_rootBone->getStageObject()->getStatus() == TStageObject::IK;
-}
 
 //-----------------------------------------------------------------------------
 
-bool Skeleton::hasPinnedRanges() const {
-  for (int i = 0; i < getBoneCount(); i++) {
-    TStageObject *obj = getBone(i)->getStageObject();
-    if (obj->getPinnedRangeSet()->getRangeCount() > 0) return true;
-  }
-  return false;
-}
 
 //-----------------------------------------------------------------------------
 
-void Skeleton::clearAllPinnedRanges() {
-  for (int i = 0; i < getBoneCount(); i++) {
-    TStageObject *obj = getBone(i)->getStageObject();
-    obj->getPinnedRangeSet()->removeAllRanges();
-    obj->invalidate();
-  }
-}

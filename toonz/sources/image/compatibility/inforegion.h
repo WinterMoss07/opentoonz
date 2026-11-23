@@ -39,8 +39,6 @@ int get_info_region(EXT_INFO_REGION *region, int x1_out, int y1_out, int x2_out,
                     int y2_out, int scale, int width_in, int height_in,
                     int orientation);
 
-void getInfoRegion(INFO_REGION *region, int x1_out, int y1_out, int x2_out,
-                   int y2_out, int scale, int width_in, int height_in);
 
 void print_info_region(EXT_INFO_REGION *region);
 

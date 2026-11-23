@@ -387,7 +387,6 @@ public:
   SchematicViewer(QWidget *parent);
   ~SchematicViewer();
 
-  void setSchematicScene(SchematicScene *scene);
   void setApplication(TApplication *app);
   bool isStageSchematicViewed();
   void setStageSchematicViewed(bool isStageSchematic);

@@ -1887,12 +1887,6 @@ StyleChooserPage::StyleChooserPage(StyleEditor *styleEditor, QWidget *parent)
 
 //-----------------------------------------------------------------------------
 
-void StyleChooserPage::setChipSize(QSize chipSize) {
-  if (chipSize.width() < 4) chipSize.setWidth(4);
-  if (chipSize.height() < 4) chipSize.setHeight(4);
-  m_chipSize = chipSize;
-  computeSize();
-}
 
 //-----------------------------------------------------------------------------
 

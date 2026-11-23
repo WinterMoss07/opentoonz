@@ -64,29 +64,6 @@ void ToolOptionControl::notifyTool(bool addToUndo) {
 }
 
 //-----------------------------------------------------------------------------
-/*! return true if the control is belonging to the visible combo viewer. very
- * dirty implementation.
- */
-bool ToolOptionControl::isInVisibleViewer(QWidget *widget) {
-  if (!widget) return false;
-
-  if (widget->isVisible()) return true;
-
-  ToolOptionsBox *parentTOB =
-      dynamic_cast<ToolOptionsBox *>(widget->parentWidget());
-  if (!parentTOB) return false;
-
-  ToolOptions *grandParentTO =
-      dynamic_cast<ToolOptions *>(parentTOB->parentWidget());
-  if (!grandParentTO) return false;
-
-  // There must be a QFrame between a ComboViewerPanel and a ToolOptions
-  QFrame *greatGrandParentFrame =
-      dynamic_cast<QFrame *>(grandParentTO->parentWidget());
-  if (!greatGrandParentFrame) return false;
-
-  return greatGrandParentFrame->isVisible();
-}
 
 //***********************************************************************************
 //    ToolOptionControl derivative  implementations
@@ -477,9 +454,6 @@ void ToolOptionPopupButton::onActivated(int index) {
 
 //-----------------------------------------------------------------------------
 
-void ToolOptionPopupButton::doSetCurrentIndex(int index) {
-  if (isVisible()) setCurrentIndex(index);
-}
 
 //=============================================================================
 
@@ -590,10 +564,6 @@ ToolOptionParamRelayField::ToolOptionParamRelayField(
 
 //-----------------------------------------------------------------------------
 
-void ToolOptionParamRelayField::setGlobalKey(TBoolProperty *globalKey,
-                                             TPropertyGroup *globalGroup) {
-  m_globalKey = globalKey, m_globalGroup = globalGroup;
-}
 
 //-----------------------------------------------------------------------------
 

@@ -172,7 +172,6 @@ class SVNInfoReader final : public QXmlStreamReader {
 public:
   SVNInfoReader(const QString &xmlSVNResponse);
 
-  QString getRevision() const { return m_revision; }
   QString getURL() const { return m_url; }
 
 protected:

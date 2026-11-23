@@ -585,7 +585,6 @@ protected:
 public:
   StyleChooserPage(StyleEditor *styleEditor, QWidget *parent = 0);
 
-  void setChipSize(QSize chipSize);
   QSize getChipSize() const { return m_chipSize; }
 
   void applyFilter();

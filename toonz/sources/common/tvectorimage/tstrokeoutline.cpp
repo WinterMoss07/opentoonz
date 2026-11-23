@@ -20,15 +20,9 @@ TStrokeOutline &TStrokeOutline::operator=(const TStrokeOutline &stroke) {
 
 //-----------------------------------------------------------------------------
 
-void TStrokeOutline::addOutlinePoint(const TOutlinePoint &p) {
-  m_outline.push_back(p);
-}
 
 //-----------------------------------------------------------------------------
 
-std::vector<TQuadratic> getOutlineWithQuadratic(const TStroke &s) {
-  return vector<TQuadratic>();
-}
 
 //-----------------------------------------------------------------------------
 //  End Of File

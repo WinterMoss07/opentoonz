@@ -63,15 +63,6 @@ std::string buildAVIExceptionString(int rc) {
 
 //------------------------------------------------------------------------------
 
-std::string SplitFourCC(DWORD fcc) {
-  std::string s;
-  s += (char((fcc & 0x000000ff) >> 0));
-  s += (char((fcc & 0x0000ff00) >> 8));
-  s += (char((fcc & 0x00ff0000) >> 16));
-  s += (char((fcc & 0xff000000) >> 24));
-
-  return s;
-}
 
 //-----------------------------------------------------------
 

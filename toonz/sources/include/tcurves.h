@@ -65,10 +65,6 @@ public:
   //! Return the length of segment
   double getLength() const { return norm(m_c1); }
 
-  //! Return true if segment is a point
-  bool isPoint(double err2 = TConsts::epsilon) const {
-    return norm2(m_c1) < err2;
-  }
 };
 
 //-----------------------------------------------------------------------------
@@ -535,8 +531,6 @@ public:
   void setThickP1(const TThickPoint &p);
   //! Set the value of third control point \b P2 to \b TThickPoint \b p.
   void setThickP2(const TThickPoint &p);
-  //! Set the value of fourth control point \b P3 to \b TThickPoint \b p.
-  void setThickP3(const TThickPoint &p);
 
   //! Return the \b TThickPoint of cubic at parameter \b t.
   TThickPoint getThickPoint(double t) const;

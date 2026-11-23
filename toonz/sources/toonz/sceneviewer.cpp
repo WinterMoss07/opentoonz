@@ -140,47 +140,6 @@ double getActualFrameRate() {
 
 //-----------------------------------------------------------------------------
 
-void copyFrontBufferToBackBuffer() {
-  static GLint viewport[4];
-  static GLfloat raster_pos[4];
-
-  glGetIntegerv(GL_VIEWPORT, viewport);
-
-  /* set source buffer */
-  glReadBuffer(GL_FRONT);
-
-  /* set projection matrix */
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix();
-  glLoadIdentity();
-  gluOrtho2D(0, viewport[2], 0, viewport[3]);
-
-  /* set modelview matrix */
-  glMatrixMode(GL_MODELVIEW);
-  glPushMatrix();
-  glLoadIdentity();
-
-  /* save old raster position */
-  glGetFloatv(GL_CURRENT_RASTER_POSITION, raster_pos);
-
-  /* set raster position */
-  glRasterPos4f(0.0, 0.0, 0.0, 1.0);
-
-  /* copy buffer */
-  glCopyPixels(0, 0, viewport[2], viewport[3], GL_COLOR);
-
-  /* restore old raster position */
-  glRasterPos4fv(raster_pos);
-
-  /* restore old matrices */
-  glPopMatrix();
-  glMatrixMode(GL_PROJECTION);
-  glPopMatrix();
-  glMatrixMode(GL_MODELVIEW);
-
-  /* restore source buffer */
-  glReadBuffer(GL_BACK);
-}
 //-----------------------------------------------------------------------------
 /*! Compute new 3D position and new 2D position. */
 T3DPointD computeNew3DPosition(T3DPointD start3DPos, TPointD delta2D,
@@ -1892,45 +1851,6 @@ void SceneViewer::drawViewerIndicators() {
 
 //-----------------------------------------------------------------------------
 
-static void drawFpsGraph(int t0, int t1) {
-  glDisable(GL_BLEND);
-  static std::deque<std::pair<int, int>> times;
-  times.push_back(std::make_pair(t0, t1));
-  while (times.size() > 200) times.pop_front();
-  double x0 = 10, y0 = 10;
-  double x1 = x0 + 200;
-  double y1 = y0 + 150;
-  glPushMatrix();
-  glLoadIdentity();
-  glColor3d(0, 0, 0);
-  glRectd(x0, y0, x1, y1);
-  glColor3d(0, 0.5, 1);
-  glBegin(GL_LINE_STRIP);
-  glVertex2d(x0, y0);
-  glVertex2d(x1, y0);
-  glVertex2d(x1, y1);
-  glVertex2d(x0, y1);
-  glVertex2d(x0, y0);
-  glEnd();
-  glColor3d(0.5, 0.5, 0.5);
-  glBegin(GL_LINES);
-  for (int y = y0 + 5; y < y1; y += 20) {
-    glVertex2d(x0, y);
-    glVertex2d(x1, y);
-  }
-  int i = 0;
-  for (const auto &time : times) {
-    double x = x1 - i++;
-    glColor3d(1, 0, 0);
-    glVertex2d(x, y0);
-    glVertex2d(x, y0 + 5 + time.first / 5);
-    glColor3d(0, 1, 0);
-    glVertex2d(x, y0 + 5 + time.first / 5);
-    glVertex2d(x, y0 + 5 + time.second / 5);
-  }
-  glEnd();
-  glPopMatrix();
-}
 
 //-----------------------------------------------------------------------------
 
@@ -2032,7 +1952,6 @@ void SceneViewer::paintGL() {
   glFlush();
   glFinish();
   int t1 = time.elapsed();
-  drawFpsGraph(t0, t1);
 #endif
   // TOfflineGL::setContextManager(0);
 

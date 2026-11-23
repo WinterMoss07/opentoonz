@@ -74,26 +74,5 @@ void CPatternMapParam::null() {
   m_maxDist        = 3.0;
 }
 
-void CPatternMapParam::testValue() {
-  strcpy(m_patternFn, "d:\\toonz_fx\\test\\artcontour\\e.ttt");
-
-  m_ink.m_nb    = 1;
-  m_ink.m_ci[0] = 0;
-
-  m_isKeepContour = false;
-
-  m_isRandomDir = false;
-  m_minDirAngle = 0.0;
-  m_maxDirAngle = 0.0;
-
-  m_minScale = 0.3;
-  m_maxScale = 0.4;
-
-  m_isUseInkColor  = true;
-  m_isIncludeAlpha = true;
-  m_density        = 0.0;
-  m_minDist        = 3.0;
-  m_maxDist        = 3.0;
-}
 
 bool CPatternMapParam::isOK() { return true; }

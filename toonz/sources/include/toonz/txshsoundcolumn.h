@@ -62,7 +62,6 @@ public:
   void setEndOffset(int value);
   int getEndOffset() const { return m_endOffset; }
 
-  void setOffsets(int startOffset, int endOffset);
 
   //! Return the starting frame without offsets.
   void setStartFrame(int frame) { m_startFrame = frame; }
@@ -214,7 +213,6 @@ protected:
 
   ColumnLevel *getColumnLevelByFrame(int frame) const;
   ColumnLevel *getColumnLevel(int index);
-  int getColumnLevelIndex(ColumnLevel *ss) const;
   void clear();
 
 protected slots:

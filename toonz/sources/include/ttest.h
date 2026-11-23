@@ -31,13 +31,11 @@ public:
   virtual ~TTest();
 
   void setInstanceCount();
-  void verifyInstanceCount();
 
   virtual void test() = 0;
   virtual void before() { setInstanceCount(); };
   virtual void after(){};
 
-  static void runTests(std::string filename);
 };
 
 // Utility

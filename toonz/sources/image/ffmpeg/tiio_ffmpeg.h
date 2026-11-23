@@ -65,7 +65,6 @@ public:
   QString runFfprobe(const QStringList &args) const;
 
   void cleanUpFiles();
-  void addToCleanUp(const QString &path);
 
   void setFrameRate(double fps);
   void setPath(const TFilePath &path);
@@ -89,7 +88,6 @@ public:
 
   void disablePrecompute();
 
-  int getGifFrameCount();
 
 private:
   QString m_intermediateFormat = "png";
@@ -120,7 +118,6 @@ private:
   // Unique identifier for temporary files (based on full path hash)
   QString m_tempBaseName;
 
-  QString cleanPathSymbols() const;
   bool waitFfmpeg(QProcess &process, bool async) const;
 
   // not allow copy of temporary files

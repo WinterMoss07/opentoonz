@@ -86,7 +86,6 @@ public:
   void reset();
 
   enum StorageFlag { NONE = 0x0, IN_MEMORY = 0x1, ON_DISK = 0x2 };
-  void setStorageMode(StorageFlag mode);
   StorageFlag getStorageMode() const;
 
   int declareCached(TFx *fx, int passiveCacheId);
@@ -96,7 +95,6 @@ public:
   void enableCache(TFx *fx);
   void disableCache(TFx *fx);
   bool cacheEnabled(TFx *fx);
-  void toggleCache(TFx *fx);
 
   StorageFlag getStorageMode(TFx *fx);
 

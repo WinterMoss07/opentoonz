@@ -641,44 +641,6 @@ void PreferencesPopup::onDefLevelTypeChanged() {
 
 //-----------------------------------------------------------------------------
 
-void PreferencesPopup::onUseNumpadForSwitchingStylesClicked() {
-  bool checked = m_pref->getBoolValue(useNumpadForSwitchingStyles);
-  if (checked) {
-    // check if there are any commands with numpadkey shortcuts
-    CommandManager* cm = CommandManager::instance();
-    QList<QAction*> actionsList;
-    for (int key = Qt::Key_0; key <= Qt::Key_9; key++) {
-      std::string str = QKeySequence(key).toString().toStdString();
-      QAction* action = cm->getActionFromShortcut(str);
-      if (action) actionsList.append(action);
-    }
-    QAction* tabAction = cm->getActionFromShortcut("Tab");
-    if (tabAction) actionsList.append(tabAction);
-    tabAction = cm->getActionFromShortcut("Shift+Tab");
-    if (tabAction) actionsList.append(tabAction);
-    // if there are actions using numpad shortcuts, notify to release them.
-    if (!actionsList.isEmpty()) {
-      QString msgStr =
-          tr("Numpad keys are assigned to the following commands.\nIs it OK to "
-             "release these shortcuts?");
-      for (int a = 0; a < actionsList.size(); a++) {
-        msgStr += "\n" + actionsList.at(a)->iconText() + "  (" +
-                  actionsList.at(a)->shortcut().toString() + ")";
-      }
-      int ret = DVGui::MsgBox(msgStr, tr("OK"), tr("Cancel"), 1);
-      if (ret == 2 || ret == 0) {  // canceled
-        getUI<CheckBox*>(useNumpadForSwitchingStyles)->setChecked(false);
-        return;
-      } else {  // accepted, then release shortcuts
-        for (int a = 0; a < actionsList.size(); a++)
-          cm->setShortcut(actionsList[a], "");
-      }
-    }
-  }
-  // emit signal to update Palette and Viewer
-  TApp::instance()->getCurrentScene()->notifyPreferenceChanged(
-      "NumpadForSwitchingStyles");
-}
 
 //-----------------------------------------------------------------------------
 
@@ -695,9 +657,6 @@ void PreferencesPopup::onShowKeyframesOnCellAreaChanged() {
 
 //-----------------------------------------------------------------------------
 
-void PreferencesPopup::onShowXSheetToolbarClicked() {
-  TApp::instance()->getCurrentScene()->notifyPreferenceChanged("XSheetToolbar");
-}
 
 //-----------------------------------------------------------------------------
 

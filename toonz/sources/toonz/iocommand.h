@@ -207,26 +207,7 @@ public:
     ProgressDialog::setLabelText(QObject::tr("Converting %1 to tlv format...")
                                      .arg(filePath.getQString()));
   };
-  FrameTaskNotifier *getNotifier() {
-    if (m_notifier) delete m_notifier;
-    m_notifier = new FrameTaskNotifier();
-    m_notifier->setParent(this);
 
-    connect(m_notifier, &FrameTaskNotifier::frameCompleted, this,
-            [this](int f) { setValue(f); });
-
-    connect(m_notifier, &FrameTaskNotifier::levelCompleted, this,
-            [this](const TFilePath &fp) {
-              m_path = fp;
-            });
-
-    connect(m_notifier, &FrameTaskNotifier::error, this,
-            [this]() { setLabelText(tr("Error occurred.")); });
-
-    return m_notifier;
-  }
-
-  TFilePath getResultPath() { return m_path; };
 };
 
 //------------------------------------------------------------------------

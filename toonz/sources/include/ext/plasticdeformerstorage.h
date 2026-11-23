@@ -237,10 +237,6 @@ deleted
       const PlasticSkeletonDeformation *deformation, int skeletonId,
       const TAffine &deformationToMeshAffine, DataType dataType = ALL);
 
-  //! Similarly to invalidateSkeleton(), for every deformer attached to the
-  //! specified mesh.
-  void invalidateMeshImage(const TMeshImage *meshImage,
-                           int recompiledDataType = NONE);
 
   //! Schedules all stored deformers associated to the specified deformation for
   //! either re-deformation (stage 3 invalidation) or re-compilation (stage 2
@@ -263,12 +259,7 @@ Select it explicitly only when it truly needs to be done.
   void invalidateDeformation(const PlasticSkeletonDeformation *deformation,
                              int recompiledDataType = NONE);
 
-  //! Releases all deformers associated to the specified mesh image.
-  void releaseMeshData(const TMeshImage *meshImage);
 
-  //! Releases all deformers associated to the specified skeletal deformation.
-  void releaseSkeletonData(const PlasticSkeletonDeformation *deformation,
-                           int skeletonId);
 
   //! Releases all deformers associated to the specified skeletal deformation.
   void releaseDeformationData(const PlasticSkeletonDeformation *deformation);

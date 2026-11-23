@@ -419,14 +419,6 @@ void FunctionViewerPanel::attachHandles() {
   m_functionViewer->setSceneHandle(app->getCurrentScene());
 }
 
-void FunctionViewerPanel::detachHandles() {
-  m_functionViewer->setXsheetHandle(0);
-  m_functionViewer->setFrameHandle(0);
-  m_functionViewer->setObjectHandle(0);
-  m_functionViewer->setFxHandle(0);
-  m_functionViewer->setColumnHandle(0);
-  m_functionViewer->setSceneHandle(0);
-}
 
 void FunctionViewerPanel::reset() {
   attachHandles();

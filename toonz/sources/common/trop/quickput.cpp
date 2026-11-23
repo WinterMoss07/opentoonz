@@ -5077,24 +5077,6 @@ void TRop::quickPut(const TRasterP &dn, const TRasterCM32P &upCM32,
     throw TRopException("raster type mismatch");
 }
 
-void TRop::quickResampleColorFilter(const TRasterP &dn, const TRasterP &up,
-                                    const TAffine &aff, const TPaletteP &plt,
-                                    UCHAR colorMask) {
-  TRaster32P dn32     = dn;
-  TRaster32P up32     = up;
-  TRaster64P up64     = up;
-  TRasterCM32P upCM32 = up;
-  if (dn32 && up32)
-    doQuickResampleColorFilter(dn32, up32, aff, colorMask);
-  else if (dn32 && upCM32)
-    doQuickResampleColorFilter(dn32, upCM32, plt, aff, colorMask);
-  else if (dn32 && up64)
-    doQuickResampleColorFilter(dn32, up64, aff, colorMask);
-  // else if (dn32 && upCM32)
-  //  doQuickResampleColorFilter(dn32, upCM32, aff, plt, colorMask);
-  else
-    throw TRopException("raster type mismatch");
-}
 
 #endif  // TNZCORE_LIGHT
 

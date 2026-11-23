@@ -60,8 +60,6 @@ public:
 
   QStringList getFilesWithOption(int option) const;
 
-  void setButton1Text(const QString &b1text) { m_button1Text = b1text; }
-  void setButton2Text(const QString &b2text) { m_button2Text = b2text; }
 
 protected slots:
   void onRadioValueChanged();

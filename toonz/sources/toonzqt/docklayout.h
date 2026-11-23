@@ -232,10 +232,6 @@ public:
   void clearWasFloating() { m_wasFloating = false; }
   bool isMaximized() const { return m_maximized; }
 
-  // Query functions
-  QWidget *hoveredWidget(QMouseEvent *me);
-  DockPlaceholder *placeAdjacentTo(DockWidget *dockWidget, int boundary);
-  DockPlaceholder *placeOfSeparator(DockSeparator *);
   const std::vector<DockPlaceholder *> &placeholders() const {
     return m_placeholders;
   }
@@ -429,14 +425,8 @@ public:
 
   // Member access methods
 
-  //! Returns DockSeparator on which docking takes place (if any)
-  DockSeparator *getSeparator() const;
-  //! Returns dockWidget owner
-  DockWidget *getDockWidget() const { return m_owner; }
   //! Returns Region owner
   Region *getParentRegion() const { return m_region; }
-  //! Returns insertion index into parent region
-  int getInsertionIdx() const { return m_idx; }
 
   enum {
     left    = 0,
@@ -459,9 +449,7 @@ public:
   //! case)
   bool isRoot() const { return m_attributes == root; }
   DockPlaceholder *parentPlaceholder();
-  DockPlaceholder *greatestPlaceholder();
   DockPlaceholder *childPlaceholder(QPoint p);
-  DockPlaceholder *smallestPlaceholder(QPoint p);
 
 private:
   //! Let wheel events also be propagated to owner dock widget

@@ -46,7 +46,6 @@ public:
   virtual ~TMetaObjectType();
 
   void registerAlias(const TStringId &alias);
-  void unregisterAlias(const TStringId &alias);
 
   virtual TMetaObjectHandler* createHandler(TMetaObject &obj) const
     { return 0; }
@@ -168,8 +167,6 @@ public:
     { return m_object; }
   inline const TStringId& getAlias() const
     { return object().getType(); }
-  inline const std::string& getAliasName() const
-    { return getAlias().str(); }
   inline const TVariant& data() const
     { return object().data(); }
   inline TVariant& data()

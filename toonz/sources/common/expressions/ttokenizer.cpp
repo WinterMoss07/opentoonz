@@ -148,23 +148,6 @@ bool Tokenizer::eos() const { return m_index + 1 == getTokenCount(); }
 
 //-------------------------------------------------------------------
 
-Token Tokenizer::getTokenFromPos(int pos) const {
-  int len = m_buffer.length();
-  if (pos < 0 || pos >= len) return Token(pos);
-  int x = 0;
-  for (int i = 0; i < getTokenCount(); i++) {
-    const Token &token = getToken(i);
-    int y              = token.getPos();
-    if (pos < y) {
-      assert(x < y);
-      return Token(x, y - 1);
-    }
-    x = y + (int)token.getText().length();
-    if (pos < x) return token;
-  }
-  assert(x < len);
-  return Token(x, len - 1);
-}
 
 //===================================================================
 

@@ -779,23 +779,9 @@ double TPointDeformation::getCPDensity(double s) const {
 
 //-----------------------------------------------------------------------------
 
-double TPointDeformation::getCPCountInRange(double s0, double s1) const {
-  if (s1 < s0) swap(s1, s0);
-
-  double step = (s1 - s0) * 0.1;
-
-  double cpCount = 0.0;
-
-  for (double s = s0; s < s1; s += step) cpCount += getCPDensity(s);
-
-  cpCount += getCPDensity(s1);
-
-  return cpCount;
-}
 
 //-----------------------------------------------------------------------------
 
-double TPointDeformation::getMinCPDensity() const { return 0.3; }
 
 //-----------------------------------------------------------------------------
 //  End Of File

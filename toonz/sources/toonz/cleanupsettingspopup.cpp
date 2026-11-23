@@ -771,14 +771,6 @@ void CleanupSettings::enableSwatch(bool enable) {
 
 //-----------------------------------------------------------------------------
 
-void CleanupSettings::enableOpacityCheck(bool enable) {
-  CleanupSettingsModel *model = CleanupSettingsModel::instance();
-  CleanupParameters *params   = model->getCurrentParameters();
-
-  params->m_transparencyCheckEnabled = enable;
-
-  model->commitChanges();
-}
 
 //-----------------------------------------------------------------------------
 

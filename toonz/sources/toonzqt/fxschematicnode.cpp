@@ -73,29 +73,6 @@ bool isAInnerMacroFx(TFx *fx, TXsheet *xsh) {
 
 //-----------------------------------------------------
 
-// Draw a cached FX flap indicator
-void drawCachedFxFlap(QPainter *painter, const QPointF &pos) {
-  painter->save();
-  painter->setPen(QColor(0, 0, 0, 255));
-  painter->setBrush(QColor(120, 120, 120, 255));
-
-  QPainterPath path(pos);
-  path.lineTo(pos.x(), pos.y() - 10.0);
-  path.lineTo(pos.x() - 10.0, pos.y());
-  path.lineTo(pos);
-
-  painter->drawPath(path);
-  painter->setBrush(QColor(255, 255, 255, 255));
-
-  QPointF newPos = pos + QPointF(-10.0, -10.0);
-  path           = QPainterPath(newPos);
-  path.lineTo(newPos.x(), newPos.y() + 10.0);
-  path.lineTo(newPos.x() + 10.0, newPos.y());
-  path.lineTo(newPos);
-
-  painter->drawPath(path);
-  painter->restore();
-}
 
 //-----------------------------------------------------
 

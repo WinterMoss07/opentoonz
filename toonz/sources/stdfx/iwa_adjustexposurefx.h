@@ -31,13 +31,9 @@ protected:
   /*- タイルの画像を０〜１に正規化してホストメモリに読み込む -*/
   template <typename RASTER, typename PIXEL>
   void setSourceRaster(const RASTER srcRas, float4 *dstMem, TDimensionI dim);
-  void setSourceRasterF(const TRasterFP srcRas, float4 *dstMem,
-                        TDimensionI dim);
   /*- 出力結果をChannel値に変換して格納 -*/
   template <typename RASTER, typename PIXEL>
   void setOutputRaster(float4 *srcMem, const RASTER dstRas, TDimensionI dim);
-  void setOutputRasterF(float4 *srcMem, const TRasterFP dstRas,
-                        TDimensionI dim);
 
 public:
   Iwa_AdjustExposureFx();

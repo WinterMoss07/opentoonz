@@ -62,8 +62,6 @@ DVAPI void ungroup(int groupId, TXsheetHandle *xshHandle);
 DVAPI void renameGroup(const QList<TStageObject *> objs,
                        const std::wstring &name, bool fromEditor,
                        TXsheetHandle *xshHandle);
-DVAPI void duplicateObject(const QList<TStageObjectId> ids,
-                           TXsheetHandle *xshHandle);
 DVAPI void enableSplineAim(TStageObject *obj, int state,
                            TXsheetHandle *xshHandle);
 DVAPI void enableSplineUppk(TStageObject *obj, bool toggled,

@@ -143,14 +143,12 @@ public:
   TOutputProperties *getOutputPropertites() { return m_properties; }
 
   void setUseMarkers(bool useMarkers);
-  bool getUseMarkers() const { return m_useMarkers; }
 
   // gestione cliplist
   int getClipCount() const { return (int)m_clipList.size(); }
   // n.b. ritorna TFilePath() se e' la scena corrente
   TFilePath getClipPath(int index) const;
   void setClipPath(int index, const TFilePath &path);
-  void addClipPath(const TFilePath &path);
   void insertClipPath(int index, const TFilePath &path);
   void removeClipPath(int index);
   void resetClipList();

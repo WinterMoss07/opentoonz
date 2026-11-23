@@ -1282,49 +1282,6 @@ void TRop::atop(const TRasterP &rup, const TRasterP &rdown,
 
 //-----------------------------------------------------------------------------
 
-void TRop::txor(const TRasterP &rup, const TRasterP &rdown,
-                const TRasterP &rout) {
-  // da ottimizzare...
-  TRaster32P up32   = rup;
-  TRaster32P down32 = rdown;
-  TRaster32P out32  = rout;
-  TRaster64P up64   = rup;
-  TRaster64P down64 = rdown;
-  TRaster64P out64  = rout;
-
-  if (up32 && down32 && out32) {
-    FOR_EACH_PIXEL_32_BEGIN_LOOP
-
-    TUINT32 notUpM   = 255 - upPix->m;
-    TUINT32 notDownM = 255 - downPix->m;
-
-    TUINT32 r = notUpM + upPix->r * (notDownM);
-    TUINT32 g = notUpM + upPix->g * (notDownM);
-    TUINT32 b = notUpM + upPix->b * (notDownM);
-
-    outPix->r = (UCHAR)tcrop<TUINT32>(0, 255, r);
-    outPix->g = (UCHAR)tcrop<TUINT32>(0, 255, g);
-    outPix->b = (UCHAR)tcrop<TUINT32>(0, 255, b);
-
-    FOR_EACH_PIXEL_32_END_LOOP
-  } else if (up64 && down64 && out64) {
-    FOR_EACH_PIXEL_64_BEGIN_LOOP
-
-    TUINT32 notUpM   = 65535 - upPix->m;
-    TUINT32 notDownM = 65535 - downPix->m;
-
-    TUINT32 r = notUpM + upPix->r * (notDownM);
-    TUINT32 g = notUpM + upPix->g * (notDownM);
-    TUINT32 b = notUpM + upPix->b * (notDownM);
-
-    outPix->r = (USHORT)tcrop<TUINT32>(0, 65535, r);
-    outPix->g = (USHORT)tcrop<TUINT32>(0, 65535, g);
-    outPix->b = (USHORT)tcrop<TUINT32>(0, 65535, b);
-
-    FOR_EACH_PIXEL_64_END_LOOP
-  } else
-    throw TRopException("TRop::xor invalid raster combination");
-}
 
 //-----------------------------------------------------------------------------
 

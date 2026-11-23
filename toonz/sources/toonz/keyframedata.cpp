@@ -216,6 +216,3 @@ void TKeyframeData::getKeyframes(std::set<Position> &positions) const {
   }
 }
 
-void TKeyframeData::setKeyframesOffset(int row, int col) {
-  m_offset = std::make_pair(row, col);
-}

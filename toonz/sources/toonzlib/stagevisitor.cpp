@@ -768,43 +768,6 @@ void RasterPainter::flushRasterImages() {
 }
 
 //-----------------------------------------------------------------------------
-/*! Make frame visualization in QPainter.
-\n	Draw in painter mode just raster image in m_nodes.
-\n  Onion-skin or channel mode are not considered.
-*/
-void RasterPainter::drawRasterImages(QPainter &p, QPolygon cameraPol) {
-  if (m_nodes.empty()) return;
-
-  double delta = sqrt(fabs(m_nodes[0].m_aff.det()));
-  TRectD bbox  = m_nodes[0].m_bbox.enlarge(delta);
-
-  int i;
-  for (i = 1; i < (int)m_nodes.size(); i++) {
-    delta = sqrt(fabs(m_nodes[i].m_aff.det()));
-    bbox += m_nodes[i].m_bbox.enlarge(delta);
-  }
-  TRect rect(tfloor(bbox.x0), tfloor(bbox.y0), tceil(bbox.x1), tceil(bbox.y1));
-  rect = rect * TRect(0, 0, m_dim.lx - 1, m_dim.ly - 1);
-
-  TRect r = rect - rect.getP00();
-  TAffine flipY(1, 0, 0, 0, -1, m_dim.ly);
-  p.setClipRegion(QRegion(cameraPol));
-  for (i = 0; i < (int)m_nodes.size(); i++) {
-    if (m_nodes[i].m_onionMode != Node::eOnionSkinNone) continue;
-    p.resetTransform();
-    TRasterP ras = m_nodes[i].m_raster;
-    TAffine aff  = TTranslation(-rect.x0, -rect.y0) * flipY * m_nodes[i].m_aff;
-    QTransform matrix(aff.a11, aff.a12, aff.a21, aff.a22, aff.a13,
-                      aff.a23);  // Updated line
-    QImage image = rasterToQImage(ras);
-    if (image.isNull()) continue;
-    p.setWorldTransform(matrix);
-    p.drawImage(rect.getP00().x, rect.getP00().y, image);
-  }
-
-  p.resetTransform();
-  m_nodes.clear();
-}
 
 static void buildAutocloseImage(
     TVectorImage *vaux, TVectorImage *vi,

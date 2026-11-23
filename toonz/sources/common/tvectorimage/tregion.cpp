@@ -34,9 +34,6 @@ void foo()
 
 //=============================================================================
 
-static bool compareEdge(const TEdge &a, const TEdge &b) {
-  return a.m_s == b.m_s;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -529,59 +526,6 @@ void TRegion::draw(const TVectorRenderData &rd)
 
 //-----------------------------------------------------------------------------
 
-static void checkPolyline(const std::vector<T3DPointD> &p) {
-  int ret;
-
-  if (p.size() < 3) return;
-
-  TPointD p1;
-  TPointD p2;
-
-  int pointSize = (int)p.size() - 1;
-
-  for (int i = 0; i < pointSize; i++) {
-    for (int j = i + 1; j < pointSize; j++) {
-      std::vector<DoublePair> res;
-
-      p1 = TPointD(p[i].x, p[i].y);
-      p2 = TPointD(p[i + 1].x, p[i + 1].y);
-
-      TSegment s0(p1, p2);
-
-      p1 = TPointD(p[j].x, p[j].y);
-      p2 = TPointD(p[j + 1].x, p[j + 1].y);
-
-      TSegment s1(p1, p2);
-
-      ret = intersect(s0, s1, res);
-      if (ret)
-        assert((ret == 1) && (areAlmostEqual(res[0].first, 1) ||
-                              areAlmostEqual(res[0].first, 0)) &&
-               (areAlmostEqual(res[0].second, 1) ||
-                areAlmostEqual(res[0].second, 0)));
-    }
-  }
-
-  p1 = TPointD(p.back().x, p.back().y);
-  p2 = TPointD(p[0].x, p[0].y);
-
-  TSegment s0(p1, p2);
-
-  for (int j = 0; j < pointSize; j++) {
-    std::vector<DoublePair> res;
-
-    p1 = TPointD(p[j].x, p[j].y);
-    p2 = TPointD(p[j + 1].x, p[j + 1].y);
-    TSegment s1(p1, p2);
-
-    ret = intersect(s0, s1, res);
-    if (ret)
-      assert((ret == 1) && (areAlmostEqual(res[0].first, 1) ||
-                            areAlmostEqual(res[0].first, 0)) &&
-             (areAlmostEqual(res[0].second, 1) ||
-              areAlmostEqual(res[0].second, 0)));
-  }
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1216,33 +1160,12 @@ void TRegion::addEdge(TEdge *e, bool minimizeEdges) {
 
 //-----------------------------------------------------------------------------
 
-TEdge *TRegion::getLastEdge() const {
-  if (m_imp->m_edge.empty()) return 0;
-
-  return m_imp->m_edge.back();
-}
 
 //-----------------------------------------------------------------------------
 
-TEdge *TRegion::popBackEdge() {
-  TEdge *ret;
-  if (m_imp->m_edge.empty()) return 0;
-
-  ret = m_imp->m_edge.back();
-  m_imp->m_edge.pop_back();
-  return ret;
-}
 
 //-----------------------------------------------------------------------------
 
-TEdge *TRegion::popFrontEdge() {
-  TEdge *ret;
-  if (m_imp->m_edge.empty()) return 0;
-
-  ret = m_imp->m_edge.front();
-  m_imp->m_edge.erase(m_imp->m_edge.begin());
-  return ret;
-}
 
 //-----------------------------------------------------------------------------
 

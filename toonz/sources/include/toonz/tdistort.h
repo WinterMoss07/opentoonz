@@ -77,20 +77,6 @@ public:
       , m_p11d(p11d) {}
   virtual ~TQuadDistorter() {}
 
-  void getSourceQuad(TPointD &p00, TPointD &p10, TPointD &p01,
-                     TPointD &p11) const {
-    p00 = m_p00s;
-    p10 = m_p10s;
-    p01 = m_p01s;
-    p11 = m_p11s;
-  }
-  void getDestinationQuad(TPointD &p00, TPointD &p10, TPointD &p01,
-                          TPointD &p11) const {
-    p00 = m_p00d;
-    p10 = m_p10d;
-    p01 = m_p01d;
-    p11 = m_p11d;
-  }
 
   //! This function is reimplementable to provide a mean of bounding the source
   //! region that will

@@ -303,7 +303,6 @@ void DoubleValueField::enableSlider(bool enable) {
 
 //-----------------------------------------------------------------------------
 
-bool DoubleValueField::isSliderEnabled() { return m_slider->isEnabled(); }
 
 //-----------------------------------------------------------------------------
 

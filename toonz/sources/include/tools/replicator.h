@@ -42,10 +42,6 @@ public:
   inline int getSkipLast() const
     { return std::max(0, (int)data()[m_idSkipLast].getDouble()); }
   
-  inline void setSkipFirst(int x)
-    { if (getSkipFirst() != (double)x) data()[m_idSkipFirst].setDouble((double)x); }
-  inline void setSkipLast(int x)
-    { if (getSkipLast() != (double)x) data()[m_idSkipLast].setDouble((double)x); }
   
   virtual int getMultipler() const;
   virtual void getPoints(const TAffine &toTool, PointList &points) const;

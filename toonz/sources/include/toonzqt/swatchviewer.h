@@ -181,7 +181,6 @@ public:
   static void suspendRendering(bool suspend, bool blocking = true);
 
   void setCameraMode(bool enabled) { m_cameraMode = enabled; }
-  bool getCameraMode() const { return m_cameraMode; }
 
   void setCameraSize(const TDimension &cameraSize);
   TDimension getCameraSize() const { return m_cameraRect.getSize(); }

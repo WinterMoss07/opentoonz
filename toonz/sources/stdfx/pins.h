@@ -46,12 +46,6 @@ public:
   bool operator!=(const FourPoints &fp) const { return !(*this == fp); }
 };
 
-// this function computes the perspective transformation defined with
-//-transfFrom, transfTo- (the points in transfFrom goes in transfTo)
-// and applies it on the fourPoints from, and returns the result)
-FourPoints computeTransformed(const FourPoints &transfFrom,
-                              const FourPoints &transfTo,
-                              const FourPoints &from);
 
 //--------------------------------------------------------------------------------
 
@@ -60,8 +54,4 @@ void subdivision(const TPointD &p00, const TPointD &p10, const TPointD &p11,
                  const TPointD &tex11, const TPointD &tex01,
                  const TRectD &clippingRect, int details);
 
-void subCompute(TRasterFxPort &m_input, TTile &tile, double frame,
-                const TRenderSettings &ri, TPointD p00, TPointD p01,
-                TPointD p11, TPointD p10, int details, bool wireframe,
-                TDimension m_offScreenSize, bool isCast = false);
 #endif

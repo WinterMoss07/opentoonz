@@ -1948,11 +1948,6 @@ void ToonzRasterBrushTool::onColorStyleChanged() {
 
 //------------------------------------------------------------------
 
-double ToonzRasterBrushTool::restartBrushTimer() {
-  double dtime = m_brushTimer.nsecsElapsed() * 1e-9;
-  m_brushTimer.restart();
-  return dtime;
-}
 
 //------------------------------------------------------------------
 

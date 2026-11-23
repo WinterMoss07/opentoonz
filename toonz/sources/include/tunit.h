@@ -96,15 +96,11 @@ public:
 
   void add(TUnit *unit);
 
-  // main unit e' quella usata "internamente". puo' essere "strana"
-  const TUnit *getMainUnit() const { return m_mainUnit; }
 
   // current unit e' quella ad es. definita in preferences
   const TUnit *getCurrentUnit() const { return m_currentUnit; }
   void setCurrentUnit(TUnit *unit);
 
-  // standard unit e' quella usata nelle espressioni
-  const TUnit *getStandardUnit() const { return m_standardUnit; }
   void setStandardUnit(TUnit *unit);
 
   TUnit *getUnit(std::wstring ext) const;

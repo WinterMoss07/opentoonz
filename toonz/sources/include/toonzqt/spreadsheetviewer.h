@@ -53,7 +53,6 @@ public:
   virtual ~FrameScroller();
 
   void setFrameScrollArea(QScrollArea *scrollArea);
-  QScrollArea *getFrameScrollArea() const { return m_scrollArea; }
 
   void setOrientation(const Orientation *o) { m_orientation = o; }
   const Orientation *orientation() const { return m_orientation; }
@@ -61,7 +60,6 @@ public:
   void registerFrameScroller();
   void unregisterFrameScroller();
 
-  void prepareToScrollOthers(const QPointF &offset);
 
   void setSyncing(bool s) { m_syncing = s; }
   bool isSyncing() { return m_syncing; }
@@ -338,10 +336,8 @@ public:
   SpreadsheetViewer(QWidget *parent);
   virtual ~SpreadsheetViewer();
 
-  int getColumnWidth() const { return m_columnWidth; }
   void setColumnWidth(int width) { m_columnWidth = width; }
 
-  int getRowHeight() const { return m_rowHeight; }
   void setRowHeight(int height) { m_rowHeight = height; }
 
   void setScaleFactor(int factor) { m_scaleFactor = factor; }
@@ -464,8 +460,6 @@ public:
     return m_autoPanSpeed.x() != 0 || m_autoPanSpeed.y() != 0;
   }
 
-  int xToColumn(int x) const;
-  int yToRow(int y) const;
   int columnToX(int col) const;
   int rowToY(int row) const;
 
@@ -491,10 +485,6 @@ public:
     m_markRowDistance    = distance;  // distance > 0 ? distance : 6;
     m_markRowOffset      = offset;
     m_markSecRowDistance = secDistance;
-  }
-  void getMarkRow(int &distance, int &offset) const {
-    distance = m_markRowDistance;
-    offset   = m_markRowOffset;
   }
   bool isMarkRow(int row) const {
     return m_markRowDistance > 0 &&
@@ -530,7 +520,6 @@ public slots:
 
   void frameSwitched();
 
-  void updateAreas();
   void onVSliderChanged(int);
   void onHSliderChanged(int);
 

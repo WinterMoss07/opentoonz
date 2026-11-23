@@ -55,7 +55,6 @@ public:
   ~Server();
 
   void addParser(MessageParser *parser);
-  void removeParser(QString header);
 
   //! Generic dispatcher function for socket messages.
   //! Acceptable socket messages are composed of a header and a body part.

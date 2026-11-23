@@ -80,7 +80,6 @@ public:
   bool read(std::basic_ifstream<char> &in);
 #endif
   void makeColorsUS();
-  void makeItUS();
   static void adjustToMatte(I_PIXEL &p);
 
   //	void blurPixel(CSTColSelPic<UC_PIXEL>& pic, const int xx, const int yy,

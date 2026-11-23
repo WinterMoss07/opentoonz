@@ -1416,9 +1416,6 @@ void VectorizerPopup::saveParameters() {
   struct {
     VectorizerPopup *m_this;
 
-    static bool vectorizerType(TPersist *persist) {
-      return (dynamic_cast<VectorizerParameters *>(persist) != 0);
-    }
 
     void saveParams(const TFilePath &fp)  // May throw due to I/O failure
     {

@@ -232,15 +232,6 @@ namespace XsheetGUI {
 
 //-----------------------------------------------------------------------------
 
-static void getVolumeCursorRect(QRect &out, double volume,
-                                const QPoint &origin) {
-  int ly = 60;
-  int v  = tcrop(0, ly, (int)(volume * ly));
-  out.setX(origin.x() + 11);
-  out.setY(origin.y() + 60 - v);
-  out.setWidth(8);
-  out.setHeight(8);
-}
 
 //=============================================================================
 // MotionPathMenu
@@ -3132,17 +3123,6 @@ void ColumnArea::contextMenuEvent(QContextMenuEvent *event) {
 
 //-----------------------------------------------------------------------------
 
-void ColumnArea::onSetMask(int col) {
-  TXshColumn *column = m_viewer->getXsheet()->getColumn(m_col);
-
-  std::string name = m_viewer->getXsheet()
-                         ->getStageObject(TStageObjectId::ColumnId(col))
-                         ->getName();
-  ColumnMaskUndo *undo = new ColumnMaskUndo(col, column->isMask(), name);
-  undo->redo();
-  TUndoManager::manager()->add(undo);
-  update();
-}
 
 //-----------------------------------------------------------------------------
 

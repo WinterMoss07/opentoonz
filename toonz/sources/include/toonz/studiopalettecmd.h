@@ -51,5 +51,4 @@ DVAPI TFilePath createPalette(const TFilePath &folderPath,
 DVAPI TFilePath addFolder(const TFilePath &parentFolderPath);
 DVAPI void deleteFolder(const TFilePath &folderPath);
 
-DVAPI void scanPalettes(const TFilePath &folder, const TFilePath &sourcePath);
 }

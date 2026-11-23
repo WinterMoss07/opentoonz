@@ -83,8 +83,6 @@ public:
 
   void setHasGlobalControl(bool yes) { m_hasGlobalControl = yes; }
   bool hasGlobalControl() const { return m_hasGlobalControl; }
-  void setGlobalIntensity(double val) { m_globalIntensity = val; }
-  double getGlobalIntensity() { return m_globalIntensity; }
   // Group management
 
   int setGroupId(int value);

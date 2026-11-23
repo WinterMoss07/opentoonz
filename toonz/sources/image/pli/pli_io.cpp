@@ -383,7 +383,6 @@ public:
 
   PliTag *findTagFromOffset(UINT tagOffs);
   UINT findOffsetFromTag(PliTag *tag);
-  TagElem *findTag(PliTag *tag);
   USHORT readTagHeader();
 
 public:
@@ -427,7 +426,6 @@ public:
   bool addTag(const TagElem &tag, bool addFront = false);
   bool writePli(const TFilePath &filename);
   inline void WRITE_UCHAR_FROM_DOUBLE(double dval);
-  inline void WRITE_SHORT_FROM_DOUBLE(double dval);
 };
 
 /*=====================================================================*/
@@ -1020,12 +1018,6 @@ UINT ParsedPliImp::findOffsetFromTag(PliTag *tag) {
 }
 /*=====================================================================*/
 
-TagElem *ParsedPliImp::findTag(PliTag *tag) {
-  for (TagElem *elem = m_firstTag; elem; elem = elem->m_next)
-    if (elem->m_tag == tag) return elem;
-
-  return NULL;
-}
 /*=====================================================================*/
 
 inline void ParsedPliImp::readDynamicData(TUINT32 &val, TUINT32 &bufOffs) {
@@ -1713,19 +1705,6 @@ const TSolidColorStyle ConstStyle(TPixel32::Red);
 
 /*=====================================================================*/
 
-inline double doubleFromUlong(TUINT32 q) {
-  assert((q & 0X00000001) == 0);
-  TUINT32 l[2];
-#if TNZ_LITTLE_ENDIAN
-  l[1] = 0x3FF00000 | (q >> 12);
-  l[0] = (q & 0xFFE) << 20;
-#else
-  l[0] = 0x3FF00000 | (q >> 12);
-  l[1] = (q & 0xFFE) << 20;
-#endif
-
-  return *(double *)l - 1;
-}
 
 /*=====================================================================*/
 
@@ -2054,12 +2033,6 @@ inline void ParsedPliImp::WRITE_UCHAR_FROM_DOUBLE(double dval) {
 
 /*=====================================================================*/
 
-inline void ParsedPliImp::WRITE_SHORT_FROM_DOUBLE(double dval) {
-  assert(m_oChan);
-  int ival = (int)(dval);
-  assert(ival >= -32768 && ival < 32768);
-  *m_oChan << complement1((short)ival);
-}
 
 /*=====================================================================*/
 
@@ -2277,18 +2250,6 @@ TUINT32 ParsedPliImp::writeImageTag(ImageTag *tag) {
 // altrimenti, 4 byte con val&0x3==0x2;
 // e gli altri (32-2) bit contenenti iol valore di w.
 
-inline TUINT32 ulongFromDouble(double x) {
-  assert(x < 1.0);
-  x += 1.0;
-  TUINT32 *l = (TUINT32 *)&x;
-#if TNZ_LITTLE_ENDIAN
-  TUINT32 hi = l[1], lo = l[0];
-#else
-  TUINT32 hi = l[0], lo = l[1];
-#endif
-
-  return (hi & 0XFFFFF) << 12 | ((lo & 0xFFE00000) >> 20);
-}
 
 /*=====================================================================*/
 
@@ -2745,11 +2706,6 @@ bool ParsedPli::writePli(const TFilePath &filename) {
 
 /*=====================================================================*/
 
-/*
-  Necessario per fissare un problema di lettura con le vecchie
-  versioni di PLI ( < 3 ).
- */
-double ParsedPli::getThickRatio() const { return imp->m_thickRatio; }
 
 /*=====================================================================*/
 

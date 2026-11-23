@@ -170,7 +170,6 @@ public:
   /*! Create a page reading xml file relating to \b fx. */
   void createControls(const TFxP &fx, int index = -1);
 
-  ParamsPage *getCurrentParamsPage() const;
   ParamsPage *getParamsPage(int index) const;
   int getParamsPageCount() const { return (int)m_pagesList->count(); };
 
@@ -284,7 +283,6 @@ public:
   void setSceneHandle(TSceneHandle *sceneHandle);
   TSceneHandle *getSceneHandle() const { return m_sceneHandle; }
   void setLevelHandle(TXshLevelHandle *levelHandle);
-  TXshLevelHandle *getLevelHandle() const { return m_levelHandle; }
   void setObjectHandle(TObjectHandle *objectHandle);
   TObjectHandle *getObjectHandle() const { return m_objectHandle; }
 

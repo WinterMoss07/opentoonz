@@ -283,39 +283,6 @@ TRect ToonzImageUtils::addInkStroke(const TToonzImageP &ti, TStroke *stroke,
 
 //-------------------------------------------------------------------
 
-TRect ToonzImageUtils::changeColorStroke(
-    const TToonzImageP &ti, const ChangeColorStrokeSettings &settings) {
-  if (!settings.changeInk && !settings.changePaint) return TRect();
-
-  TRasterCM32P ras = ti->getRaster();
-  TOfflineGL *gl;
-  TRect rect =
-      rasterizeStroke(gl, ras->getBounds(), settings.stroke, settings.clip);
-  if (rect.isEmpty()) {
-    return rect;
-  }
-  TRaster32P glRas = gl->getRaster();
-  ras->lock();
-  glRas->lock();
-
-  for (int y = rect.y0; y <= rect.y1; ++y) {
-    TPixel32 *inPix    = glRas->pixels(y - rect.y0);
-    TPixelCM32 *outPix = ras->pixels(y) + rect.x0;
-    TPixel32 *inEndPix = inPix + rect.x1 - rect.x0 + 1;
-    for (; inPix < inEndPix; ++outPix, ++inPix) {
-      if (inPix->r < 128 && settings.changeInk && !outPix->isPurePaint())
-        outPix->setInk(settings.colorId);
-      if (inPix->r < 128 && settings.changePaint &&
-          (settings.maskPaintId == -1 ||
-           outPix->getPaint() == settings.maskPaintId))
-        outPix->setPaint(settings.colorId);
-    }
-  }
-  delete gl;
-  ras->unlock();
-  glRas->unlock();
-  return rect;
-}
 
 //-------------------------------------------------------------------
 

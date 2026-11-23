@@ -20,4 +20,3 @@ void TFxHandle::setFx(TFx *fx, bool doSwitchFxSettings) {
   if (doSwitchFxSettings) emit fxSettingsShouldBeSwitched();
 }
 
-void TFxHandle::onColumnChanged() {}

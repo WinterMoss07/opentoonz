@@ -92,7 +92,6 @@ public:
   void setOrientation(Qt::Orientation orientation);
   Qt::Orientation getOrientation() const;
 
-  void setEasing(QEasingCurve clickEase, QEasingCurve holdPressEase);
 
   void scroll(int dx, int duration = 0,
               QEasingCurve easing = QEasingCurve(QEasingCurve::OutCubic));

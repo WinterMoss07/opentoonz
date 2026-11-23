@@ -117,10 +117,6 @@ static void fatalError(QString msg) {
 }
 //-----------------------------------------------------------------------------
 
-static void lastWarningError(QString msg) {
-  DVGui::error(msg);
-  // exit(0);
-}
 //-----------------------------------------------------------------------------
 
 static void toonzRunOutOfContMemHandler(unsigned long size) {

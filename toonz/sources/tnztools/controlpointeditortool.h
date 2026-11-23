@@ -91,9 +91,6 @@ public:
   // selezione
   // attualmente non usato
   bool select(const TSelection*) { return false; }
-  ControlPointEditorStroke getControlPointEditorStroke() {
-    return m_controlPointEditorStroke;
-  };
 
   void initUndo();
 

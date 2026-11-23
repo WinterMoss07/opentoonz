@@ -231,22 +231,6 @@ void StrokeGenerator::drawFragments(int first, int last) {
 
 //-------------------------------------------------------------------
 
-void StrokeGenerator::drawLastFragments() {
-  if (m_points.empty()) return;
-  int n          = m_points.size();
-  int i          = m_paintedPointCount;
-  const double h = 0.01;
-
-  if (i == 0) {
-    TThickPoint a = m_points[0];
-    if (a.thick >= h) tglDrawDisk(a, a.thick);
-    i++;
-  }
-
-  drawFragments(i, n - 1);
-
-  m_paintedPointCount = std::max(0, n - 2);
-}
 
 //-------------------------------------------------------------------
 
@@ -339,12 +323,6 @@ TRectD StrokeGenerator::getModifiedRegion() const { return m_modifiedRegion; }
 
 //-------------------------------------------------------------------
 
-void StrokeGenerator::removeMiddlePoints() {
-  int size = m_points.size();
-  if (size > 2) {
-    m_points.erase(m_points.begin() + 1, m_points.begin() + (size - 1));
-  }
-}
 
 //-------------------------------------------------------------------
 

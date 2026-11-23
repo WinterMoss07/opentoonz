@@ -79,12 +79,6 @@ string getColumnDefaultName(TXsheet *xsh, int col, const QString &oldName) {
 
 //-----------------------------------------------------------------------------
 
-void setColumnName(TXsheet *xsh, int col) {
-  TStageObject *obj = xsh->getStageObject(TStageObjectId::ColumnId(col));
-  QString oldName   = QString::fromStdString(obj->getName());
-  string name       = getColumnDefaultName(xsh, col, oldName);
-  if (!name.empty()) obj->setName(name);
-}
 
 }  // namespace
 

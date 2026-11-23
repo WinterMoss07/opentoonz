@@ -63,9 +63,6 @@ inline double planeDistance(const T3DPointD &P, const T3DPointD &Q) {
   return sqrt((P.x - Q.x) * (P.x - Q.x) + (P.y - Q.y) * (P.y - Q.y));
 }
 
-inline double crossZ(const T3DPointD &p, const T3DPointD &q) {
-  return p.x * q.y - p.y * q.x;
-}
 
 // a, b assumed normalized
 inline bool angleLess(const TPointD &a, const TPointD &b) {

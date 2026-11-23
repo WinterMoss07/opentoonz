@@ -96,13 +96,6 @@ void TMainWindow::setDecoAllocator(DockDecoAllocator *allocator) {
 
 //----------------------------------------
 
-//! Sets global thickness of separators between dock widget.
-void TMainWindow::setSeparatorsThickness(int thick) {
-  if (thick > 0) {
-    m_layout->setSpacing(thick);
-    m_layout->redistribute();
-  }
-}
 
 //----------------------------------------
 

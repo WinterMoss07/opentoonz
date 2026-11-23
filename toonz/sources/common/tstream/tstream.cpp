@@ -40,50 +40,9 @@ std::string escape(std::string v) {
 
 //===============================================================
 
-void writeCompressedFile(TFilePath dst, const std::string &str) {}
 
 //===================================================================
 
-void readCompressedFile(std::string &str, TFilePath src) {
-  TFileStatus status(src);
-  if (!status.doesExist()) return;
-
-  size_t in_len = status.getSize();
-  char *in      = (char *)malloc(in_len);
-  {
-    Tifstream is(src);
-    is.read((char *)in, in_len);
-  }
-
-  LZ4F_decompressionContext_t lz4dctx;
-
-  LZ4F_errorCode_t err =
-      LZ4F_createDecompressionContext(&lz4dctx, LZ4F_VERSION);
-  if (LZ4F_isError(err)) return;
-
-  size_t in_len_read = 0;
-
-  size_t out_len = 1000000, out_len_written, out_len_moved = 0;
-  void *out = (void *)malloc(out_len);
-
-  while (in_len_read < in_len) {
-    out_len_written = out_len;
-
-    size_t remaining =
-        LZ4F_decompress(lz4dctx, out, &out_len_written, in, &in_len, NULL);
-    if (LZ4F_isError(remaining)) break;
-
-    str.resize(out_len_moved + out_len_written);
-
-    memcpy((void *)(str.c_str() + out_len_moved), (void *)out, out_len_written);
-    out_len_moved += out_len_written;
-  }
-
-  LZ4F_freeDecompressionContext(lz4dctx);
-
-  free(in);
-  free(out);
-}
 
 namespace {
 // TODO: Unify with tcodec.cpp's version

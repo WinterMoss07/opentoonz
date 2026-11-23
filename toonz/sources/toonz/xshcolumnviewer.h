@@ -400,7 +400,6 @@ protected slots:
   void onCameraColumnChangedTriggered();
   void onCameraColumnLockToggled(bool);
   void onXsheetCameraChange(int);
-  void onSetMask(int);
 };
 
 //-----------------------------------------------------------------------------

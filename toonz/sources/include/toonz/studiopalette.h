@@ -54,7 +54,6 @@ public:
   bool isFolder(const TFilePath &path);
   bool isPalette(const TFilePath &path);
   bool isReadOnly(const TFilePath &path);
-  bool isLevelPalette(const TFilePath &path);
   bool hasGlobalName(const TFilePath &path);
 
   // ritorna il nome del folder creato

@@ -612,48 +612,6 @@ void Dialog::addLayout(QString labelName, QLayout *layout) {
 }
 
 //-----------------------------------------------------------------------------
-/*! Add a pair [layout,layout] to main part of dialog.
-\n	If vertical and horizontal layout are not initialized create an
-horizontal
-                box layout containing the two layouts and recall \b addLayout().
-                If vertical layout is current add the pair [layout,layout] to
-vertical layout
-                of main part, \b firstL on first column and \b secondL on second
-column.
-                Else if horizontal layout is current create an horizontal box
-layout containing
-                \b firstL and \b secondL and add it to horizontal layout.
-*/
-void Dialog::addLayouts(QLayout *firstL, QLayout *secondL) {
-  firstL->setContentsMargins(m_layoutMargin, m_layoutMargin, m_layoutMargin,
-                             m_layoutMargin);
-  firstL->setSpacing(m_layoutSpacing);
-  secondL->setContentsMargins(m_layoutMargin, m_layoutMargin, m_layoutMargin,
-                              m_layoutMargin);
-  secondL->setSpacing(m_layoutSpacing);
-
-  if (m_isMainVLayout) {
-    if (!m_leftVLayout || !m_rightVLayout) return;
-    m_leftVLayout->addLayout(firstL);
-    m_rightVLayout->addLayout(secondL);
-    return;
-  }
-
-  QHBoxLayout *pairLayout = new QHBoxLayout;
-  pairLayout->setContentsMargins(m_layoutMargin, m_layoutMargin, m_layoutMargin,
-                                 m_layoutMargin);
-  pairLayout->setSpacing(m_layoutSpacing);
-  pairLayout->addLayout(firstL);
-  pairLayout->addLayout(secondL);
-
-  if (m_isMainHLayout) {
-    if (!m_mainHLayout) return;
-    m_mainHLayout->addLayout(pairLayout);
-    return;
-  }
-
-  addLayout(pairLayout);
-}
 
 //-----------------------------------------------------------------------------
 /*! Add spacing \b spacing to main part of dialog.
@@ -713,18 +671,8 @@ void Dialog::setTopSpacing(int spacing) {
 void Dialog::setLabelWidth(int labelWidth) { m_labelWidth = labelWidth; }
 
 //-----------------------------------------------------------------------------
-/*! Set to \b spacing spacing of all layout inserted in main part of dialog,
-                horizontal layout and vertical layout.
-*/
-void Dialog::setLayoutInsertedSpacing(int spacing) {
-  m_layoutSpacing = spacing;
-}
 
 //-----------------------------------------------------------------------------
-/*! Return the spacing of all layout inserted in main part of dialog,
-                horizontal layout and vertical layout.
-*/
-int Dialog::getLayoutInsertedSpacing() { return m_layoutSpacing; }
 
 //-----------------------------------------------------------------------------
 /*! Set to \b margin margin of main part of dialog.

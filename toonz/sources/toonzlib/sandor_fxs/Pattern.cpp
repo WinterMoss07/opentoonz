@@ -49,63 +49,6 @@ void CPattern::null() {
   m_fn[0] = '\0';
 }
 
-bool CPattern::readTTT(const char *fn) {
-  /*
-  int fd;
-
-  if ( (fd=_open(fn, _O_RDONLY | _O_BINARY ))==-1 )
-          return false;
-  if ( _read(fd,&m_lX,sizeof(int))!=sizeof(int) ) {
-          _close(fd);
-          return false;
-  }
-  if ( _read(fd,&m_lY,sizeof(int))!=sizeof(int) ) {
-          _close(fd);
-          return false;
-  }
-  if ( m_lX<=0 || m_lY<=0 ) {
-          _close(fd);
-          return false;
-  }
-
-  UCHAR *buffer=0;
-  buffer=new UCHAR[sizeof(UCHAR)*4*m_lX*m_lY];
-  if ( !buffer ) {
-          _close(fd);
-          return false;
-  }
-
-  m_pat=new UC_PIXEL[m_lX*m_lY];
-  if ( !m_pat ) {
-          delete [] buffer;
-          _close(fd);
-          return false;
-  }
-
-  int length=4*m_lX*m_lY*sizeof(UCHAR);
-  if ( _read(fd,buffer,length)!=length ) {
-          delete [] buffer;
-          _close(fd);
-          return false;
-  }
-
-  int xy=m_lX*m_lY;
-  UCHAR* pb=buffer;
-  UC_PIXEL* pPat=m_pat;
-  for( int i=0; i<xy; i++,pPat++,pb+=4 ) {
-          pPat->r=pb[0];
-          pPat->g=pb[1];
-          pPat->b=pb[2];
-          pPat->m=pb[3];
-  }
-
-  delete [] buffer;
-  _close(fd);
-
-  return true;
-*/
-  return false;
-}
 //---------------------------------------------------------------------
 
 bool CPattern::readPattern(RASTER *imgContour) {

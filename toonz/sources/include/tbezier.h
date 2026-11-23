@@ -57,32 +57,6 @@ void bezier2poly(const std::vector<T> &bez, std::vector<T> &coeff) {
 
 //-----------------------------------------------------------------------------
 
-/*!
-  Converts power (polynomial) form to Bezier form.
-  \par  coeff coefficients of power form.
-  \ret  bez coefficients in Bezier form.
-  \note coeffs are ordered from smaller b[0] to greater b[size-1].
- */
-template <class T>
-void poly2bezier(const std::vector<T> &poly, std::vector<T> &bez) {
-  UINT n = poly.size();
-
-  bez.clear();
-  std::copy(poly.begin(), poly.end(), std::back_inserter(bez));
-
-  double c, d, e;
-
-  for (UINT j = 1; j < n; j++) {
-    c = 1.0 / (n - j);
-    d = 1;
-    e = c;
-    for (UINT i = n - 1; i >= j; i--) {
-      bez[i] = d * bez[i] + e * bez[i - 1];
-      d -= c;
-      e += c;
-    }
-  }
-}
 
 #endif  // TBEZIER_H
 //-----------------------------------------------------------------------------

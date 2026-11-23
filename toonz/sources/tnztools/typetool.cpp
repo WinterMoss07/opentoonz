@@ -370,7 +370,6 @@ public:
   // corrispondenti a text a partire da from
   void replaceText(std::wstring text, int from, int to);
 
-  void addBaseChar(std::wstring text);
   void addReturn();
   void cursorUp();
   void cursorDown();
@@ -1395,86 +1394,6 @@ void TypeTool::addReturn() {
 
 //---------------------------------------------------------
 
-void TypeTool::addBaseChar(std::wstring text) {
-  TFontManager *instance = TFontManager::instance();
-
-  TImageP img      = getImage(true);
-  TToonzImageP ti  = img;
-  TVectorImageP vi = img;
-
-  int styleId = TTool::getApplication()->getCurrentLevelStyleIndex();
-  TPoint adv;
-  TPointD d_adv;
-
-  wchar_t character = text[0];
-
-  if (vi) {
-    TVectorImageP newVImage(new TVectorImage);
-
-    if (instance->hasKerning() && (UINT)m_cursorIndex < m_string.size() &&
-        !m_string[m_cursorIndex].isReturn())
-      adv = instance->drawChar(newVImage, character,
-                               m_string[m_cursorIndex].m_key);
-    else
-      adv = instance->drawChar(newVImage, character);
-
-    newVImage->transform(m_scale);
-    paintChar(newVImage, styleId);
-    // if(isSketchStyle(styleId))
-    //    enableSketchStyle();
-
-    d_adv = m_scale * TPointD((double)(adv.x), (double)(adv.y));
-
-    if ((UINT)m_cursorIndex == m_string.size())
-      m_string.push_back(StrokeChar(newVImage, d_adv.x, character, styleId));
-    else
-      m_string.insert(m_string.begin() + m_cursorIndex,
-                      StrokeChar(newVImage, d_adv.x, character, styleId));
-  } else if (ti) {
-    TRasterCM32P newRasterCM;
-    TPoint p;
-
-    if (instance->hasKerning() && (UINT)m_cursorIndex < m_string.size() &&
-        !m_string[m_cursorIndex].isReturn())
-      adv = instance->drawChar((TRasterCM32P &)newRasterCM, p, styleId,
-                               (wchar_t)character,
-                               (wchar_t)m_string[m_cursorIndex].m_key);
-    else
-      adv = instance->drawChar((TRasterCM32P &)newRasterCM, p, styleId,
-                               (wchar_t)character, (wchar_t)0);
-
-    // textImage->transform(m_scale);
-
-    d_adv = m_scale * TPointD((double)(adv.x), (double)(adv.y));
-
-    TToonzImageP newTImage(
-        new TToonzImage(newRasterCM, newRasterCM->getBounds()));
-
-    TPalette *vPalette = img->getPalette();
-    assert(vPalette);
-    newTImage->setPalette(vPalette);
-
-    // newTImage->updateRGBM(newRasterCM->getBounds(),vPalette);
-    // assert(0);
-
-    if ((UINT)m_cursorIndex == m_string.size())
-      m_string.push_back(StrokeChar(newTImage, d_adv.x, character, styleId));
-    else
-      m_string.insert(m_string.begin() + m_cursorIndex,
-                      StrokeChar(newTImage, d_adv.x, character, styleId));
-  }
-
-  if (instance->hasKerning() && m_cursorIndex > 0 &&
-      !m_string[m_cursorIndex - 1].isReturn()) {
-    adv   = instance->getDistance(m_string[m_cursorIndex - 1].m_key, character);
-    d_adv = m_scale * TPointD((double)(adv.x), (double)(adv.y));
-    m_string[m_cursorIndex - 1].m_offset = d_adv.x;
-  }
-
-  m_cursorIndex++;
-  updateCharPositions(m_cursorIndex - 1);
-  invalidate();
-}
 
 //---------------------------------------------------------
 
@@ -1727,7 +1646,6 @@ void TypeTool::onImageChanged() { stopEditing(); }
 
 //=========================================================
 
-static TTool *getTypeTool() { return &typeTool; }
 
 /*void resetTypetTool(TTool*tool)
 {

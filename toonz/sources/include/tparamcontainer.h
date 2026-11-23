@@ -111,7 +111,6 @@ public:
   void copy(const TParamContainer *src);
 
   void setParamObserver(TParamObserver *);
-  TParamObserver *getParamObserver() const;
 
 private:
   TParamContainer(const TParamContainer &);

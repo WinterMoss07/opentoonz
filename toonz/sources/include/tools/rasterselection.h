@@ -114,8 +114,6 @@ public:
   /*! Returns m_strokes bounding box in world coordinates.
 The bounding box results transformed if the selection is transformed.*/
   TRectD getSelectionBound() const;
-  /*! Returns m_originlStrokes bounding box in world coordinates.*/
-  TRectD getOriginalSelectionBound() const;
 
   /*! Return \b m_selectionBbox.
 Can be different from getSelectionBound() after a free deform transformation. */

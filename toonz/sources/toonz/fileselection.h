@@ -44,7 +44,6 @@ public:
   void viewFileInfo();
   void viewFile();
   void convertFiles();
-  void premultiplyFiles();
 
   void addToBatchRenderList();
   void addToBatchCleanupList();
@@ -52,7 +51,6 @@ public:
   void collectAssets();
   void importScenes();
   void exportScenes();
-  void exportScene(TFilePath scenePath);
   void selectAll();
   void separateFilesByColors();
 };

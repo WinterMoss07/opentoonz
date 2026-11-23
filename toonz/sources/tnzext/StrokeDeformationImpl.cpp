@@ -632,7 +632,6 @@ bool StrokeDeformationImpl::check(const ContextStatus *status) {
 
 //-----------------------------------------------------------------------------
 
-TPointD &StrokeDeformationImpl::oldW0() { return old_w0_pos_; }
 
 //-----------------------------------------------------------------------------
 

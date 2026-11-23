@@ -526,8 +526,6 @@ DVAPI void RGB2HSV(double r, double g, double b, double *h, double *s,
   OUT: r,g,b in [0..1]
 */
 
-DVAPI void HLS2RGB(double h, double l, double s, double *r, double *g,
-                   double *b);
 
 //--------------------------------
 

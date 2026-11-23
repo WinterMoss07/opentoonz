@@ -60,7 +60,6 @@ public:
   const QVector<int> &values() const { return m_values; }
 
   void setLogScale(bool onOff) { m_logScale = onOff; }
-  bool logScale() const { return m_logScale; }
 
   void draw(QPainter *painter, QPoint translation = QPoint(0, 0),
             int size = -1);
@@ -101,7 +100,6 @@ public:
   QColor getColor() const { return m_color; }
 
   void setDrawNumbers(bool onOff);
-  bool drawNumbers() const { return m_drawNumbers; }
 
   void draw(QPainter *painter, QPoint translation = QPoint(0, 0),
             int size = -1);

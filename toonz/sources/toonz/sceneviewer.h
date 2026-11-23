@@ -236,7 +236,6 @@ public:
 
   void setViewMatrix(const TAffine &aff, int viewMode);
 
-  int getFPS() { return m_FPS; }
 
   void setRulers(Ruler *v, Ruler *h) {
     m_vRuler = v;
@@ -244,7 +243,6 @@ public:
   }
 
   bool is3DView() const override;
-  TDimension getViewportSize() const { return TDimension(width(), height()); }
 
   void invalidateAll() override;
   void GLInvalidateAll() override;

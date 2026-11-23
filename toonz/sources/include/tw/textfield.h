@@ -160,7 +160,6 @@ public:
 
   void keyDown(int, TUINT32, const TPoint &);
 
-  bool getIsInteger() const { return m_isInteger; }
   void setIsInteger(bool isInteger);
 
   void setRange(double minValue, double maxValue);

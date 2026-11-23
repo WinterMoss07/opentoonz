@@ -36,7 +36,6 @@ public:
 
   bool isOpen() { return m_isOpen; };
 
-  bool isMenu() const { return m_isMenu; }
 
   bool hasCaption() const { return m_hasCaption; }
 
@@ -46,7 +45,6 @@ public:
   void setCaption(const std::string &name);
   void setCaption(const std::wstring &name);
 
-  std::wstring getCaption() const { return m_caption; };
 
   virtual TDimension getPreferredSize() const;
   virtual TDimension getMinimumSize() const { return TDimension(1, 1); };

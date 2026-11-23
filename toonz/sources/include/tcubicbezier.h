@@ -58,20 +58,6 @@ DVAPI double getCubicBezierY(double x, const TPointD &a, const TPointD &aSpeed,
 
 //-----------------------------------------------------------------------------
 
-/*!
-  for C(u)=(x,y) a cubic Bezier curve, find minimum and maximum y-values of C(u)
-  \par a first control point of the Bezier curve
-  \par aSpeed the tangent vector in a (that is the first control point minus the
-  second)
-  \par b the third control point
-  \par bSpeed the tangent vector in b (that is the third control point minus the
-  fourth)
-  \ret a pair of points which are the minimum and maximum of the cubic Bezier
-*/
-DVAPI std::pair<TPointD, TPointD> getMinMaxCubicBezierY(const TPointD &a,
-                                                        const TPointD &aSpeed,
-                                                        const TPointD &bSpeed,
-                                                        const TPointD &b);
 
 //-----------------------------------------------------------------------------
 

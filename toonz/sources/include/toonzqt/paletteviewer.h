@@ -153,10 +153,6 @@ protected:
 
   void updateTabBar();
 
-  void updateToolBar() {
-    updatePaletteToolBar();
-    updateSavePaletteToolBar();
-  }
   void updatePaletteToolBar();
   void updateSavePaletteToolBar();
 

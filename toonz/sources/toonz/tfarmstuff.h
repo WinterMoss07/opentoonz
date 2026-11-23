@@ -199,12 +199,9 @@ public:
 //------------------------------------------------------------------------------
 
 TFilePath getGlobalRoot();
-void setGlobalRoot(const TFilePath &fp);
 
-TFarmController *getTFarmController();
 
 bool testConnection(const QString &ipaddr, int port);
-bool testConnectionToController();
 
 void getControllerData(QString &hostName, QString &ipAddr, int &port);
 

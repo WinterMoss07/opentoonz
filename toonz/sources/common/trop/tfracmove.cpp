@@ -39,26 +39,6 @@ double integ_gauss(double xmin, double ymin, double xmax, double ymax,
 
 //------------------------------------------------------------------------------
 
-void build_filter(double h[], double x0, double y0, double s) {
-  double sum, vv;
-  int i, j, k;
-  double x1, y1, x2, y2;
-  k   = 0;
-  sum = 0.0;
-  for (i = 0; i < 3; i++)
-    for (j = 0; j < 3; j++) {
-      x1     = -1.5 + j;
-      y1     = -1.5 + i;
-      x2     = x1 + 1.0;
-      y2     = y1 + 1.0;
-      h[k++] = vv = integ_gauss(x1, y1, x2, y2, x0, y0, s);
-      sum += vv;
-    }
-  if (sum > 0.0) {
-    sum = 1.0 / sum;
-    for (k = 0; k < 9; k++) h[k] *= sum;
-  }
-}
 
 }  // anonymous namespace
 

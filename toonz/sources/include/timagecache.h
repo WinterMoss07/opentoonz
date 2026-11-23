@@ -95,9 +95,6 @@ public:
   //! Rebinds the association between a previously cached image and its id.
   void remap(const std::string &dstId, const std::string &srcId);
 
-  // provvisorio? Bisogna ripensarci
-  // l'idea e' rimappare tutte gli id della forma srcId:xxxxx
-  void remapIcons(const std::string &dstId, const std::string &srcId);
 
   //! Clears the image cache. After calling this method, every image in the
   //! cache
@@ -129,7 +126,6 @@ public:
   //! \n \n \b{NOTE:} This function is not implemented yet!
   UINT getDiskUsage() const;
 
-  UINT getUncompressedMemUsage(const std::string &id) const;
 
   //! Returns the RAM memory size (KB) of the image associated to passed id.
   UINT getMemUsage(const std::string &id) const;

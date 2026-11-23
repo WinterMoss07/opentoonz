@@ -1283,10 +1283,6 @@ QModelIndex DvDirModel::getIndexByNode(DvDirModelNode *node) const {
   return createIndex(node->getRow(), 0, node);
 }
 
-QModelIndex DvDirModel::getCurrentProjectIndex() const {
-  return getIndexByPath(
-      TProjectManager::instance()->getCurrentProjectPath().getParentDir());
-}
 
 DvDirModel *DvDirModel::instance() {
   static DvDirModel _instance;

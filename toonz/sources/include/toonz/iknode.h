@@ -29,10 +29,7 @@ public:
   }
 
   void setParent(IKNode *parent) { m_parent = parent; }
-  void setRealParent(IKNode *realParent) { m_parent = realParent; }
 
-  void setTheta(double newTheta) { theta = newTheta; }
-  void setTheta0(double newTheta) { theta0 = newTheta; }
 
   void setIndex(int index) { m_index = index; }
   int getIndex() const { return m_index; }
@@ -51,8 +48,6 @@ public:
   int getEffectorNum() const { return m_seqNumEffector; }
   int getJointNum() const { return m_seqNumJoint; }
 
-  double getTheta() const { return theta; }
-  double getTheta0() const { return theta0; }
 
   bool IsEffector() const { return m_purpose == EFFECTOR; }
   bool IsJoint() const { return m_purpose == JOINT; }

@@ -68,7 +68,6 @@ public:
   IndexesContainer &getSelection() { return m_indexes; }
 
   bool isEmpty() const override { return m_indexes.empty(); }
-  bool updateSelectionBBox() const { return m_updateSelectionBBox; }
   bool isSelected(int index) const { return (m_indexes.count(index) > 0); }
   void select(int index, bool on);
   void toggle(int index);

@@ -356,9 +356,6 @@ between RGBA color components.
     return m_isCleanupPalette;
   }  //!< Returns whether this is a cleanup palette.
 
-  const TImageP &getRefImg() const {
-    return m_refImg;
-  }  //!< Returns an image that represents the frame image associated to this
      //! palette.
   void setRefImg(const TImageP &img);  //!< Associates an image to this palette,
                                        //! that is an image in the frame

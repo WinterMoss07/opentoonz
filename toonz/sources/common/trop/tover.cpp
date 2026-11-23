@@ -419,22 +419,6 @@ void TRop::addBackground(TRasterP ras, const TPixel32 &col) {
 
 //===================================================================
 
-// Usata tinylinetest
-static void my_do_over(TRaster32P rout, const TRasterGR8P &rup) {
-  assert(rout->getSize() == rup->getSize());
-  for (int y = rout->getLy(); --y >= 0;) {
-    TPixel32 *out_pix       = rout->pixels(y);
-    TPixel32 *const out_end = out_pix + rout->getLx();
-    const TPixelGR8 *up_pix = rup->pixels(y);
-
-    for (; out_pix < out_end; ++out_pix, ++up_pix) {
-      int v      = up_pix->value;
-      out_pix->r = out_pix->r * v / 255;
-      out_pix->g = out_pix->r;
-      out_pix->b = out_pix->r;
-    }
-  }
-}
 
 //===================================================================
 

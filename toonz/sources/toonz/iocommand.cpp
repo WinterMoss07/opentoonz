@@ -328,13 +328,6 @@ TXshLevel *getLevelByPath(ToonzScene *scene, const TFilePath &actualPath) {
 // getSimpleLevelByPath(scene, actualPath)
 //---------------------------------------------------------------------------
 
-TXshSimpleLevel *getSimpleLevelByPath(ToonzScene *scene,
-                                      const TFilePath &actualPath) {
-  TXshLevel *xl = getLevelByPath(scene, actualPath);
-  if (!xl) return 0;
-  TXshSimpleLevel *sl = xl->getSimpleLevel();
-  return sl;
-}
 
 //===========================================================================
 // beforeCellsInsert(xsh, row, col, rowCount)
@@ -1216,15 +1209,6 @@ public:
 
 //=============================================================================
 
-inline TPaletteP dirtyWhite(const TPaletteP &plt) {
-  TPaletteP out = TPaletteP(plt->clone());
-  for (int i = 0; i < out->getStyleCount(); i++) {
-    if (out->getStyle(i)->getMainColor() == TPixel::White) {
-      out->getStyle(i)->setMainColor(TPixel(254, 254, 254, 255));
-    }
-  }
-  return out;
-}
 
 }  // namespace
 

@@ -30,80 +30,6 @@ using namespace DVGui;
 
 QStringList modesDescription;
 
-// Per adesso non appare
-// Costruisce la stringa delle info della psd da caricare che comparirà nel
-// popup:
-// Path, Dimensioni, numero di livelli, ecc..
-static void doPSDInfo(TFilePath psdpath, QTreeWidget *psdTree) {
-  psdTree->clear();
-  try {
-    TPSDReader *psdreader = new TPSDReader(psdpath);
-
-    TPSDHeaderInfo header = psdreader->getPSDHeaderInfo();
-    int width             = header.cols;
-    int height            = header.rows;
-    int depth             = header.depth;
-    int channels          = header.channels;
-    int layersCount       = header.layersCount;
-    QString filename =
-        QString::fromStdString(psdpath.getName() + psdpath.getDottedType());
-    QString parentDir =
-        QString::fromStdWString(psdpath.getParentDir().getWideString());
-    QString dimension = QString::number(width) + "x" + QString::number(height);
-    QList<QTreeWidgetItem *> items;
-    items.append(new QTreeWidgetItem(
-        (QTreeWidget *)0, QStringList(QString("Filename: %1").arg(filename))));
-    items.append(new QTreeWidgetItem(
-        (QTreeWidget *)0,
-        QStringList(QString("Parent dir: %1").arg(parentDir))));
-    items.append(new QTreeWidgetItem(
-        (QTreeWidget *)0,
-        QStringList(QString("Dimension: %1").arg(dimension))));
-    items.append(new QTreeWidgetItem(
-        (QTreeWidget *)0,
-        QStringList(QString("Depth: %1").arg(QString::number(depth)))));
-    items.append(new QTreeWidgetItem(
-        (QTreeWidget *)0,
-        QStringList(QString("Channels: %1").arg(QString::number(channels)))));
-    QTreeWidgetItem *layersItem = new QTreeWidgetItem((QTreeWidget *)0);
-    int count                   = 0;
-    QList<QTreeWidgetItem *> layersItemChildren;
-    layersItemChildren.append(layersItem);
-    int scavenge = 0;
-    for (int i = layersCount - 1; i >= 0; i--) {
-      TPSDLayerInfo *li = psdreader->getLayerInfo(i);
-      int width         = li->right - li->left;
-      int height        = li->bottom - li->top;
-      QString layerName = li->name;
-      if (strcmp(li->name, "</Layer group>") == 0 ||
-          strcmp(li->name, "</Layer set>") == 0) {
-        scavenge--;
-      } else if (li->section > 0 && li->section <= 3) {
-        QTreeWidgetItem *child = new QTreeWidgetItem((QTreeWidget *)0);
-        child->setText(0, layerName);
-        layersItemChildren[scavenge]->addChild(child);
-        layersItemChildren.append(child);
-        scavenge++;
-      } else if (width > 0 && height > 0) {
-        if (scavenge >= 0) {
-          layersItemChildren[scavenge]->addChild(new QTreeWidgetItem(
-              (QTreeWidget *)0, QStringList(QString("%1").arg(layerName))));
-          count++;
-        }
-      }
-    }
-    QString layerItemText =
-        "Layers: " +
-        QString::number(count);  //+" ("+QString::number(layersCount)+")";
-    layersItem->setText(0, layerItemText);
-    items.append(layersItem);
-
-    psdTree->insertTopLevelItems(0, items);
-  } catch (TImageException &e) {
-    error(QString::fromStdString(::to_string(e.getMessage())));
-    return;
-  }
-}
 
 //=============================================================================
 // PsdSettingsPopup
@@ -260,9 +186,6 @@ bool PsdSettingsPopup::subxsheet() {
   return (m_createSubXSheet->isEnabled() && m_createSubXSheet->isChecked());
 }
 
-int PsdSettingsPopup::levelNameType() {
-  return m_levelNameType->currentIndex();
-}
 
 void PsdSettingsPopup::onModeChanged() {
   QString mode = m_loadMode->currentData().toString();

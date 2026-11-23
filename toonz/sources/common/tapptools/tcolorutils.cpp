@@ -87,7 +87,6 @@ public:
   void computeCovariance();
   void insert(ClusterElem *elem);
   void computeStatistics();
-  void getMeanAxis(KEYER_FLOAT axis[3]);
 
   ClusterStatistic statistic;
   ClusterElemContainer data;
@@ -679,53 +678,6 @@ void Cluster::computeStatistics() {
 
 //------------------------------------------------------------------------------
 
-void Cluster::getMeanAxis(KEYER_FLOAT axis[3]) {
-  KEYER_FLOAT n = (KEYER_FLOAT)statistic.elemsCount;
-
-#if 1
-
-  axis[0] = (KEYER_FLOAT)(sqrt(statistic.covariance[0]) / n);
-  axis[1] = (KEYER_FLOAT)(sqrt(statistic.covariance[4]) / n);
-  axis[2] = (KEYER_FLOAT)(sqrt(statistic.covariance[8]) / n);
-
-#else
-
-  KEYER_FLOAT I[3];
-  KEYER_FLOAT J[3];
-  KEYER_FLOAT K[3];
-
-  I[0] = statistic.covariance[0];
-  I[1] = statistic.covariance[1];
-  I[2] = statistic.covariance[2];
-
-  J[0] = statistic.covariance[3];
-  J[1] = statistic.covariance[4];
-  J[2] = statistic.covariance[5];
-
-  K[0] = statistic.covariance[6];
-  K[1] = statistic.covariance[7];
-  K[2] = statistic.covariance[8];
-
-  KEYER_FLOAT magnitudeI = I[0] * I[0] + I[1] * I[1] + I[2] * I[2];
-  KEYER_FLOAT magnitudeJ = J[0] * J[0] + J[1] * J[1] + J[2] * I[2];
-  KEYER_FLOAT magnitudeK = K[0] * K[0] + K[1] * K[1] + K[2] * I[2];
-
-  if (magnitudeI >= magnitudeJ && magnitudeI >= magnitudeK) {
-    axis[0] = sqrt(I[0] / n);
-    axis[1] = sqrt(I[1] / n);
-    axis[2] = sqrt(I[2] / n);
-  } else if (magnitudeJ >= magnitudeI && magnitudeJ >= magnitudeK) {
-    axis[0] = sqrt(J[0] / n);
-    axis[1] = sqrt(J[1] / n);
-    axis[2] = sqrt(J[2] / n);
-  } else if (magnitudeK >= magnitudeI && magnitudeK >= magnitudeJ) {
-    axis[0] = sqrt(K[0] / n);
-    axis[1] = sqrt(K[1] / n);
-    axis[2] = sqrt(K[2] / n);
-  }
-
-#endif
-}
 
 //------------------------------------------------------------------------------
 

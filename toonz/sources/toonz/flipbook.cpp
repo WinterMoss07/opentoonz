@@ -101,10 +101,6 @@
 using namespace ImageUtils;
 
 namespace {
-QString getShortcut(const char *id) {
-  return QString::fromStdString(
-      CommandManager::instance()->getShortcutFromId(id));
-}
 }  // namespace
 
 //-----------------------------------------------------------------------------
@@ -550,15 +546,6 @@ void FlipBook::loadImages() {
 
 //=============================================================================
 
-bool FlipBook::canAppend() {
-  // Images can be appended if:
-  //  a) There is a name (in particular, an extension) representing currently
-  //  held ones.
-  //  b) This flipbook is not holding a preview (inappropriate and problematic).
-  //  c) The level has no palette. Otherwise, appended images may have a
-  //  different palette.
-  return !m_levels.empty() && !m_previewedFx && !m_palette;
-}
 
 //=============================================================================
 
@@ -1340,9 +1327,6 @@ TFx *FlipBook::getPreviewedFx() const {
 
 //-----------------------------------------------------------------------------
 
-TXsheet *FlipBook::getPreviewXsheet() const {
-  return m_isPreviewFx ? m_previewXsh.getPointer() : 0;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1986,33 +1970,6 @@ void FlipBook::adaptGeometry(const TRect &interestingImgRect,
 }
 
 //-----------------------------------------------------------------------------
-/*! When Fx preview is called without the subcamera, render the full region
-    of camera by resize flipbook and zoom-out the rendered image.
-*/
-void FlipBook::adaptGeometryForFullPreview(const TRect &imgRect) {
-  TRectD imgRectD(imgRect.x0, imgRect.y0, imgRect.x1 + 1, imgRect.y1 + 1);
-
-  // Get screen geometry
-  TPanel *panel = static_cast<TPanel *>(parentWidget());
-  if (!panel->isFloating()) return;
-  QDesktopWidget *desk =
-      static_cast<QApplication *>(QApplication::instance())->desktop();
-  QRect screenGeom = desk->availableGeometry(panel);
-
-  while (1) {
-    TAffine toWidgetRef(m_imageViewer->getImgToWidgetAffine(imgRectD));
-    TRectD imageGeomD(toWidgetRef * imgRectD);
-    TRect imageGeom(tceil(imageGeomD.x0) - 1, tceil(imageGeomD.y0) - 1,
-                    tfloor(imageGeomD.x1) + 1, tfloor(imageGeomD.y1) + 1);
-
-    if (imageGeom.getLx() <= screenGeom.width() &&
-        imageGeom.getLy() <= screenGeom.height()) {
-      adaptWidGeometry(imageGeom, imageGeom, false);
-      break;
-    } else
-      m_imageViewer->zoomQt(false, false);
-  }
-}
 
 //-----------------------------------------------------------------------------
 

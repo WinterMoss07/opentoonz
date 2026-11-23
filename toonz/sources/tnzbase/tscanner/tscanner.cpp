@@ -71,36 +71,6 @@ void TScannerParameters::assign(const TScannerParameters *src) { *this = *src; }
 
 //-------------------------------------------------------------------------------------------------
 
-void TScannerParameters::setSupportedTypes(bool bw, bool gray, bool rgb) {
-  m_bw   = bw;
-  m_gray = gray;
-  m_rgb  = rgb;
-  if (!m_bw && !m_gray && !m_rgb) {
-    m_scanType = None;
-  } else {
-    switch (m_scanType) {
-    case BW:
-      if (!m_bw) m_scanType = m_gray ? GR8 : RGB24;
-      break;
-    case GR8:
-      if (!m_gray) m_scanType = m_rgb ? RGB24 : BW;
-      break;
-    case RGB24:
-      if (!m_rgb) m_scanType = m_gray ? GR8 : BW;
-      break;
-    case None:
-      if (gray)
-        m_scanType = GR8;
-      else {
-        if (rgb)
-          m_scanType = RGB24;
-        else if (bw)
-          m_scanType = BW;
-      }
-      break;
-    }
-  }
-}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -140,11 +110,6 @@ void TScannerParameters::cropScanArea() {
 
 //-------------------------------------------------------------------------------------------------
 
-void TScannerParameters::setMaxPaperSize(double maxWidth, double maxHeight) {
-  // assert(maxWidth>0 && maxHeight>0);
-  m_maxPaperSize = TDimensionD(maxWidth, maxHeight);
-  cropScanArea();
-}
 
 //-----------------------------------------------------------------------------
 
@@ -162,19 +127,9 @@ void TScannerParameters::setPaperFormat(std::string paperFormat) {
 
 //-----------------------------------------------------------------------------
 
-void TScannerParameters::updatePaperFormat() {
-  if (m_paperFormat == "")
-    m_paperFormat = TPaperFormatManager::instance()->getDefaultFormat();
-  setPaperFormat(m_paperFormat);
-}
 
 //-----------------------------------------------------------------------------
 
-void TScannerParameters::setScanType(ScanType scanType) {
-  assert(scanType == None || scanType == BW || scanType == GR8 ||
-         scanType == RGB24);
-  m_scanType = scanType;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -305,11 +260,6 @@ TPaperFormatManager *TPaperFormatManager::instance() {
 
 //-----------------------------------------------------------------------------
 
-void TPaperFormatManager::getFormats(std::vector<std::string> &names) const {
-  for (FormatTable::const_iterator it = m_formats.begin();
-       it != m_formats.end(); ++it)
-    names.push_back(it->first);
-}
 
 //-----------------------------------------------------------------------------
 

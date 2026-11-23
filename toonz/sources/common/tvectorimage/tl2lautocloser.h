@@ -45,7 +45,6 @@ public:
 
   //! segments longer than sqrt(dist2) are not considered. the default is 50^2
   void setMaxDistance2(double dist2);
-  double getMaxDistance2() const;
 
   //! search line-to-line autoclosing segments.
   //! Note: it computes and caches some information about stroke0 and stroke1

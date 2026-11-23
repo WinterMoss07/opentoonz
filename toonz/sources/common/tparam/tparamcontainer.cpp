@@ -33,9 +33,6 @@ void TParamContainer::setParamObserver(TParamObserver *observer) {
   m_imp->m_paramObserver = observer;
 }
 
-TParamObserver *TParamContainer::getParamObserver() const {
-  return m_imp->m_paramObserver;
-}
 
 void TParamContainer::add(TParamVar *var) {
   m_imp->m_vars.push_back(var);

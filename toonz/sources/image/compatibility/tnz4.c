@@ -7,20 +7,6 @@ short swap_short(short s) {
   return s;
 }
 
-TINT32 swap_TINT32(TINT32 s) {
-  TINT32 appo, aux, aux1;
-
-  appo = 0xff0000ff;
-  aux  = (s & appo);
-  aux1 = (aux >> 24) & 0x000000ff;
-  aux  = (aux << 24) | aux1;
-  appo = 0x00ffff00;
-  aux1 = (s & appo);
-  aux1 = ((aux1 >> 8) | (aux1 << 8)) & appo;
-  aux  = (aux | aux1);
-
-  return aux;
-}
 
 USHORT swap_ushort(USHORT x) { return x >> 8 | x << 8; }
 

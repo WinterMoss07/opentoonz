@@ -107,8 +107,6 @@ public:
   //! m_polyline.front() alla fine del vettore)
   void closePolyline(const TPointD &drawingPos, const TPointD &workingPos);
 
-  /*--- RGBPickerToolをFlipbookで有効にする ---*/
-  void showFlipPickedColor(const TPixel32 &pix);
 };
 
 #endif

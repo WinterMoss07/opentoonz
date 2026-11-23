@@ -98,9 +98,6 @@ public:
       const QCursor &cursor);  //!< Grabs mouse inputs across the whole desktop.
   void releaseMouse();         //!< Releases the mouse grab after grabMouse().
 
-  bool grabbingMouse() const {
-    return m_grabbing;
-  }  //!< Whether mouse grabbing is on.
 
 private:
   ScreenBoard();

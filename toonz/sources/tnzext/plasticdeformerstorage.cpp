@@ -527,24 +527,6 @@ const PlasticDeformerDataGroup *PlasticDeformerStorage::processOnce(
 
 //----------------------------------------------------------------------------------
 
-void PlasticDeformerStorage::invalidateMeshImage(const TMeshImage *meshImage,
-                                                 int recompiledData) {
-  QMutexLocker locker(&m_imp->m_mutex);
-
-  DeformersByMeshImage &deformers = m_imp->m_deformers.get<TMeshImage>();
-
-  DeformersByMeshImage::iterator dBegin(deformers.lower_bound(meshImage));
-  if (dBegin == deformers.end()) return;
-
-  DeformersByMeshImage::iterator dt, dEnd(deformers.upper_bound(meshImage));
-  for (dt = dBegin; dt != dEnd; ++dt) {
-    dt->m_dataGroup->m_outputFrame =
-        (std::numeric_limits<double>::max)();  // Schedule for redeformation
-    if (recompiledData)
-      dt->m_dataGroup->m_compiled &=
-          ~recompiledData;  // Schedule for recompilation, too
-  }
-}
 
 //----------------------------------------------------------------------------------
 
@@ -599,33 +581,9 @@ void PlasticDeformerStorage::invalidateDeformation(
 
 //----------------------------------------------------------------------------------
 
-void PlasticDeformerStorage::releaseMeshData(const TMeshImage *meshImage) {
-  QMutexLocker locker(&m_imp->m_mutex);
-
-  DeformersByMeshImage &deformers = m_imp->m_deformers.get<TMeshImage>();
-
-  DeformersByMeshImage::iterator dBegin(deformers.lower_bound(meshImage));
-  if (dBegin == deformers.end()) return;
-
-  deformers.erase(dBegin, deformers.upper_bound(meshImage));
-}
 
 //----------------------------------------------------------------------------------
 
-void PlasticDeformerStorage::releaseSkeletonData(const SkD *deformation,
-                                                 int skelId) {
-  QMutexLocker locker(&m_imp->m_mutex);
-
-  DeformedSkeleton ds(deformation, skelId);
-
-  DeformersByDeformedSkeleton &deformers =
-      m_imp->m_deformers.get<DeformedSkeleton>();
-
-  DeformersByDeformedSkeleton::iterator dBegin(deformers.lower_bound(ds));
-  if (dBegin == deformers.end()) return;
-
-  deformers.erase(dBegin, deformers.upper_bound(ds));
-}
 
 //----------------------------------------------------------------------------------
 

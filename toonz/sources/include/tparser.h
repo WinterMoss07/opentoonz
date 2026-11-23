@@ -59,7 +59,6 @@ public:
   SyntaxStatus checkSyntax(std::vector<SyntaxToken> &tokens, std::string text);
 
   void getSuggestions(Grammar::Suggestions &suggestions, std::string text);
-  std::string getCurrentPatternString(std::string text);
 
 private:
   // not implemented

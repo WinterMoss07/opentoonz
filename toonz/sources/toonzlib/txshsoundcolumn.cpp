@@ -83,16 +83,6 @@ void ColumnLevel::setEndOffset(int value) {
 
 //-----------------------------------------------------------------------------
 
-void ColumnLevel::setOffsets(int startOffset, int endOffset) {
-  assert(startOffset > 0 && endOffset > 0);
-
-  if (startOffset < 0 || startOffset > getFrameCount() - endOffset - 1) return;
-  m_startOffset = startOffset;
-  if (endOffset < 0 || getStartFrame() + getFrameCount() - endOffset <
-                           getStartFrame() + getStartOffset() + 1)
-    return;
-  m_endOffset = endOffset;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -886,9 +876,6 @@ ColumnLevel *TXshSoundColumn::getColumnLevel(int index) {
 
 //-----------------------------------------------------------------------------
 
-int TXshSoundColumn::getColumnLevelIndex(ColumnLevel *columnLevel) const {
-  return m_levels.indexOf(columnLevel);
-}
 
 //-----------------------------------------------------------------------------
 

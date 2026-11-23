@@ -45,7 +45,6 @@ public:
   bool loadPinsToTop();
   void savePinsToTop();
 
-  const QVector<std::string> &getAllPinsToTop() const { return m_pinsToTop; }
 
   bool getPinToTop(std::string idname) const;
   void setPinToTop(std::string idname, bool state);
@@ -116,7 +115,6 @@ public:
 
   const TFilePath &stylesFolder() const { return m_stylesFolder; }
   QSize getChipSize() const { return m_chipSize; }
-  QString getFilters() const { return m_filters; }
 
   int countData() const {
     return m_isIndexed ? m_indexes.count() : m_chips.count();
@@ -131,7 +129,6 @@ public:
     m_searchText = text;
     applyFilter();
   }
-  QString getSearchText() const { return m_searchText; }
 
   bool isLoaded() { return m_loaded; }
   virtual void loadItems() = 0;

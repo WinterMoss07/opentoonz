@@ -206,21 +206,6 @@ static int setup_input_port(toonz_node_handle_t node, const char *name,
   return TOONZ_OK;
 }
 
-static int setup_output_port(toonz_node_handle_t node, const char *name,
-                             int type) {
-  try {
-    RasterFxPluginHost *fx = reinterpret_cast<RasterFxPluginHost *>(node);
-    if (!fx) return TOONZ_ERROR_INVALID_HANDLE;
-    if (!fx->addPortDesc({false, name, type})) {
-      printf("add_input_port: failed to add: already have\n");
-      return TOONZ_ERROR_BUSY;
-    }
-  } catch (const std::exception &e) {
-    printf("setup_putput_port: exception: %s\n", e.what());
-    return TOONZ_ERROR_UNKNOWN;
-  }
-  return TOONZ_OK;
-}
 
 static int add_input_port(toonz_node_handle_t node, const char *name, int type,
                           toonz_port_handle_t *port) {
@@ -258,25 +243,6 @@ static int get_input_port(toonz_node_handle_t node, const char *name,
   return TOONZ_OK;
 }
 
-static int add_output_port(toonz_node_handle_t node, const char *name, int type,
-                           toonz_port_handle_t *port) {
-  TRasterFxPort *p = NULL;
-  try {
-    RasterFxPluginHost *fx = reinterpret_cast<RasterFxPluginHost *>(node);
-    if (!fx) return TOONZ_ERROR_INVALID_HANDLE;
-    p = new TRasterFxPort();
-    /* TRasterFxPort is a non-copyable smart pointer, so pass it as pointer */
-    if (fx->addOutputPort(name, p)) {  // overloaded version
-      delete p;
-      return TOONZ_ERROR_BUSY;
-    }
-    *port = p;
-  } catch (const std::exception &) {
-    delete p;
-    return TOONZ_ERROR_UNKNOWN;
-  }
-  return TOONZ_OK;
-}
 
 static int get_rect(toonz_rect_t *rect, double *x0, double *y0, double *x1,
                     double *y1) {

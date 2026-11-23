@@ -10,23 +10,6 @@
 #endif
 //---------------------------------------------------------------------
 
-int isTTT(const char *fn) {
-  int ln, i;
-  char lfn[1024];
-
-  strcpy(lfn, fn);
-  ln = strlen(lfn);
-  for (i = ln - 1; i >= 0; i--)
-    if (lfn[i] == ' ') {
-      lfn[i] = '\0';
-    } else
-      break;
-  ln = strlen(lfn);
-  if (toupper(lfn[ln - 1]) == (int)'T' && toupper(lfn[ln - 2]) == (int)'T' &&
-      toupper(lfn[ln - 3]) == (int)'T')
-    return 1;
-  return 0;
-}
 //-----------------------------------------------------------------------
 
 const char *strsave(const char *t) {

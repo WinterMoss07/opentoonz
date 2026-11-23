@@ -539,9 +539,6 @@ bool TStyleSelection::isSelected(int pageIndex, int id) const {
 
 //------------------------------------------------------------------
 
-bool TStyleSelection::isPageSelected(int pageIndex) const {
-  return m_pageIndex == pageIndex;
-}
 
 //------------------------------------------------------------------
 
@@ -1501,62 +1498,9 @@ void TStyleSelection::toggleLink() {
 
 //-----------------------------------------------------------------------------
 
-void TStyleSelection::eraseToggleLink() {
-  TPalette *palette = getPalette();
-  if (!palette || m_pageIndex < 0) return;
-  if (isEmpty() || palette->isLocked()) return;
-  int n = m_styleIndicesInPage.size();
-  if (n <= 0) return;
-
-  bool currentStyleIsInSelection = false;
-
-  TPalette::Page *page = palette->getPage(m_pageIndex);
-  assert(page);
-
-  std::vector<std::pair<int, std::wstring>> oldColorStylesLinked;
-  std::vector<std::pair<int, std::wstring>> newColorStylesLinked;
-
-  UndoLinkToStudioPalette *undo =
-      new UndoLinkToStudioPalette(m_paletteHandle, m_pageIndex);
-
-  for (std::set<int>::iterator it = m_styleIndicesInPage.begin();
-       it != m_styleIndicesInPage.end(); ++it) {
-    int index       = *it;
-    TColorStyle *cs = page->getStyle(index);
-    assert(cs);
-    TColorStyle *oldCs = cs->clone();
-    std::wstring name  = cs->getGlobalName();
-    if (name != L"" && (name[0] == L'-' || name[0] == L'+'))
-      cs->setGlobalName(L"");
-    undo->setColorStyle(index, oldCs, L"");
-    if (*it ==
-        palette->getPage(m_pageIndex)->search(m_paletteHandle->getStyleIndex()))
-      currentStyleIsInSelection = true;
-  }
-
-  m_paletteHandle->notifyColorStyleChanged(false);
-
-  if (currentStyleIsInSelection) m_paletteHandle->notifyColorStyleSwitched();
-
-  palette->setDirtyFlag(true);
-
-  TUndoManager::manager()->add(undo);
-}
 
 //-----------------------------------------------------------------------------
 
-void TStyleSelection::toggleKeyframe(int frame) {
-  TPalette *palette = getPalette();
-  if (!palette || m_pageIndex < 0) return;
-  int n                = m_styleIndicesInPage.size();
-  TPalette::Page *page = palette->getPage(m_pageIndex);
-  assert(page);
-  for (std::set<int>::iterator it = m_styleIndicesInPage.begin();
-       it != m_styleIndicesInPage.end(); ++it) {
-    int styleId = page->getStyleId(*it);
-    palette->setKeyframe(styleId, frame);
-  }
-}
 
 //-----------------------------------------------------------------------------
 

@@ -52,21 +52,6 @@ inline int threshMatte(int matte, int fillDepth) {
     return (matte < fillDepth) ? 255 : matte;
 }
 
-/*! Finds nearest non-pure-paint (ink) pixel in cardinal directions (no
-   diagonal). Returns first valid ink pixel found (right �� left �� down �� up).
-    Returns (-1,-1) if none found.
-*/
-inline TPoint nearestInkNotDiagonal(const TRasterCM32P &r, const TPoint &p) {
-  TPixelCM32 *buf = (TPixelCM32 *)r->pixels(p.y) + p.x;
-  if (p.x < r->getLx() - 1 && !(buf + 1)->isPurePaint())
-    return TPoint(p.x + 1, p.y);
-  if (p.x > 0 && !(buf - 1)->isPurePaint()) return TPoint(p.x - 1, p.y);
-  if (p.y < r->getLy() - 1 && !(buf + r->getWrap())->isPurePaint())
-    return TPoint(p.x, p.y + 1);
-  if (p.y > 0 && !(buf - r->getWrap())->isPurePaint())
-    return TPoint(p.x, p.y - 1);
-  return TPoint(-1, -1);
-}
 
 /*! Collects unique neighboring ink pixels (cardinal directions only).
     Avoids duplicates by tracking ink IDs in a set.

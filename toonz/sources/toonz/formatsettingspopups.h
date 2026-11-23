@@ -40,7 +40,6 @@ public:
                       bool forInput = true);
 
   void setLevelPath(const TFilePath &path) { m_levelPath = path; }
-  void setFormatProperties(TPropertyGroup *props);
 
 private:
   std::string m_format;

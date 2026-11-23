@@ -54,7 +54,6 @@ public:
 
   // Style options
   void setDecoAllocator(DockDecoAllocator *allocator);
-  void setSeparatorsThickness(int thick);
 
   DockLayout *dockLayout() const { return m_layout; }
 
@@ -91,8 +90,6 @@ public:
 
   void setTitleBarWidget(QWidget *titlebar);
   QWidget *titleBarWidget() const { return m_titlebar; }
-  void setFloatingMargin(int margin) { m_margin = margin; }
-  int getFloatingMargin() const { return m_margin; }
 
   void setWidget(QWidget *widget);
   QWidget *widget() const { return m_widget; }

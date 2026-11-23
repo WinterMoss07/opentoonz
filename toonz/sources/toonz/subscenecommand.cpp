@@ -1556,15 +1556,6 @@ void getColumnIndexes(const QList<TStageObjectId> &objects,
 
 //-----------------------------------------------------------------------------
 
-void getColumnIndexesAndPegbarIds(const QList<TStageObjectId> &objects,
-                                  std::set<int> &indeces,
-                                  std::set<TStageObjectId> &pegbarIds) {
-  int i;
-  for (i = 0; i < objects.size(); i++) {
-    if (objects[i].isColumn()) indeces.insert(objects[i].getIndex());
-    if (objects[i].isPegbar()) pegbarIds.insert(objects[i]);
-  }
-}
 
 //-----------------------------------------------------------------------------
 

@@ -160,31 +160,6 @@ public:
     return 0;
   }
 
-  int makeSelectionRGB(const std::vector<I_PIXEL> &col, const double dA,
-                       const double dAB) {
-    int nbCol;
-
-    copySel((UCHAR)0);
-    nbCol = col.size();
-    if (CSTPic<P>::m_lX > 0 && CSTPic<P>::m_lY > 0 && m_sel &&
-        CSTPic<P>::m_pic) {
-      switch (nbCol) {
-      case 1:
-        return makeSelectionRGB1(col, dA);
-        break;
-      case 2:
-        return makeSelectionRGB2(col, dA, dAB);
-        break;
-      case 3:
-        return makeSelectionRGB3(col, dA, dAB);
-        break;
-      default:
-        return makeSelectionRGBMore(col, dA, dAB);
-        break;
-      }
-    }
-    return 0;
-  }
 
   double distRGB2(const I_PIXEL &c1, const I_PIXEL &c2) const {
     double q = (double)(c1.r - c2.r) * (double)(c1.r - c2.r);
@@ -201,11 +176,6 @@ public:
     return q;
   }
 
-  double distRGB(const I_PIXEL &c1, const I_PIXEL &c2) const {
-    int qd = (c1.r - c2.r) * (c1.r - c2.r) + (c1.g - c2.g) * (c1.g - c2.g) +
-             (c1.b - c2.b) * (c1.b - c2.b);
-    return sqrt((double)qd);
-  }
 
   double distRGBM(const I_PIXEL &c1, const I_PIXEL &c2) const {
     int qd = (c1.r - c2.r) * (c1.r - c2.r) + (c1.g - c2.g) * (c1.g - c2.g) +
@@ -416,11 +386,6 @@ return false;
     return nbPixel;
   }
 
-  void setSel01() {
-    int xy   = CSTPic<P>::m_lX * CSTPic<P>::m_lY;
-    UCHAR *p = m_sel.get();
-    for (int i = 0; i < xy; i++, p++) *p = *p > (UCHAR)0 ? (UCHAR)1 : (UCHAR)0;
-  }
 
   void showSelection() {
     P *pPic;
@@ -561,34 +526,7 @@ if (*pSel==(UCHAR)250) {
     }
   }
 
-  int selRunLength(const int step) {
-    int s = step < 1 ? 1 : step;
-    SRECT box;
-    selBox(box);
-    int rl   = 0;
-    int nbRl = 0;
-    selRunLengthH(box, s, rl, nbRl);
-    selRunLengthV(box, s, rl, nbRl);
-    if (nbRl > 0) {
-      double d = (double)rl / (double)nbRl;
-      return I_ROUNDP(d);
-    }
-    return 0;
-  }
 
-  void hlsNoise(const double d) {
-    int xy      = CSTPic<P>::m_lX * CSTPic<P>::m_lY;
-    P *p        = CSTPic<P>::m_pic;
-    UCHAR *pSel = m_sel.get();
-    for (int i = 0; i < xy; i++, p++, pSel++)
-      if (p->m > 0 && (*pSel) > (UCHAR)0) {
-        double h, l, s, q;
-        rgb2hls(p->r, p->g, p->b, &h, &l, &s);
-        q = 1.0 - d * (double)((rand() % 201) - 100) / 100.0;
-        l *= q;
-        hls2rgb(h, l, s, &(p->r), &(p->g), &(p->b));
-      }
-  }
   /*
 void expand(const int border) throw(SMemAllocError)
 {	try {

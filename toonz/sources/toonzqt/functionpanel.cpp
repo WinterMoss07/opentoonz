@@ -47,10 +47,6 @@ void drawSquare(QPainter &painter, const QPointF &p, double r) {
   drawSquare(painter, p.x(), p.y(), r);
 }
 
-void drawRoundedSquare(QPainter &painter, const QPointF &p, double r) {
-  painter.drawRoundedRect(p.x() - r, p.y() - r, 2 * r, 2 * r, 99, 99,
-                          Qt::RelativeSize);
-}
 
 double norm2(const QPointF &p) { return p.x() * p.x() + p.y() * p.y(); }
 
@@ -405,12 +401,6 @@ FunctionTreeModel::Channel *FunctionPanel::findClosestChannel(
 
 //-----------------------------------------------------------------------------
 
-TDoubleParam *FunctionPanel::findClosestCurve(const QPoint &winPos,
-                                              int maxWinDistance) {
-  FunctionTreeModel::Channel *closestChannel =
-      findClosestChannel(winPos, maxWinDistance);
-  return closestChannel ? closestChannel->getParam() : 0;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1543,7 +1533,6 @@ void FunctionPanel::fitCurve() { fitGraphToWindow(); }
 
 //-----------------------------------------------------------------------------
 
-void FunctionPanel::fitRegion(double f0, double v0, double f1, double v1) {}
 
 //-----------------------------------------------------------------------------
 

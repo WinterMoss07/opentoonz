@@ -121,7 +121,6 @@ public:
   void findRegionBorders();
   void erodeRegions();
   void computeMainInkThickness();
-  void assignColorTypes();
   void addBorderInks();
   void findBackgroundRegions();
   void findMainInks();
@@ -138,13 +137,6 @@ public:
 
   void process(const TRaster32P &srcRas);
 
-  int getRegionIndex(int x, int y) const {
-    if (!!m_regionRas && 0 <= x && x < m_regionRas->getLx() && 0 <= y &&
-        y < m_regionRas->getLy())
-      return m_regionRas->pixels(y)[x];
-    else
-      return -1;
-  }
 
   TToonzImageP makeTlv(bool transparentSyntheticInks, QList<int> &usedStyleIds,
                        double dpi = 0.0);

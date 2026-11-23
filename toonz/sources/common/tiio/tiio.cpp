@@ -166,15 +166,7 @@ void Tiio::defineWriterMaker(const char *ext, Tiio::WriterMaker *fn,
   TiioTable::instance()->add(ext, fn, isRenderFormat);
 }
 
-void Tiio::defineVectorReaderMaker(const char *ext,
-                                   Tiio::VectorReaderMaker *fn) {
-  TiioTable::instance()->add(ext, fn);
-}
 
-void Tiio::defineVectorWriterMaker(const char *ext, Tiio::VectorWriterMaker *fn,
-                                   bool isRenderFormat) {
-  TiioTable::instance()->add(ext, fn, isRenderFormat);
-}
 
 void Tiio::defineWriterProperties(const char *ext, TPropertyGroup *prop) {
   TiioTable::instance()->addWriterProperties(ext, prop);

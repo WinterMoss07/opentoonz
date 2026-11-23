@@ -682,6 +682,3 @@ TInputManager::draw() {
     m_modifiers[i]->draw(m_tracks[i], m_hovers[i]);
 }
 
-TInputState::TouchId
-TInputManager::genTouchId()
-  { return ++m_lastTouchId; }

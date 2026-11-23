@@ -192,26 +192,6 @@ TVariant::isChildOrEqual(const TVariant &other) const {
 
 //---------------------------------------------------------
 
-const TVariant*
-TVariant::findCommonParent(const TVariant &other) const {
-  if (m_root != other.m_root) return NULL;
-  const TVariant *a = this, *b = &other;
-  int ac = 0, bc = 0;
-  while(a->m_parent) a = a->m_parent, ++ac;
-  while(b->m_parent) b = b->m_parent, ++bc;
-
-  a = this, b = &other;
-  while(ac > bc) a = a->m_parent, --ac;
-  while(bc > ac) b = b->m_parent, --bc;
-
-  while(true) {
-    if (a == b) return a;
-    if (ac == 0) break;
-    --ac, a = a->m_parent, b = b->m_parent;
-  }
-
-  return NULL;
-}
 
 //---------------------------------------------------------
 

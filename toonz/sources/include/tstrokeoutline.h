@@ -172,7 +172,6 @@ public:
   TStrokeOutline(const TStrokeOutline &);
   TStrokeOutline &operator=(const TStrokeOutline &);
 
-  void addOutlinePoint(const TOutlinePoint &);
 };
 
 //-----------------------------------------------------------------------------
@@ -183,7 +182,6 @@ DVAPI TStrokeOutline getOutline(const TStroke &stroke);
 
 class TQuadratic;
 
-DVAPI std::vector<TQuadratic> getOutlineWithQuadratic(const TStroke &stroke);
 
 DVAPI void computeOutlines(const TStroke *stroke, int startQuad, int endQuad,
                            std::vector<TQuadratic *> &quadArray, double error2);

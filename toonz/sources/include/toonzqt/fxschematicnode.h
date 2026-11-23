@@ -333,9 +333,6 @@ public:
 
   bool isNameEditing() { return m_nameItem->isVisible(); }
   void onClicked() override;
-  bool isCurrentFxLinked(SchematicNode *comingNode) {
-    return m_isCurrentFxLinked;
-  }
   void setIsCurrentFxLinked(bool value, FxSchematicNode *comingNode);
   void setPosition(const QPointF &newPos) override;
 
@@ -346,7 +343,6 @@ public:
   virtual bool isCached() const;
   virtual void resize(bool maximizeNode) {}
 
-  void toggleNormalIconView() { m_isNormalIconView = !m_isNormalIconView; }
   bool isNormalIconView() { return m_isNormalIconView; }
 
 signals:
@@ -575,7 +571,6 @@ public:
   }
   bool isNameEditing() const { return m_nameItem->isVisible(); }
   QList<TFxP> getRootFxs() const { return m_roots; }
-  int getRootCount() { return m_roots.size(); }
   int getFxCount() const { return m_groupedFxs.size(); }
   TFx *getFx(int i) const {
     return 0 <= i && i < m_groupedFxs.size() ? m_groupedFxs[i].getPointer() : 0;

@@ -265,8 +265,6 @@ class SplineAimChanger final : public SchematicHandleSpinBox {
 public:
   SplineAimChanger(QGraphicsItem *parent);
   ~SplineAimChanger();
-  void setAim(bool aim) { m_aim = aim; }
-  bool getAim() { return m_aim; }
 
 protected:
   void mouseMoveEvent(QGraphicsSceneMouseEvent *me) override;

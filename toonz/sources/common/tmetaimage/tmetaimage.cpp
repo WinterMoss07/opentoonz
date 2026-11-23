@@ -16,16 +16,6 @@ void
 TMetaObjectType::registerAlias(const TStringId &alias)
   { TMetaObject::registerType(alias, *this); }
 
-void
-TMetaObjectType::unregisterAlias(const TStringId &alias) {
-  TMetaObject::Registry::const_iterator i = TMetaObject::getRegistry().find(alias);
-  if (i == TMetaObject::getRegistry().end() || i->second != this) {
-    std::cerr << "warning: trying to unregister not-registered alias (" << alias.str()
-              << ") of type of TMetaObject (" << name.str() << ") " << name.str() << std::endl;
-  } else {
-    TMetaObject::unregisterType(alias);
-  }
-}
 
 //---------------------------------------------------------
 

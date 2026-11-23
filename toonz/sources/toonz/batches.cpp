@@ -148,7 +148,6 @@ public:
 
   void doRun(TFarmTask *task);
 
-  void runCleanup() { BatchesController::instance()->notify(); }
 
   TFarmTask *m_task;
   int m_localControllerPort;
@@ -477,9 +476,6 @@ void BatchesController::removeTask(const QString &id) {
 //------------------------------------------------------------------------------
 
 namespace {
-void DeleteTask(const std::pair<QString, TFarmTask *> &mapItem) {
-  if (mapItem.second->m_parentId.isEmpty()) delete mapItem.second;
-}
 }  // namespace
 
 void BatchesController::removeAllTasks() {
@@ -531,27 +527,9 @@ TFarmTask *BatchesController::getTask(const QString &id) const {
 
 //------------------------------------------------------------------------------
 
-bool BatchesController::getTaskInfo(const QString &id, QString &parent,
-                                    QString &name, TaskState &status) {
-  TFarmTask *task = getTask(id);
-  if (task) {
-    parent = task->m_parentId;
-    name   = task->m_name;
-    status = task->m_status;
-  }
-
-  return task != 0;
-}
 
 //------------------------------------------------------------------------------
 
-TaskState BatchesController::getTaskStatus(const QString &id) const {
-  TFarmTask *task = getTask(id);
-  if (task)
-    return task->m_status;
-  else
-    return TaskUnknown;
-}
 
 void BatchesController::setDirtyFlag(bool state) {
   static bool FirstTime = true;
@@ -941,9 +919,6 @@ void BatchesController::notify() {
 
 //------------------------------------------------------------------------------
 
-void BatchesController::setController(TFarmController *controller) {
-  m_controller = controller;
-}
 
 //------------------------------------------------------------------------------
 

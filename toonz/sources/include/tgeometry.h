@@ -21,8 +21,6 @@
 inline double logNormalDistribuitionUnscaled(double x, double x0, double w)
   { return exp(-0.5*pow(log(x/x0)/w, 2.0))/x; }
 
-inline double logNormalDistribuition(double x, double x0, double w)
-  { return logNormalDistribuitionUnscaled(x, x0, w)/(w*sqrt(2.0*M_PI)); }
 
 //=============================================================================
 
@@ -1185,11 +1183,6 @@ public:
 
 //-----------------------------------------------------------------------------
 
-inline bool areEquals(const TAffine &a, const TAffine &b, double err = 1e-8) {
-  return fabs(a.a11 - b.a11) < err && fabs(a.a12 - b.a12) < err &&
-         fabs(a.a13 - b.a13) < err && fabs(a.a21 - b.a21) < err &&
-         fabs(a.a22 - b.a22) < err && fabs(a.a23 - b.a23) < err;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1262,9 +1255,6 @@ public:
   TAffine get2d() const;
 
   inline static TAffine3 identity() { return TAffine3(); }
-  static TAffine3 translation2d(double x, double y);
-  static TAffine3 scale2d(double x, double y);
-  static TAffine3 rotation2d(double angle);
 };
 
 
@@ -1331,7 +1321,6 @@ public:
   TAffine4 inv() const;
 
   TAffine get2d(double z = 0.0) const;
-  TAffine3 get2dPersp(double z = 0.0) const;
 
   inline static TAffine4 identity() { return TAffine4(); }
   static TAffine4 translation(double x, double y, double z);
@@ -1339,7 +1328,6 @@ public:
   static TAffine4 rotation(double x, double y, double z, double angle);
   static TAffine4 rotationX(double angle);
   static TAffine4 rotationY(double angle);
-  static TAffine4 rotationZ(double angle);
   static TAffine4 perspective(double near, double far, double tangent);
 };
 
@@ -1443,10 +1431,6 @@ public:
       { return (int)(m_end - m_begin)/2 + 1; }
     inline int index() const
       { return (int)(m_current - m_begin)/2; }
-    inline int reverseIndex() const
-      { int i = index(); return i == 0 ? 0 : size() - i; }
-    inline bool lapped() const
-      { return m_lapped; }
     inline bool valid() const
       { return m_prebegin != m_begin; }
     inline bool isFull() const

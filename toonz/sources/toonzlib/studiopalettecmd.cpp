@@ -743,7 +743,3 @@ void StudioPaletteCmd::deleteFolder(const TFilePath &folderPath) {
 
 //-----------------------------------------------------------------------------
 
-void StudioPaletteCmd::scanPalettes(const TFilePath &folder,
-                                    const TFilePath &sourcePath) {
-  //  error("uh oh");
-}

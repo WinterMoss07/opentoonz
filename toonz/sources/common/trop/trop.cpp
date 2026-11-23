@@ -66,30 +66,6 @@ void TRop::swapRBChannels(const TRaster32P &r) {
 }
 #endif
 
-TRaster32P TRop::copyAndSwapRBChannels(const TRaster32P &srcRaster) {
-  TRaster32P newRaster(srcRaster->getSize());
-  int lx = srcRaster->getLx();
-  int y  = srcRaster->getLy();
-  srcRaster->lock();
-  newRaster->lock();
-  while (--y >= 0) {
-    TPixel32 *pix    = srcRaster->pixels(y);
-    TPixel32 *newpix = newRaster->pixels(y);
-    TPixel32 *endPix = pix + lx;
-    while (pix < endPix) {
-      newpix->r = pix->b;
-      newpix->g = pix->g;
-      newpix->b = pix->r;
-      newpix->m = pix->m;
-      ++pix;
-      ++newpix;
-    }
-  }
-  srcRaster->unlock();
-  newRaster->unlock();
-
-  return newRaster;
-}
 
 void TRop::copy(TRasterP dst, const TRasterP &src) {
   assert(!((TRasterCM32P)src) || (TRasterCM32P)dst);

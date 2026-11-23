@@ -432,7 +432,6 @@ public:
 
   void accept(Visitor &v) override { v.visit(this); }
 
-  static void enableRangeSaving(bool on);
   static bool isRangeSavingEnabled();
 
   void assignUIName(TProperty *refP) override;

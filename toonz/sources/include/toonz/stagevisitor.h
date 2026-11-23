@@ -289,10 +289,8 @@ public:
   TRasterP getRaster(int index, QTransform &matrix);
 
   void flushRasterImages();
-  void drawRasterImages(QPainter &p, QPolygon cameraRect);
 
   void enableSingleColumn(bool on) { m_singleColumnEnabled = on; }
-  bool isSingleColumnEnabled() const { return m_singleColumnEnabled; }
 
   void setRasterDarkenBlendedView(bool on) { m_doRasterDarkenBlendedView = on; }
   void setCurrentImageId(std::string id) { m_currentImageId = id; }
@@ -353,7 +351,6 @@ public:
   bool isViewer() const { return m_isViewer; }
   void enableCamera3D(bool on) { m_camera3d = on; }
   void setPhi(double phi) { m_phi = phi; }
-  void setPaletteHasChanged(bool on) { m_paletteHasChanged = on; }
 
   void onImage(const Stage::Player &data) override;
   void onVectorImage(TVectorImage *vi, const Stage::Player &data);

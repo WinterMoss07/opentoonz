@@ -133,38 +133,7 @@ void MatrixRmn::SetColumn(long i, const VectorRn &d) {
   }
 }
 
-// Set the i-th column equal to d.
-void MatrixRmn::SetRow(long i, const VectorRn &d) {
-  assert(NumCols == d.GetLength());
-  double *to         = x + i;
-  const double *from = d.x;
-  for (i = NumRows; i > 0; i--) {
-    *to = *(from++);
-    to += NumRows;
-  }
-}
 
-// Sets a "linear" portion of the array with the values from a vector d
-// The first row and column position are given by startRow, startCol.
-// Successive positions are found by using the deltaRow, deltaCol values
-//	to increment the row and column indices.  There is no wrapping around.
-void MatrixRmn::SetSequence(const VectorRn &d, long startRow, long startCol,
-                            long deltaRow, long deltaCol) {
-  long length = d.length;
-  assert(startRow >= 0 && startRow < NumRows && startCol >= 0 &&
-         startCol < NumCols);
-  assert(startRow + (length - 1) * deltaRow >= 0 &&
-         startRow + (length - 1) * deltaRow < NumRows);
-  assert(startCol + (length - 1) * deltaCol >= 0 &&
-         startCol + (length - 1) * deltaCol < NumCols);
-  double *to   = x + startRow + NumRows * startCol;
-  double *from = d.x;
-  long stride  = deltaRow + NumRows * deltaCol;
-  for (; length > 0; length--) {
-    *to = *(from++);
-    to += stride;
-  }
-}
 
 // The matrix A is loaded, in into "this" matrix, based at (0,0).
 //  The size of "this" matrix must be large enough to accommodate A.
@@ -283,23 +252,6 @@ MatrixRmn &MatrixRmn::AddToDiagonal(
   return *this;
 }
 
-MatrixRmn &MatrixRmn::MultiplyScalar(const MatrixRmn &A, double k,
-                                     MatrixRmn &dst) {
-  long length  = A.NumCols;
-  double *dPtr = dst.x;
-  for (long i = dst.NumCols; i > 0; i--) {
-    double *aPtr = A.x;  // Points to beginning of row in A
-
-    for (long j = dst.NumRows; j > 0; j--) {
-      *dPtr = *aPtr * k;
-      dPtr++;
-      aPtr++;
-    }
-    aPtr += A.NumRows;
-  }
-
-  return dst;
-}
 // Multiply two MatrixRmn's
 MatrixRmn &MatrixRmn::Multiply(const MatrixRmn &A, const MatrixRmn &B,
                                MatrixRmn &dst) {
@@ -1440,35 +1392,6 @@ void Jacobian::CalcDeltaThetasDLS() {
   }
 }
 
-void Jacobian::CalcDeltaThetasDLSwithSVD() {
-  const MatrixRmn &J = Jend;
-
-  J.ComputeSVD(U, w, V);
-
-  // For Debug
-  assert(J.DebugCheckSVD(U, w, V));
-
-  // Calculate response vector dTheta that is the DLS solution.
-  //	Delta target values are the dS values
-  //  We multiply by DLS inverse of the J matrix
-  long diagLength = w.GetLength();
-  double *wPtr    = w.GetPtr();
-  dTheta.SetZero();
-  for (long i = 0; i < diagLength; i++) {
-    double dotProdCol =
-        U.DotProductColumn(dS, i);  // Dot product with i-th column of U
-    double alpha = *(wPtr++);
-    alpha        = alpha / (Square(alpha) + DampingLambdaSq);
-    MatrixRmn::AddArrayScale(V.getNumRows(), V.GetColumnPtr(i), 1,
-                             dTheta.GetPtr(), 1, dotProdCol * alpha);
-  }
-
-  // Scale back to not exceed maximum angle changes
-  double maxChange = dTheta.MaxAbs();
-  if (maxChange > MaxAngleDLS) {
-    dTheta *= MaxAngleDLS / maxChange;
-  }
-}
 
 void Jacobian::CalcDeltaThetasSDLS() {
   const MatrixRmn &J = Jend;

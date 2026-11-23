@@ -196,8 +196,6 @@ private:
   void modifierDeactivate(const TInputModifierP &modifier);
 
 public:
-  inline const TTrackList& getInputTracks() const
-    { return m_tracks.front(); }
   inline const TTrackList& getOutputTracks() const
     { return m_tracks.back(); }
 
@@ -256,7 +254,6 @@ public:
   TRectD calcDrawBounds();
   void draw();
 
-  static TInputState::TouchId genTouchId();
 };
 
 

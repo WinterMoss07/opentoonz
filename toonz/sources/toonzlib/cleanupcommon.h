@@ -5,8 +5,6 @@
 
 #include "texception.h"
 
-// unit conversion
-inline double inToPixel(double val, double dpi) { return val * dpi; }
 inline double mmToPixel(double val, double dpi) {
   return (val * dpi) * (1.0 / 25.4);
 }

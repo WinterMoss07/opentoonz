@@ -144,22 +144,6 @@ inline double func(int x, int y, int lx, int ly) {
   return ((1 + sin(3.14 * x / (0.5 * lx))) * (1 + cos(3.14 * y / (0.5 * ly))));
 }
 
-void drawCheckboard(TRaster32P &raster) {
-  int lx = raster->getLx();
-  int ly = raster->getLy();
-  // int chessSize = 4;
-  int x, y;
-  raster->lock();
-  for (y = 0; y < ly; ++y) {
-    TPixel32 *pix = raster->pixels(y);
-    for (x = 0; x < lx; ++x, ++pix) {
-      pix->r = pix->g = pix->b =
-          troundp(255.0 * func(x, y, lx, ly) / func(lx - 1, ly - 1, lx, ly));
-      pix->m = 255;
-    }
-  }
-  raster->unlock();
-}
 };  // namespace
 
 //-------------------------------------------------------------------

@@ -129,7 +129,6 @@ public:
   ~LevelUpdater();
 
   TLevelWriterP getLevelWriter() { return m_lw; }
-  TLevelReaderP getLevelReader() { return m_lr; }
 
   //! Returns a description of any already existing level on the attached path
   //! (in terms of frames content and palette).

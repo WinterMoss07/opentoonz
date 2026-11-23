@@ -658,16 +658,6 @@ void RGBPickerTool::closePolyline(const TPointD &drawingPos,
 }
 
 //---------------------------------------------------------
-/*! Flipbook上でPassive Pickを有効にする
- */
-void RGBPickerTool::showFlipPickedColor(const TPixel32 &pix) {
-  if (m_passivePick.getValue()) {
-    QColor col((int)pix.r, (int)pix.g, (int)pix.b);
-    PaletteController *controller =
-        TTool::getApplication()->getPaletteController();
-    controller->notifyColorPassivePicked(col);
-  }
-}
 
 RGBPickerTool RGBpicktool;
 

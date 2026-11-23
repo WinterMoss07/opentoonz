@@ -249,14 +249,6 @@ void FunctionSelection::setColumnToCurveMapper(ColumnToCurveMapper *mapper) {
   }
 }
 
-void FunctionSelection::selectCurve(TDoubleParam *curve) {
-  if (m_selectedKeyframes.size() == 1 && m_selectedKeyframes[0].first == curve)
-    return;
-  curve->addRef();
-  deselectAllKeyframes();
-  m_selectedKeyframes.push_back(qMakePair(curve, QSet<int>()));
-  m_selectedCells = QRect();
-}
 
 void FunctionSelection::deselectAllKeyframes() {
   if (getSelectedKeyframeCount() == 0) return;

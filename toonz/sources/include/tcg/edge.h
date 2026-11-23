@@ -55,10 +55,6 @@ public:
     m_v[verticesCount()] = v;
   }
   void setVertex(int i, int v) { assert(i < verticesCount()), m_v[i] = v; }
-  vertices_iterator eraseVertex(vertices_iterator it) {
-    *std::copy(it + 1, verticesEnd(), it) = -1;
-    return it;
-  }
 
   vertices_const_iterator verticesBegin() const { return m_v; }
   vertices_const_iterator verticesEnd() const { return m_v + verticesCount(); }
@@ -73,7 +69,6 @@ public:
     assert(facesCount() < 2);
     m_f[facesCount()] = f;
   }
-  void setFace(int i, int f) { assert(i < facesCount()), m_f[i] = f; }
   faces_iterator eraseFace(faces_iterator it) {
     *std::copy(it + 1, facesEnd(), it) = -1;
     return it;

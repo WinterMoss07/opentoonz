@@ -1175,22 +1175,6 @@ void TRop::unlockRaster(RASTER *raster) {
 
 /*------------------------------------------------------------------------*/
 
-_RASTER *TRop::readRaster46(const char *filename) {
-  // No more called in Toonz...
-
-  TImageP img;
-
-  TImageReader::load(TFilePath(filename), img);
-
-  if ((TToonzImageP)img) return 0;
-
-  TRasterImageP rimg = (TRasterImageP)img;
-
-  if (!rimg) return 0;
-  TRasterP ras = rimg->getRaster();
-
-  return TRop::convertRaster50to46(ras, 0);
-}
 
 namespace {
 

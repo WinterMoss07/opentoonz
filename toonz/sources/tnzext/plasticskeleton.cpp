@@ -215,9 +215,6 @@ bool PlasticSkeleton::setVertexName(int v, const QString &newName) {
 
 //------------------------------------------------------------------
 
-void PlasticSkeleton::moveVertex(int v, const TPointD &pos) {
-  mesh_type::vertex(v).P() = pos;  // Apply new position
-}
 
 //------------------------------------------------------------------
 
@@ -531,42 +528,9 @@ void PlasticSkeleton::loadData(TIStream &is) {
 //    PlasticSkeleton  utility functions
 //************************************************************************************
 
-int PlasticSkeleton::closestVertex(const TPointD &pos, double *dist) const {
-  // Traverse vertices
-  double d2, minDist2 = (std::numeric_limits<double>::max)();
-  int v = -1;
-
-  tcg::list<vertex_type>::const_iterator vt, vEnd(m_vertices.end());
-  for (vt = m_vertices.begin(); vt != vEnd; ++vt) {
-    d2                          = tcg::point_ops::dist2(pos, vt->P());
-    if (d2 < minDist2) minDist2 = d2, v = int(vt.m_idx);
-  }
-
-  if (dist && v >= 0) *dist = sqrt(minDist2);
-
-  return v;
-}
 
 //-------------------------------------------------------------------------------
 
-int PlasticSkeleton::closestEdge(const TPointD &pos, double *dist) const {
-  // Traverse edges
-  double d, minDist = (std::numeric_limits<double>::max)();
-  int e = -1;
-
-  tcg::list<edge_type>::const_iterator et, eEnd(m_edges.end());
-  for (et = m_edges.begin(); et != eEnd; ++et) {
-    const TPointD &vp0 = vertex(et->vertex(0)).P(),
-                  &vp1 = vertex(et->vertex(1)).P();
-
-    d                        = tcg::point_ops::segDist(vp0, vp1, pos);
-    if (d < minDist) minDist = d, e = int(et.m_idx);
-  }
-
-  if (dist && e >= 0) *dist = minDist;
-
-  return e;
-}
 
 //-------------------------------------------------------------------------------
 

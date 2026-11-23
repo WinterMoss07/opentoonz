@@ -196,20 +196,12 @@ public:
     }
   }
 
-  void erease() {
-    P p = {0, 0, 0, 0};
-    fill(p);
-  }
 
   void fill(const P &ip) {
     for (int y = 0; y < m_lY; y++)
       for (int x = 0; x < m_lX; x++) setRGBM(x, y, ip);
   }
 
-  // Checks whether (x,y) is a proper coordinate
-  inline bool isInPic(const int x, const int y) const {
-    return (m_pic && x >= 0 && x < m_lX && y >= 0 && y < m_lY);
-  }
 
   // Sets the color of the CSTPic pixel
   void setRGB(const int x, const int y, const P &ip) {
@@ -606,31 +598,6 @@ public:
     return false;
   }
 
-  void colorNoise(const I_PIXEL &cc1, const I_PIXEL &cc2, const double d) {
-    P c1, c2;
-
-    if (d <= 0) return;
-
-    convertToCurrentType(c1, cc1);
-    convertToCurrentType(c2, cc2);
-    int xy  = m_lX * m_lY;
-    P *pPic = m_pic;
-    for (int i = 0; i < xy; i++, pPic++)
-      if (isSameColor(&c1, pPic)) {
-        double q = (rand() % 101) / 100.0;
-        q        = d * q;
-        q        = q > 1.0 ? 1.0 : q;
-        double r = (1.0 - q) * (double)c1.r + q * (double)c2.r;
-        double g = (1.0 - q) * (double)c1.g + q * (double)c2.g;
-        double b = (1.0 - q) * (double)c1.b + q * (double)c2.b;
-        r        = D_CUT_0_255(r);
-        g        = D_CUT_0_255(g);
-        b        = D_CUT_0_255(b);
-        pPic->r  = UC_ROUND(r);
-        pPic->g  = UC_ROUND(g);
-        pPic->b  = UC_ROUND(b);
-      }
-  }
 
   /*
 void hlsNoise(const double d)

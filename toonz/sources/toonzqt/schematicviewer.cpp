@@ -970,12 +970,6 @@ void SchematicViewer::updateSchematic() {
 
 //------------------------------------------------------------------
 
-void SchematicViewer::setSchematicScene(SchematicScene *scene) {
-  if (scene) {
-    m_viewer->setScene(scene);
-    m_viewer->centerOn(scene->sceneRect().center());
-  }
-}
 
 //------------------------------------------------------------------
 

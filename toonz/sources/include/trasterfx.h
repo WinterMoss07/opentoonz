@@ -471,7 +471,6 @@ public:
 //******************************************************************************
 
 void DVAPI addRenderCache(const std::string &alias, TImageP image);
-void DVAPI removeRenderCache(const std::string &alias);
 
 //-------------------------------------------------------------------
 

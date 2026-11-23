@@ -57,7 +57,6 @@ class KisTabletSupportWin8 : public QAbstractNativeEventFilter
 
 public:
   static bool isAvailable();
-  static bool isPenDeviceAvailable();
 
   KisTabletSupportWin8()  = default;
   ~KisTabletSupportWin8() = default;

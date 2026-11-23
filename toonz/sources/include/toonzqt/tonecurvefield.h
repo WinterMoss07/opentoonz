@@ -65,7 +65,6 @@ public:
   void setPoints(QList<TPointD> points);
   QList<TPointD> getPoints();
 
-  int getCurrentControlPointIndex() { return m_currentControlPointIndex; };
   void setCurrentControlPointIndex(int index) {
     m_currentControlPointIndex = index;
   };

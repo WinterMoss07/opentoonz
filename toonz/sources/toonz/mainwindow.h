@@ -104,7 +104,6 @@ public:
   void fullScreenWindow();
   void seeThroughWindow();
   void autofillToggle();
-  void onUpgradeTabPro();
   void onAbout();
   void onOpenOnlineManual();
   void onOpenWhatsNew();
@@ -113,7 +112,6 @@ public:
   void checkForUpdates();
   int getRoomCount() const;
   Room *getRoom(int index) const;
-  Room *getRoomByName(QString &roomName);
 
   Room *getCurrentRoom() const;
   void refreshWriteSettings();
@@ -177,9 +175,6 @@ private:
   QAction *createMenuCellsAction(const char *id, const char *name,
                                  const QString &defaultShortcut,
                                  const char *iconSVGName = "");
-  QAction *createMenuViewAction(const char *id, const char *name,
-                                const QString &defaultShortcut,
-                                const char *iconSVGName = "");
   QAction *createMenuWindowsAction(const char *id, const char *name,
                                    const QString &defaultShortcut,
                                    const char *iconSVGName = "");

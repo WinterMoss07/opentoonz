@@ -96,14 +96,6 @@ public:
   TPointD winToWorld(int x, int y) { return m_aff.inv() * TPointD(x, y); }
   TPointD worldToWin(double x, double y) { return m_aff * TPointD(x, y); }
   TPoint qtWinToWin(int x, int y) { return TPoint(x, height() - y); }
-  TPointD qtWinToWorld(int x, int y) {
-    return m_aff.inv() * TPointD(x, height() - y);
-  }
-  TPoint winToQtWin(int x, int y) { return qtWinToWin(x, y); }
-  TPointD worldToQtWin(double x, double y) {
-    TPointD res(worldToWin(x, y));
-    return TPointD(res.x, height() - res.y);
-  }
 
   // World-Widget OpenGL references
   void pushGLWorldCoordinates();
@@ -130,7 +122,6 @@ public:
     setViewZoom(x, y, m_aff.a11 * delta);
   }
 
-  void setZoomRange(double zoomMin, double zoomMax);
 
   // Auxiliary functions
   TRaster32P rasterBuffer();

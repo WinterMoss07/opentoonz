@@ -291,7 +291,6 @@ namespace {
 bool EnumRangeSavingEnabled = true;
 }
 
-void TEnumProperty::enableRangeSaving(bool on) { EnumRangeSavingEnabled = on; }
 
 bool TEnumProperty::isRangeSavingEnabled() { return EnumRangeSavingEnabled; }
 

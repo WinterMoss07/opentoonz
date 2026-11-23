@@ -51,7 +51,6 @@ public:
   void select(int pageIndex);
   void select(int pageIndex, int styleIndexInPage, bool on);
   bool isSelected(int pageIndex, int styleIndexInPage) const;
-  bool isPageSelected(int pageIndex) const;
   bool canHandleStyles();
   void selectNone() override;
   bool isEmpty() const override;
@@ -88,11 +87,9 @@ public:
   void eraseUnusedStyle();
   void blendStyles();
   void toggleLink();
-  void eraseToggleLink();
 
   void enableCommands() override;
 
-  void toggleKeyframe(int frame);
 
   // remove link from the studio palette (if linked)
   void removeLink();

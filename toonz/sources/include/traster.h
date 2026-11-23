@@ -205,7 +205,6 @@ public:
 
   void xMirror();
   void yMirror();
-  void rotate180();
   void rotate90();
 
   void clear();

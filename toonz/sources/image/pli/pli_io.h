@@ -478,7 +478,6 @@ public:
   const TFrameId &getFrameNumber(int index);
   int getFrameCount() const;
 
-  double getThickRatio() const;
   double getMaxThickness() const;
   void setMaxThickness(double maxThickness);
   double getAutocloseTolerance() const;

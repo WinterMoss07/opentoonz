@@ -27,7 +27,6 @@ class CPattern {
                    const double si, const double co, UC_PIXEL *&pucp);
   void getMapPixel(const int xx, const int yy, const double invScale,
                    UC_PIXEL *&pucp);
-  bool readTTT(const char *fn);
   void getBBox(SRECT &bb);
   void eraseBuffer(const int lX, const int lY, UC_PIXEL *buffer);
 

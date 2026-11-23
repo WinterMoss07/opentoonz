@@ -109,13 +109,6 @@ If chunks are n control points are 2*n+1.
   bool getNearestW(const TPointD &p, double &outW, double &distance2,
                    bool checkBBox = true) const;
 
-  /*!
-\finds all points on stroke which are "enough" close to point p. return the
-number of such points.
-*/
-  int getNearChunks(const TThickPoint &p,
-                    std::vector<TThickPoint> &pointsOnStroke,
-                    bool checkBBox = true) const;
 
   //! \return number of chunks in the stroke
   int getChunkCount() const;
@@ -177,8 +170,6 @@ If index is not valid return NULL
   TRectD getBBox(double w0 = 0.0, double w1 = 1.0) const;
   void computeBBox();
 
-  //! Return the bbox of the stroke without thickness.
-  TRectD getCenterlineBBox() const;
 
   //! Returns the length of the stroke at passed chunk-param.
   double getLength(int chunk, double t) const;

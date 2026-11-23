@@ -83,12 +83,6 @@ public:
   // set names to ignore; clear previous list
   void setIgnoredList(const std::set<std::string> &lst);
 
-  // helper method.
-  void setIgnored(std::string name) {
-    std::set<std::string> lst;
-    lst.insert(name);
-    setIgnoredList(lst);
-  }
 
   // try to load plugin specified by fp; check if already loaded
   void loadPlugin(const TFilePath &fp);

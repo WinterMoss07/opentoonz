@@ -243,7 +243,6 @@ public:
 
   // Return entry in row i and column j.
   double Get(long i, long j) const;
-  void GetCouple(long i, long j, TPointD *retValue) const;
 
   // Use GetPtr to get pointer into the array (efficient)
   // Is friendly in that anyone can change the array contents (be careful!)
@@ -259,10 +258,6 @@ public:
   double *GetColumnPtr(long j);
   const double *GetRowPtr(long i) const;
   double *GetRowPtr(long i);
-  long GetRowStride() const {
-    return NumRows;
-  }                                        // Step size (stride) along a row
-  long GetColStride() const { return 1; }  // Step size (stide) along a column
 
   void Set(long i, long j, double val);
   void SetCouple(long i, long c, const TPointD &u);
@@ -275,9 +270,6 @@ public:
   void SetSubDiagonalEntries(double d);
   void SetSubDiagonalEntries(const VectorRn &d);
   void SetColumn(long i, const VectorRn &d);
-  void SetRow(long i, const VectorRn &d);
-  void SetSequence(const VectorRn &d, long startRow, long startCol,
-                   long deltaRow, long deltaCol);
 
   // Loads matrix in as a sub-matrix.  (i,j) is the base point. Defaults to
   // (0,0).
@@ -311,8 +303,6 @@ public:
   MatrixRmn &operator-=(const MatrixRmn &B);
   static MatrixRmn &Multiply(const MatrixRmn &A, const MatrixRmn &B,
                              MatrixRmn &dst);  // Sets dst = A*B.
-  static MatrixRmn &MultiplyScalar(const MatrixRmn &A, double k,
-                                   MatrixRmn &result);
   static MatrixRmn &MultiplyTranspose(
       const MatrixRmn &A, const MatrixRmn &B,
       MatrixRmn &dst);  // Sets dst = A*(B-tranpose).
@@ -457,14 +447,6 @@ inline double MatrixRmn::Get(long i, long j) const {
   return *(x + j * NumRows + i);
 }
 
-// Return a VectorR3 out of a column.  Starts at row 3*i, in column j.
-inline void MatrixRmn::GetCouple(long i, long j, TPointD *retValue) const {
-  assert(i < 0);  // messo perchè sono sicuro non entra mai in questa funzione!
-                  // e quindi commento ->Load alla riga successiva
-  long ii = 2 * i;
-  assert(0 <= i && ii + 1 < NumRows && 0 <= j && j < NumCols);
-  // retValue->Load( x+j*NumRows + ii );
-}
 
 // Get a pointer to the (0,0) entry.
 // The entries are in column order.
@@ -651,15 +633,12 @@ public:
   // const MatrixRmn& ActiveJacobian() const { return *Jactive; }
   // void SetJendActive() { Jactive = &Jend; }
 
-  void addTarget(TPointD targetPos) { target.push_back(targetPos); }
-  void deletLastTarget() { target.pop_back(); }
   void setTarget(int i, TPointD targetPos) { target[i] = targetPos; }
 
   void ZeroDeltaThetas();
   void CalcDeltaThetasTranspose();
   void CalcDeltaThetasPseudoinverse();
   void CalcDeltaThetasDLS();
-  void CalcDeltaThetasDLSwithSVD();
   void CalcDeltaThetasSDLS();
 
   void UpdateThetas();
@@ -668,12 +647,6 @@ public:
   void UpdatedSClampValue();
   void DrawEigenVectors() const;
 
-  void SetCurrentMode(UpdateMode mode) { CurrentUpdateMode = mode; }
-  UpdateMode GetCurrentMode() const { return CurrentUpdateMode; }
-  void SetDampingDLS(double lambda) {
-    DampingLambda   = lambda;
-    DampingLambdaSq = lambda * lambda;
-  }
 
   void Reset();
 

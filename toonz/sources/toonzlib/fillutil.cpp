@@ -75,21 +75,6 @@ inline std::vector<TPoint> getNeighborInks(const TRasterCM32P &r,
   return points;
 }
 
-void computeSeeds(const TRasterCM32P &r, TStroke *stroke,
-                  std::vector<std::pair<TPoint, int>> &seeds) {
-  int length = (int)stroke->getLength();
-  TRect bbox = r->getBounds();
-
-  TPoint oldP;
-
-  for (int i = 0; i < length; i++) {
-    TPoint p = convert(stroke->getPointAtLength(i));
-    if (p == oldP || !bbox.contains(p)) continue;
-    seeds.push_back(
-        std::pair<TPoint, int>(p, (r->pixels(p.y) + p.x)->getPaint()));
-    oldP = p;
-  }
-}
 //-----------------------------------------------------------------------------
 
 void fillOutsideOfStroke(const TRasterCM32P &r, TStroke *stroke, int color) {
@@ -115,17 +100,6 @@ void fillOutsideOfStroke(const TRasterCM32P &r, TStroke *stroke, int color) {
 
 //-----------------------------------------------------------------------------
 
-void restoreColors(const TRasterCM32P &r,
-                   const std::vector<std::pair<TPoint, int>> &seeds) {
-  FillParameters params;
-  // in order to make the paint to protlude behind the line
-  params.m_prevailing = false;
-  for (UINT i = 0; i < seeds.size(); i++) {
-    params.m_p       = seeds[i].first;
-    params.m_styleId = seeds[i].second;
-    fill(r, params);
-  }
-}
 
 //-----------------------------------------------------------------------------
 
@@ -145,19 +119,6 @@ bool areRectPixelsPurePaint(TPixelCM32 *pixels, TRect rect, int wrap) {
 
 //-----------------------------------------------------------------------------
 
-/*!
-  Return true if all \b pixels in \b rect are transparent; otherwise return
-  false.
-*/
-bool areRectPixelsTransparent(TPixel32 *pixels, TRect rect, int wrap) {
-  int dx        = rect.x1 - rect.x0;
-  TPixel32 *pix = pixels + rect.y0 * wrap + rect.x0;
-  int x, y;
-  for (y = rect.y0; y <= rect.y1; y++, pix += wrap - dx - 1)
-    for (x = rect.x0; x <= rect.x1; x++, pix++)
-      if (pix->m <= 0) return false;
-  return true;
-}
 
 //-----------------------------------------------------------------------------
 }  // namespace
@@ -183,30 +144,6 @@ AreaFiller::AreaFiller(const TRasterCM32P &ras, const TRaster32P &ref,
 AreaFiller::~AreaFiller() { m_ras->unlock(); }
 
 //-----------------------------------------------------------------------------
-// questa funzione viene chiamata dopo il fill rect delle aree, e colora gli
-// inchiostri di tipo "autoink"
-// che confinano con le aree appena fillate con il rect. rbefore e' il rect del
-// raster prima del rectfill.
-void fillautoInks(TRasterCM32P &rin, TRect &rect, const TRasterCM32P &rbefore,
-                  TPalette *plt) {
-  assert(plt);
-  TRasterCM32P r = rin->extract(rect);
-  assert(r->getSize() == rbefore->getSize());
-  int i, j;
-
-  for (i = 0; i < r->getLy(); i++) {
-    TPixelCM32 *pix  = r->pixels(i);
-    TPixelCM32 *pixb = rbefore->pixels(i);
-    for (j = 0; j < r->getLx(); j++, pix++, pixb++) {
-      int paint = pix->getPaint();
-      int tone  = pix->getTone();
-      int ink   = pix->getInk();
-      if (paint != pixb->getPaint() && ink != paint &&
-          plt->getStyle(ink)->getFlags() != 0)
-        inkFill(rin, TPoint(j, i) + rect.getP00(), paint, 0, NULL, &rect);
-    }
-  }
-}
 
 //-----------------------------------------------------------------------------
 

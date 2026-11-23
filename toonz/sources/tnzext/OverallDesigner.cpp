@@ -94,24 +94,6 @@ bool isValid(const TStroke *s) {
 
 //---------------------------------------------------------------------------
 
-void showCP(const TStroke *s, double pixelSize) {
-  if (!s) return;
-
-  // show control points
-  const int countCP = s->getControlPointCount();
-  TThickPoint p1;
-
-  for (int i = 0; i < countCP; ++i) {
-    p1 = s->getControlPoint(i);
-    if (i & 1)
-      glColor3d(1.0, 0.0, 0.0);
-    else
-      glColor3d(1.0, 1.0, 0.0);
-
-    drawCross(convert(p1), p1.thick * pixelSize);
-    tglDrawCircle(convert(p1), p1.thick * pixelSize);
-  }
-}
 
 //---------------------------------------------------------------------------
 
@@ -141,53 +123,6 @@ void drawStrokeCenterLine(const TStroke *stroke, double pixelSize,
 
 //---------------------------------------------------------------------------
 
-void showCorners(const TStroke *s, int cornerSize, double pixelSize) {
-  if (!s) return;
-
-  const TPointD offset(20, 20);
-
-  // show corners
-  std::vector<double> corners;
-
-  ToonzExt::cornersDetector(s, cornerSize, corners);
-  if (corners.empty()) return;
-
-  int i, size = corners.size();
-
-  glColor3d(0.8, 1.0, 0.3);
-  // find interval with corner like extremes
-  for (i = 0; i < size; ++i) {
-    double tmp   = corners[i];
-    TPointD pnt  = s->getPoint(tmp);
-    double large = 5.0;
-    drawCross(pnt, large * pixelSize);
-
-    glColor3d(0.7, 0.7, 0.7);
-    std::ostringstream oss;
-    oss << "[" << tmp << "]";
-    extglDrawText(TPointD(pnt.x, pnt.y) + offset, oss.str());
-  }
-
-  corners.clear();
-
-  ToonzExt::straightCornersDetector(s, corners);
-  if (corners.empty()) return;
-
-  size = corners.size();
-  glColor3d(0.8, 1.0, 0.3);
-  // find interval with corner like extremes
-  for (i = 0; i < size; ++i) {
-    double tmp   = corners[i];
-    TPointD pnt  = s->getPoint(tmp);
-    double large = 5.0;
-    drawCross(pnt, large * pixelSize);
-
-    glColor3d(0.7, 0.2, 0.2);
-    std::ostringstream oss;
-    oss << "[" << tmp << "]";
-    extglDrawText(TPointD(pnt.x, pnt.y) - offset, oss.str());
-  }
-}
 }
 
 //-----------------------------------------------------------------------------
@@ -289,7 +224,6 @@ void ToonzExt::OverallDesigner::draw(ToonzExt::StrokeDeformation *sd) {
       if (status) {
 #ifdef _DEBUG
         glColor3d(0, 0, 0);
-        showCorners(s, status->cornerSize_, pixelSize);
 
         glColor3d(0, 0, 0);
         TPointD offset = normalize(TPointD(1.0, 1.0)) * 20.0;
@@ -300,7 +234,6 @@ void ToonzExt::OverallDesigner::draw(ToonzExt::StrokeDeformation *sd) {
         extglDrawText(TPointD(x_, y_) + offset, oss.str());
 
         glColor3d(0.5, 1.0, 0.5);
-        showCP(s, pixelSize);
 #endif
       }
     }

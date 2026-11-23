@@ -148,7 +148,6 @@ public:
     m_addFxContextMenu.setCurrentCursorScenePos(QPointF(0, 0));
   }
   void selectNodes(QList<TFxP> &fxs);
-  void toggleNormalIconView() { m_isNormalIconView = !m_isNormalIconView; }
   bool isNormalIconView() { return m_isNormalIconView; }
 
   SchematicViewer *getSchematicViewer() { return m_viewer; }
@@ -175,7 +174,6 @@ private:
   void updateEditedGroups(const QMap<int, QList<SchematicNode *>> &editedGroup);
   void updateEditedMacros(
       const QMap<TMacroFx *, QList<SchematicNode *>> &editedMacro);
-  FxSchematicNode *getFxNodeFromPosition(const QPointF &pos);
   void placeNodeAndParents(TFx *fx, double x, double &maxX, double &maxY);
 
   QPointF nearestPoint(const QPointF &point);

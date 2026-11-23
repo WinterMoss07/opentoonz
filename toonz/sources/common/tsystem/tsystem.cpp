@@ -123,19 +123,6 @@ bool TFileStatus::isLink() const { return m_fileInfo.isSymLink(); }
 
 //-----------------------------------------------------------------------------------
 
-bool TSystem::doHaveMainLoop() {
-  int current = HasMainLoop.load(std::memory_order_acquire);
-
-  if (current == -1) {
-#ifdef QT_DEBUG
-    qFatal("TSystem::hasMainLoop was not called");
-#else
-    qWarning("Main loop not initialized");
-#endif
-    return false;
-  }
-  return current == 1;
-}
 
 //-----------------------------------------------------------------------------------
 

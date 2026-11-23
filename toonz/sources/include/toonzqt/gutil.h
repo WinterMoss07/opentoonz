@@ -171,18 +171,9 @@ bool DVAPI acceptResourceOrFolderDrop(const QList<QUrl> &urls);
 inline QPointF toQPointF(const TPointD &p) { return QPointF(p.x, p.y); }
 inline QPointF toQPointF(const TPoint &p) { return QPointF(p.x, p.y); }
 inline QPoint toQPoint(const TPoint &p) { return QPoint(p.x, p.y); }
-inline TPointD toTPointD(const QPointF &p) { return TPointD(p.x(), p.y()); }
-inline TPointD toTPointD(const QPoint &p) { return TPointD(p.x(), p.y()); }
-inline TPoint toTPoint(const QPoint &p) { return TPoint(p.x(), p.y()); }
 
 inline QRect toQRect(const TRect &r) {
   return QRect(r.x0, r.y0, r.getLx(), r.getLy());
-}
-inline QRectF toQRectF(const TRectD &r) {
-  return QRectF(r.x0, r.y0, r.getLx(), r.getLy());
-}
-inline QRectF toQRectF(const TRect &r) {
-  return QRectF(r.x0, r.y0, r.getLx(), r.getLy());
 }
 inline TRect toTRect(const QRect &r) {
   return TRect(r.left(), r.top(), r.right(), r.bottom());
@@ -265,8 +256,6 @@ public:
   }
   double getIconDisabledOpacity() const { return m_iconDisabledOpacity; }
 
-  void setInterfaceColor(const QColor &color) { m_interfaceColor = color; }
-  QColor getInterfaceColor() const { return m_interfaceColor; }
 
   void setIconBaseColor(const QColor &color) { m_iconBaseColor = color; }
   QColor getIconBaseColor() const { return m_iconBaseColor; }

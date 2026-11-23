@@ -177,12 +177,6 @@ void FrameScroller::unregisterFrameScroller() {
   if (frameScrollers.contains(this)) frameScrollers.removeAll(this);
 }
 
-void FrameScroller::prepareToScrollOthers(const QPointF &offset) {
-  CellPositionRatio ratio = orientation()->xyToPositionRatio(offset);
-  for (int i = 0; i < frameScrollers.size(); i++)
-    if (frameScrollers[i] != this)
-      frameScrollers[i]->prepareToScrollRatio(ratio);
-}
 void FrameScroller::prepareToScrollRatio(const CellPositionRatio &ratio) {
   QPointF offset = orientation()->positionRatioToXY(ratio);
   emit prepareToScrollOffset(offset);
@@ -766,14 +760,6 @@ void SpreadsheetViewer::setAutoPanSpeed(const QRect &widgetBounds,
   m_lastAutoPanPos = mousePos;
 }
 
-int SpreadsheetViewer::xToColumn(int x) const {
-  CellPosition pos = xyToPosition(QPoint(x, 0));
-  return pos.layer();
-}
-int SpreadsheetViewer::yToRow(int y) const {
-  CellPosition pos = xyToPosition(QPoint(0, y));
-  return pos.frame();
-}
 int SpreadsheetViewer::columnToX(int col) const {
   QPoint xy = positionToXY(CellPosition(0, col));
   return xy.x();
@@ -1002,7 +988,6 @@ void SpreadsheetViewer::updateCellRowAree()
 
 */
 
-void SpreadsheetViewer::updateAreas() {}
 
 void SpreadsheetViewer::onVSliderChanged(int) {
   if (!m_isComputingSize) refreshContentSize(0, 0);

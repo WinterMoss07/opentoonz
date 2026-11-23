@@ -25,23 +25,6 @@ void Iwa_AdjustExposureFx::setSourceRaster(const RASTER srcRas, float4 *dstMem,
   }
 }
 
-void Iwa_AdjustExposureFx::setSourceRasterF(const TRasterFP srcRas,
-                                            float4 *dstMem, TDimensionI dim) {
-  float4 *chann_p = dstMem;
-
-  for (int j = 0; j < dim.ly; j++) {
-    TPixelF *pix = srcRas->pixels(j);
-    for (int i = 0; i < dim.lx; i++) {
-      (*chann_p).x = pix->r;
-      (*chann_p).y = pix->g;
-      (*chann_p).z = pix->b;
-      (*chann_p).w = pix->m;
-
-      pix++;
-      chann_p++;
-    }
-  }
-}
 /*------------------------------------------------------------
  出力結果をChannel値に変換してタイルに格納
 ------------------------------------------------------------*/
@@ -76,22 +59,6 @@ void Iwa_AdjustExposureFx::setOutputRaster(float4 *srcMem, const RASTER dstRas,
   }
 }
 
-void Iwa_AdjustExposureFx::setOutputRasterF(float4 *srcMem,
-                                            const TRasterFP dstRas,
-                                            TDimensionI dim) {
-  float4 *chan_p = srcMem;
-  for (int j = 0; j < dim.ly; j++) {
-    TPixelF *pix = dstRas->pixels(j);
-    for (int i = 0; i < dim.lx; i++) {
-      pix->r = (*chan_p).x;
-      pix->g = (*chan_p).y;
-      pix->b = (*chan_p).z;
-      pix->m = (*chan_p).w;
-      pix++;
-      chan_p++;
-    }
-  }
-}
 
 //------------------------------------------------
 

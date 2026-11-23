@@ -73,13 +73,6 @@ double tglGetPixelSize2() {
 
 //-----------------------------------------------------------------------------
 
-TRectD tglGetBounds() {
-  TAffine4 modelview;
-  TAffine4 projection;
-  glGetDoublev(GL_MODELVIEW_MATRIX, modelview.a);
-  glGetDoublev(GL_PROJECTION_MATRIX, projection.a);
-  return (projection*modelview).get2d().inv() * TRectD(-1.0, -1.0, 1.0, 1.0);
-}
 
 //-----------------------------------------------------------------------------
 
@@ -208,10 +201,6 @@ void tglRgbOnlyColorMask() {
 
 //-----------------------------------------------------------------------------
 
-void tglAlphaOnlyColorMask() {
-  tglMultColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE);
-  tglEnableBlending(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-}
 
 //-----------------------------------------------------------------------------
 
@@ -532,57 +521,6 @@ void tglDraw(const TRectD &rect, const TRaster32P &tex, bool blending) {
 
 //-----------------------------------------------------------------------------
 
-void tglBuildMipmaps(std::vector<TRaster32P> &rasters,
-                     const TFilePath &filepath) {
-  assert(rasters.size() > 0);
-  TRop::ResampleFilterType resampleFilter = TRop::ClosestPixel;
-  TRasterP ras;
-  TImageReader::load(filepath, ras);
-  int rasLx = ras->getLx();
-  int rasLy = ras->getLy();
-
-  int lx = 1;
-  while (lx < rasLx) lx <<= 1;
-
-  int ly = 1;
-  while (ly < rasLy) ly <<= 1;
-
-  TRaster32P ras2(lx, ly);
-  double sx = (double)lx / (double)ras->getLx();
-  double sy = (double)ly / (double)ras->getLy();
-#ifndef SCALE_BY_GLU
-  TRop::resample(ras2, ras, TScale(sx, sy), resampleFilter);
-#else
-  ras->lock();
-  gluScaleImage(GL_RGBA, ras->getLx(), ras->getLy(), GL_UNSIGNED_BYTE,
-                ras->getRawData(), lx, ly, GL_UNSIGNED_BYTE,
-                ras2->getRawData());
-  ras->unlock();
-#endif
-
-  rasters[0] = ras2;
-  int ras2Lx = ras2->getLx();
-  int ras2Ly = ras2->getLy();
-  for (int i = 1; i < (int)rasters.size(); ++i) {
-    lx >>= 1;
-    ly >>= 1;
-    if (lx < 1) lx = 1;
-    if (ly < 1) ly = 1;
-    rasters[i] = TRaster32P(lx, ly);
-    sx         = (double)lx / (double)ras2Lx;
-    sy         = (double)ly / (double)ras2Ly;
-    rasters[i] = TRaster32P(lx, ly);
-#ifndef SCALE_BY_GLU
-    TRop::resample(rasters[i], ras2, TScale(sx, sy), resampleFilter);
-#else
-    ras2->lock();
-    gluScaleImage(GL_RGBA, ras->getLx(), ras->getLy(), GL_UNSIGNED_BYTE,
-                  ras2->getRawData(), lx, ly, GL_UNSIGNED_BYTE,
-                  rasters[i]->getRawData());
-    ras2->unlock();
-#endif
-  }
-}
 
 //-----------------------------------------------------------------------------
 // Forse si potrebbe togliere l'ifdef ed usare QT

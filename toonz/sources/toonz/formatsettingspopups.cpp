@@ -168,16 +168,6 @@ FormatSettingsPopup::FormatSettingsPopup(QWidget *parent,
 
 //-----------------------------------------------------------------------------
 
-void FormatSettingsPopup::setFormatProperties(TPropertyGroup *props) {
-  if (props == m_props) return;
-
-  m_props = props;
-
-  for (int i = 0; i < m_props->getPropertyCount(); i++) {
-    if (TProperty *prop = m_props->getProperty(i))
-      m_widgets[prop->getName()]->setProperty(prop);
-  }
-}
 
 //-----------------------------------------------------------------------------
 

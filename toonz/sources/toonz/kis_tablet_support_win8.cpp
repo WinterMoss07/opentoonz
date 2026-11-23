@@ -174,41 +174,26 @@ public:
 
   bool isInRange() const { return f & POINTER_FLAG_INRANGE; }
 
-  bool isInContact() const { return f & POINTER_FLAG_INCONTACT; }
 
   bool isFirstButtonDown() const { return f & POINTER_FLAG_FIRSTBUTTON; }
 
   bool isSecondButtonDown() const { return f & POINTER_FLAG_SECONDBUTTON; }
 
-  bool isThirdButtonDown() const { return f & POINTER_FLAG_THIRDBUTTON; }
 
-  bool isForthButtonDown() const { return f & POINTER_FLAG_FOURTHBUTTON; }
 
-  bool isFifthButtonDown() const { return f & POINTER_FLAG_FIFTHBUTTON; }
 
   bool isPrimary() const { return f & POINTER_FLAG_PRIMARY; }
 
-  bool isConfidence() const { return f & POINTER_FLAG_CONFIDENCE; }
 
-  bool isCancelled() const { return f & POINTER_FLAG_CANCELED; }
 
   bool isDown() const { return f & POINTER_FLAG_DOWN; }
 
-  bool isUpdate() const { return f & POINTER_FLAG_UPDATE; }
 
   bool isUp() const { return f & POINTER_FLAG_UP; }
 
-  bool isWheel() const { return f & POINTER_FLAG_WHEEL; }
 
-  bool isHWheel() const { return f & POINTER_FLAG_HWHEEL; }
 
-  bool isCaptureChanged() const { return f & POINTER_FLAG_CAPTURECHANGED; }
 
-  bool hasTransform() const {
-    // mingw-w64 headers is missing this flag
-    // return f & POINTER_FLAG_HASTRANSFORM;
-    return f & 0x00400000;
-  }
 };  // class PointerFlagsWrapper
 
 class PenFlagsWrapper {
@@ -221,11 +206,9 @@ public:
     return PenFlagsWrapper(penInfo.penFlags);
   }
 
-  bool isBarrelPressed() const { return f & PEN_FLAG_BARREL; }
 
   bool isInverted() const { return f & PEN_FLAG_INVERTED; }
 
-  bool isEraserPressed() const { return f & PEN_FLAG_ERASER; }
 };  // class PenFlagsWrapper
 
 class PenMaskWrapper {
@@ -316,47 +299,6 @@ bool KisTabletSupportWin8::isAvailable() {
   return api.init();
 }
 
-bool KisTabletSupportWin8::isPenDeviceAvailable() {
-  if (!api.init()) {
-    return false;
-  }
-  UINT32 deviceCount = 0;
-  if (!api.GetPointerDevices(&deviceCount, nullptr)) {
-#ifdef KRITA
-    dbgTablet << "GetPointerDevices failed";
-#endif
-    return false;
-  }
-  if (deviceCount == 0) {
-#ifdef KRITA
-    dbgTablet << "No pointer devices";
-#endif
-    return false;
-  }
-  QVector<POINTER_DEVICE_INFO> devices(deviceCount);
-  if (!api.GetPointerDevices(&deviceCount, devices.data())) {
-#ifdef KRITA
-    dbgTablet << "GetPointerDevices failed";
-#endif
-    return false;
-  }
-  bool hasPenDevice = false;
-  for (const POINTER_DEVICE_INFO &device : devices) {
-#ifdef KRITA
-    dbgTablet << "Found pointer device" << static_cast<void *>(device.device)
-              << QString::fromWCharArray(device.productString)
-              << "type:" << device.pointerDeviceType;
-#endif
-    if (device.pointerDeviceType == POINTER_DEVICE_TYPE_INTEGRATED_PEN ||
-        device.pointerDeviceType == POINTER_DEVICE_TYPE_EXTERNAL_PEN) {
-      hasPenDevice = true;
-    }
-  }
-#ifdef KRITA
-  dbgTablet << "hasPenDevice:" << hasPenDevice;
-#endif
-  return hasPenDevice;
-}
 
 bool KisTabletSupportWin8::init() { return api.init(); }
 

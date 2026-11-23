@@ -59,12 +59,6 @@ Scalar trunc(Scalar val) {
   return (val < 0) ? std::ceil(val) : std::floor(val);
 }
 
-//! Computes the nearest integer \b strictly not greater in magnitude than the
-//! given value
-template <typename Scalar>
-Scalar truncStrict(Scalar val) {
-  return (val < 0) ? std::floor(val + 1) : std::ceil(val - 1);
-}
 
 //! Computes the nearest integer not lesser in magnitude than the given value
 template <typename Scalar>
@@ -72,12 +66,6 @@ Scalar grow(Scalar val) {
   return (val < 0) ? std::floor(val) : std::ceil(val);
 }
 
-//! Computes the nearest integer \b strictly not lesser in magnitude than the
-//! given value
-template <typename Scalar>
-Scalar growStrict(Scalar val) {
-  return (val < 0) ? std::ceil(val - 1) : std::floor(val + 1);
-}
 
 //-------------------------------------------------------------------------------------------
 

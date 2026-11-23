@@ -598,17 +598,6 @@ Room *MainWindow::getRoom(int index) const {
 }
 
 //-----------------------------------------------------------------------------
-/*! Roomを名前から探す
- */
-Room *MainWindow::getRoomByName(QString &roomName) {
-  for (int i = 0; i < getRoomCount(); i++) {
-    Room *room = dynamic_cast<Room *>(m_stackedWidget->widget(i));
-    if (room) {
-      if (room->getName() == roomName) return room;
-    }
-  }
-  return 0;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1048,7 +1037,6 @@ void MainWindow::onLoadScene() { IoCmd::loadScene(); }
 void MainWindow::onLoadSubScene() { IoCmd::loadSubScene(); }
 //-----------------------------------------------------------------------------
 
-void MainWindow::onUpgradeTabPro() {}
 
 //-----------------------------------------------------------------------------
 
@@ -1746,12 +1734,6 @@ QAction *MainWindow::createMenuCellsAction(const char *id, const char *name,
 
 //-----------------------------------------------------------------------------
 
-QAction *MainWindow::createMenuViewAction(const char *id, const char *name,
-                                          const QString &defaultShortcut,
-                                          const char *iconSVGName) {
-  return createAction(id, name, defaultShortcut, MenuViewCommandType,
-                      iconSVGName);
-}
 
 //-----------------------------------------------------------------------------
 

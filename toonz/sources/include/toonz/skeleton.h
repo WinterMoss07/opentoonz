@@ -49,7 +49,6 @@ public:
     void select(bool selected = true) { m_selected = selected; }
     bool isSelected() const { return m_selected; }
 
-    PinnedStatus getPinnedStatus() const { return m_pinnedStatus; }
     void setPinnedStatus(PinnedStatus pinnedStatus) {
       m_pinnedStatus = pinnedStatus;
     }
@@ -85,19 +84,10 @@ public:
 
   int getBoneCount() const { return m_bones.size(); }
   Bone *getBone(int index) const;
-  Bone *getBoneByColumnIndex(int columnIndex) const;
 
-  //! the root is the ancestor of each bone in the skeleton
-  Bone *getRootBone() const { return m_rootBone; }
 
-  //! helper functions. see TPinnedRangeSet
-  //! the root status is TStageObject::IK
-  bool isIKEnabled() const;
 
-  //! Some bone has a not empty pinned range
-  bool hasPinnedRanges() const;
 
-  void clearAllPinnedRanges();
 };
 
 #endif

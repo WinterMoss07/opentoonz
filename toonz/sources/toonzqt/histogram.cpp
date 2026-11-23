@@ -80,32 +80,6 @@ void computeRGBMValues64(const TRaster64P &ras, int (*rgbmValues)[256]) {
 
 //-----------------------------------------------------------------------------
 
-void computeRGBMValues(const TRasterCM32P &ras, TPaletteP pal,
-                       int (*rgbmValues)[256]) {
-  assert(pal);
-
-  int y, lx = ras->getLx(), ly = ras->getLy();
-  TPixelCM32 *pix, *endPix;
-
-  int styleId;
-  TColorStyle *colorStyle;
-  TPixel32 color;
-
-  for (y = 0; y < ly; ++y)
-    for (pix = ras->pixels(y), endPix = pix + lx; pix < endPix; ++pix) {
-      styleId    = (pix->getTone() < 127) ? pix->getInk() : pix->getPaint();
-      colorStyle = pal->getStyle(styleId);
-      if (!colorStyle) continue;
-
-      color = colorStyle->getAverageColor();
-      if (color.m) {
-        ++rgbmValues[0][color.r];
-        ++rgbmValues[1][color.g];
-        ++rgbmValues[2][color.b];
-      }
-      ++rgbmValues[3][color.m];
-    }
-}
 
 //-----------------------------------------------------------------------------
 

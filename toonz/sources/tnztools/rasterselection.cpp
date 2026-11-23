@@ -1395,10 +1395,6 @@ TRectD RasterSelection::getSelectionBound() const {
 
 //-----------------------------------------------------------------------------
 
-TRectD RasterSelection::getOriginalSelectionBound() const {
-  if (m_originalStrokes.size() == 0) return TRectD();
-  return getStrokesBound(m_originalStrokes);
-}
 
 //-----------------------------------------------------------------------------
 

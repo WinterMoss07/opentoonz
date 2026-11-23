@@ -2477,28 +2477,3 @@ void FilmstripCmd::inbetween(
 
 //-----------------------------------------------------------------------------
 
-void FilmstripCmd::renumberDrawing(TXshSimpleLevel *sl, const TFrameId &oldFid,
-                                   const TFrameId &desiredNewFid) {
-  if (oldFid == desiredNewFid) return;
-  std::vector<TFrameId> fids, oldFrames;
-  sl->getFids(oldFrames);
-  fids    = oldFrames;
-  auto it = std::find(fids.begin(), fids.end(), oldFid);
-  if (it == fids.end()) return;
-  TFrameId newFid = desiredNewFid;
-  while (std::find(fids.begin(), fids.end(), newFid) != fids.end()) {
-    QString nextLetter = getNextLetter(newFid.getLetter());
-    if (nextLetter.isEmpty()) return;
-    newFid = TFrameId(newFid.getNumber(), nextLetter);
-  }
-  *it = newFid;
-  if (Preferences::instance()->isSyncLevelRenumberWithXsheetEnabled()) {
-    updateXSheet(sl, oldFrames, fids);
-  }
-  sl->renumber(fids);
-  sl->setDirtyFlag(true);
-
-  TApp::instance()->getCurrentXsheet()->notifyXsheetChanged();
-  TApp::instance()->getCurrentLevel()->notifyLevelChange();
-  TApp::instance()->getCurrentScene()->setDirtyFlag(true);
-}

@@ -67,8 +67,6 @@ public:
   int getTokenCount() const;
   const Token &getToken(int index) const;
 
-  //! get the token containing the pos-th character in the input string
-  Token getTokenFromPos(int pos) const;
 
   //! reset the token index. (set it to 0)
   void reset();

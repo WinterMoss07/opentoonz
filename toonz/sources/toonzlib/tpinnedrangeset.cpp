@@ -70,33 +70,6 @@ void TPinnedRangeSet::setRange(int first, int second) {
 
 //-----------------------------------------------------------------------------
 
-void TPinnedRangeSet::removeRange(int first, int second) {
-  std::vector<Range>::iterator it;
-  // finds the first range which could possibly overlap [first,second] :
-  // range.second>=first
-  for (it = m_ranges.begin(); it != m_ranges.end(); ++it)
-    if (it->second >= first) break;
-
-  if (it == m_ranges.end() || it->first > second) {
-    // nothing to do: for each range range.second < first or range.first >
-    // second
-  } else if (it->first < first && it->second > second) {
-    // [first,second] is a "hole"
-    Range range(it->first, first - 1);
-    it->first = second + 1;
-    m_ranges.insert(it, range);
-  } else {
-    std::vector<Range>::iterator it2;
-    if (it->first < first) {
-      it->second = first - 1;
-      ++it;
-    }
-    it2 = it;
-    while (it != m_ranges.end() && it->second <= second) ++it;
-    if (it != m_ranges.end() && it->first <= second) it->first = second + 1;
-    if (it2 != it) m_ranges.erase(it2, it);
-  }
-}
 
 //-----------------------------------------------------------------------------
 

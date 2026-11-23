@@ -120,7 +120,6 @@ public:
   bool exists();
   void setExists(bool yes) { m_existsChecked = true, m_exists = yes; }
 
-  bool peeks() const { return m_peeks; }
   void setPeeking(bool yes) { m_peeks = yes; }
 };
 
@@ -377,7 +376,6 @@ public:
   bool removeRows(int row, int count,
                   const QModelIndex &parent = QModelIndex()) override;
 
-  QModelIndex getCurrentProjectIndex() const;
 
   void notifyBeginRemoveRows(const QModelIndex &parent, int first, int last) {
     emit beginRemoveRows(parent, first, last);
@@ -388,11 +386,6 @@ public:
   }
   void notifyEndInsertRows() { emit endInsertRows(); }
 
-  void notifyBeginMoveRows(const QModelIndex &srcParent, int first, int last,
-                           const QModelIndex &dstParent, int dstChild) {
-    emit beginMoveRows(srcParent, first, last, dstParent, dstChild);
-  }
-  void notifyEndMoveRows() { emit endMoveRows(); }
 
 protected slots:
   // when the scene switched, update the path of the scene location node

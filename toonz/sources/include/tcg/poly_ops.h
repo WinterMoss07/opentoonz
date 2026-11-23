@@ -42,19 +42,6 @@ Scalar evaluate(const Scalar poly[],  //!< Coefficients of the input polynomial,
 
 //-------------------------------------------------------------------------------------------
 
-/*!
-  \brief  Reduces the degree of the input polynomial, discarding all leading
-  coefficients
-          whose absolute value is below the specified tolerance threshold.
-*/
-template <typename Scalar>
-void reduceDegree(
-    const Scalar poly[],  //!< Input polynomial to be reduced.
-    int &deg,             //!< Input/output polynomial degree.
-    Scalar tolerance  //!< Coefficients threshold to reduce the polynomial with.
-    ) {
-  while ((deg > 0) && (std::abs(poly[deg]) < tolerance)) --deg;
-}
 
 //-------------------------------------------------------------------------------------------
 
@@ -211,60 +198,6 @@ unsigned int solve_2(
 
 //-------------------------------------------------------------------------------------------
 
-/*!
-  \brief    Solves the 3rd degree equation: $c[3]t^3 + c[2] t^2 + c[1] t + c[0]
-  = 0$
-  \return   The number of #real# solutions found under the specified divide-by
-  tolerance
-
-  \remark   The returned solutions are sorted, with $s[0] <= s[1] <= s[2]$
-*/
-template <typename Scalar>
-unsigned int solve_3(Scalar c[4],     //!< Polynomial coefficients array
-                     Scalar s[3],     //!< Solutions array
-                     Scalar tol = 0)  //!< Leading coefficient tolerance, the
-                                      //! equation is reduced to 2nd degree
-//!  if the leading coefficient is below this threshold
-{
-  if (std::abs(c[3]) <= tol)
-    return solve_2(c, s, tol);  // Reduces to second degree
-
-  Scalar nc[3] = {c[0] / c[3], c[1] / c[3], c[2] / c[3]};
-
-  Scalar b2     = nc[2] * nc[2];
-  Scalar p      = nc[1] - b2 / 3;
-  Scalar q      = nc[2] * (b2 + b2 - 9 * nc[1]) / 27 + nc[0];
-  Scalar p3     = p * p * p;
-  Scalar d      = q * q + 4 * p3 / 27;
-  Scalar offset = -nc[2] / 3;
-
-  if (d >= 0) {
-    // Single solution
-    Scalar z = sqrt(d);
-    Scalar u = (-q + z) / 2;
-    Scalar v = (-q - z) / 2;
-
-    u = (u < 0) ? -pow(-u, 1 / Scalar(3)) : pow(u, 1 / Scalar(3));
-    v = (v < 0) ? -pow(-v, 1 / Scalar(3)) : pow(v, 1 / Scalar(3));
-
-    s[0] = offset + u + v;
-    return 1;
-  }
-
-  assert(p3 < 0);
-
-  Scalar u = sqrt(-p / Scalar(3));
-  Scalar v = acos(-sqrt(-27 / p3) * q / Scalar(2)) / Scalar(3);
-  Scalar m = cos(v), n = sin(v) * 1.7320508075688772935274463415059;  // sqrt(3)
-
-  s[0] = offset - u * (n + m);
-  s[1] = offset + u * (n - m);
-  s[2] = offset + u * (m + m);
-
-  assert(s[0] <= s[1] && s[1] <= s[2]);
-
-  return 3;
-}
 }
 }  // namespace tcg::poly_ops
 

@@ -74,7 +74,6 @@ Make update at the end.
   double getTrackerRegionHeight() { return m_height; }
   void setTrackerRegionHeight(double height) { m_height = height; }
 
-  TRectD getTrackerRegion(const TFrameId &fid);
 
   TPointD getDelta() const { return m_delta; }
 
@@ -146,16 +145,10 @@ which this function will return 0.
 */
   Hook *addHook();
 
-  //! Finds \b hook in the container, \a deletes it, and replaces its hook cell
-  //! with 0.
-  void clearHook(Hook *hook);
 
   //! Clears the container, deleting all stored hooks.
   void clearHooks();
 
-  //! Generates a TrackerObjectsSet containing TrackerObject hooks.
-  //! \sa TrackerObject
-  TrackerObjectsSet *getTrackerObjectsSet() const;
 
   void renumber(const std::map<TFrameId, TFrameId> &renumberTable);
   void eraseFrame(const TFrameId &fid);
@@ -184,7 +177,6 @@ public:
   int getHooksCount() { return m_hooks.size(); }
 
   void addHook(Hook *hook);
-  void removeHook(int index);
 
 private:
   int m_id;
@@ -199,17 +191,11 @@ class DVAPI TrackerObjectsSet {
 public:
   TrackerObjectsSet() {}
 
-  int getTrackerObjectsCount() const { return m_trackerObjects.size(); }
   TrackerObject *getObject(int objectId);
-  TrackerObject *getObjectFromIndex(int index);
 
-  int getIndexFromId(
-      int objectId);  // return objectIndex, return -1 if objectId doesn't exist
-  int getIdFromIndex(int index);
 
   int addObject();  // add new object, return new object Id
   void addObject(TrackerObject *trackerObject);
-  void removeObject(int objectId);
 
   void clearAll();
 
@@ -222,7 +208,5 @@ private:
 // helper functions
 //-------------------------------------------------------------------
 
-// 0 => "B"; 1,.. => "H1",...
-DVAPI std::string getHookName(int hookCode);
 
 #endif  // HOOKSET_INCLUDED

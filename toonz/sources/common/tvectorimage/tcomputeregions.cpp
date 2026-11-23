@@ -413,9 +413,6 @@ void addIntersection(IntersectionData &intData, const vector<VIStroke *> &s,
 
 //-----------------------------------------------------------------------------
 
-static bool sortBBox(const TStroke *s1, const TStroke *s2) {
-  return s1->getBBox().x0 < s2->getBBox().x0;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -437,23 +434,6 @@ static void cleanIntersectionMarks(const VIList<Intersection> &interList) {
 
 //-----------------------------------------------------------------------------
 
-static void cleanNextIntersection(const VIList<Intersection> &interList,
-                                  TStroke *s) {
-  Intersection *p;
-  IntersectedStroke *q;
-
-  for (p = interList.first(); p; p = p->next())
-    for (q = p->m_strokeList.first(); q; q = q->next())
-      if (q->m_edge.m_s == s) {
-        // if (it2->m_nextIntersection==NULL)
-        //  return; //gia' ripulita prima
-        if (q->m_nextIntersection) {
-          q->m_nextIntersection = 0;
-          p->m_numInter--;
-        }
-        q->m_nextStroke = 0;
-      }
-}
 
 //-----------------------------------------------------------------------------
 
@@ -2775,34 +2755,8 @@ void transferColors(const list<TEdge *> &oldList, const list<TEdge *> &newList,
                     bool isStrokeChanged, bool isFlipped, bool overwriteColor);
 
 //-----------------------------------------------------------------------------
-static void printStrokes1(vector<VIStroke *> &v, int size) {
-  UINT i = 0;
-  ofstream of("C:\\temp\\strokes.txt");
-
-  for (i = 0; i < (UINT)size; i++) {
-    TStroke *s = v[i]->m_s;
-    of << "***stroke " << i << endl;
-    for (UINT j = 0; j < (UINT)s->getChunkCount(); j++) {
-      const TThickQuadratic *q = s->getChunk(j);
-
-      of << "   s0 " << q->getP0() << endl;
-      of << "   s1 " << q->getP1() << endl;
-      of << "   s2 " << q->getP2() << endl;
-      of << "****** " << endl;
-    }
-    of << endl;
-  }
-  for (i = size; i < v.size(); i++) {
-    TStroke *s = v[i]->m_s;
-    of << "***Autostroke " << i << endl;
-    of << "s0 " << s->getPoint(0.0) << endl;
-    of << "s1 " << s->getPoint(1.0) << endl;
-    of << endl;
-  }
-}
 
 //-----------------------------------------------------------------------------
-void printStrokes1(vector<VIStroke *> &v, int size);
 
 // void testHistory();
 

@@ -444,12 +444,6 @@ bool isGlobalKeyFrameWithSamePrevTypeDiffFromLinear(TStageObject *stageObject,
 
 //-----------------------------------------------------------------------------
 
-int getParamStep(TStageObject *stageObject, int frame) {
-  // this is a pretty useless function outside of global keyframes.
-  TDoubleKeyframe keyFrame =
-      stageObject->getParam(TStageObject::T_Angle)->getKeyframeAt(frame);
-  return keyFrame.m_step;
-}
 
 //-----------------------------------------------------------------------------
 

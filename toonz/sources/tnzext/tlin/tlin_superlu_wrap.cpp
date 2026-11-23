@@ -89,11 +89,6 @@ void tlin::freeS(SuperMatrix *m) {
 
 //---------------------------------------------------------------
 
-void tlin::freeD(SuperMatrix *m) {
-  if (!m) return;
-  Destroy_Dense_Matrix(m);
-  SUPERLU_FREE(m);
-}
 
 //---------------------------------------------------------------
 
@@ -130,21 +125,9 @@ void tlin::createD(SuperMatrix &A, int rows, int cols, int lda,
 
 //---------------------------------------------------------------
 
-void tlin::destroyS(SuperMatrix &A, bool destroyData) {
-  if (destroyData)
-    Destroy_CompCol_Matrix(&A);
-  else
-    SUPERLU_FREE(A.Store);
-}
 
 //---------------------------------------------------------------
 
-void tlin::destroyD(SuperMatrix &A, bool destroyData) {
-  if (destroyData)
-    Destroy_Dense_Matrix(&A);
-  else
-    SUPERLU_FREE(A.Store);
-}
 
 //---------------------------------------------------------------
 
@@ -462,29 +445,6 @@ void tlin::solve(SuperMatrix *A, double *b, double *&x,
 //    BLAS-related Functions
 //*************************************************************************
 
-void tlin::multiplyS(const SuperMatrix *A, const double *x, double *&y) {
-  /*
-int sp_dgemv (char *, double, SuperMatrix *, double *,
-                  int, double, double *, int);
-*/
-
-  if (!y) {
-    y = (double *)malloc(A->nrow * sizeof(double));
-    memset(y, 0, A->nrow * sizeof(double));
-  }
-
-  SuperMatrix *_A = const_cast<SuperMatrix *>(A);
-  double *_x      = const_cast<double *>(x);
-
-  sp_dgemv((char *)"N", 1.0, _A, _x, 1, 1.0, y, 1);
-}
 
 //---------------------------------------------------------------
 
-void tlin::multiplyD(const SuperMatrix *A, const double *x, double *&y) {
-  int lda;
-  double *values;
-  tlin::readDN(const_cast<SuperMatrix *>(A), lda, values);
-
-  tlin::multiply(A->nrow, A->ncol, values, x, y);
-}

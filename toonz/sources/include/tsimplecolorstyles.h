@@ -100,7 +100,6 @@ public:
   RegionOutlineModifier *getRegionOutlineModifier() const {
     return m_regionOutlineModifier;
   }
-  void setRegionOutlineModifier(RegionOutlineModifier *modifier);
 
   bool isRegionStyle() const override { return true; }
   bool isStrokeStyle() const override { return true; }
@@ -208,7 +207,6 @@ public:
   std::string getBrushIdName() const override;
 
   TPixel32 getColor() const { return m_color; }
-  USHORT getStipple() const { return m_stipple; }
 
   void drawStroke(const TColorFunction *cf,
                   const TStroke *stroke) const override;
@@ -258,7 +256,6 @@ public:
   bool isRegionStyle() const override { return false; }
   bool isStrokeStyle() const override { return true; }
 
-  int getLevelFrameCount() { return m_level->getFrameCount(); }
 
   void computeTransformations(std::vector<TAffine> &positions,
                               const TStroke *stroke) const;
@@ -336,7 +333,6 @@ public:
   bool isRegionStyle() const override { return false; }
   bool isStrokeStyle() const override { return true; }
 
-  int getLevelFrameCount() { return m_level->getFrameCount(); }
 
   void computeTransformations(std::vector<TAffine> &positions,
                               const TStroke *stroke) const;
@@ -379,7 +375,6 @@ public:
   double getParamValue(TColorStyle::double_tag, int index) const override;
   void setParamValue(int index, double value) override;
 
-  static void clearGlDisplayLists();
 
   TRectD getStrokeBBox(const TStroke *stroke) const override;
 

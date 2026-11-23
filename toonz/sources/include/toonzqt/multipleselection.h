@@ -51,12 +51,7 @@ public:
   }
 
   const objects_container &objects() const { return m_objects; }
-  void setObjects(const objects_container &objects) {
-    m_objects = objects;
-    std::sort(m_objects.begin(), m_objects.end());
-  }
 
-  bool hasSingleObject() const { return (m_objects.size() == 1); }
 
 protected:
   objects_container m_objects;  //!< Selected objects

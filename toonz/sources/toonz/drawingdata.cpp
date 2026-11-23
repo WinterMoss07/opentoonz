@@ -31,27 +31,6 @@ namespace {
 // startFrameId
 // quindi tutti i riferimenti a frameId >= startFrameId devono essere aggiornati
 
-void shiftHooks(TXshSimpleLevel *sl, const TFrameId &startFrameId,
-                int shiftRange) {
-  int i, startIndex = sl->guessIndex(startFrameId);
-  assert(startIndex >= 0);
-  if (startIndex < 0) return;
-  HookSet *levelHooks = sl->getHookSet();
-  for (i = sl->getFrameCount() - 1; i >= startIndex + shiftRange; i--) {
-    TFrameId fid     = sl->index2fid(i);
-    TFrameId precFid = sl->index2fid(i - shiftRange);
-    assert(precFid >= startFrameId);
-    if (precFid == TFrameId::NO_FRAME) break;
-    int j, hookCount = levelHooks->getHookCount();
-    for (j = 0; j < hookCount; j++) {
-      Hook *hook = levelHooks->getHook(j);
-      if (hook) {
-        hook->setAPos(fid, hook->getAPos(precFid));
-        hook->setBPos(fid, hook->getBPos(precFid));
-      }
-    }
-  }
-}
 
 //-----------------------------------------------------------------------------
 

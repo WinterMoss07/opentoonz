@@ -716,7 +716,6 @@ public:
 
   void setScrubHighlight(int row, int starRow, int col);
   void resetScrubHighlight();
-  void getScrubHeighlight(int &R0, int &R1);
   bool isScrubHighlighted(int row, int col);
 
   TXsheet *getXsheet() const;
@@ -1443,7 +1442,6 @@ public slots:
   void onPrepareToScrollOffset(const QPointF &offset);
   void onZoomScrollAdjust(QPointF &offset, bool toZoom);
 
-  void setFrameZoomFactor(int f) { m_frameZoomFactor = f; }
   int getFrameZoomFactor() const;
   QPoint getFrameZoomAdjustment();
 

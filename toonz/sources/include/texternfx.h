@@ -77,8 +77,6 @@ public:
   void loadData(TIStream &is) override;
   void saveData(TOStream &os) override;
 
-  void setExternFxName(std::string name) { m_externFxName = name; }
-  std::string getExternFxName() const { return m_externFxName; };
 
 private:
   // not implemented

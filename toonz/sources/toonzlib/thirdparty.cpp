@@ -40,19 +40,9 @@ void initialize() {
 
 //-----------------------------------------------------------------------------
 
-void getFFmpegVideoSupported(QStringList &exts) {
-  exts.append("gif");
-  exts.append("mp4");
-  exts.append("webm");
-}
 
 //-----------------------------------------------------------------------------
 
-void getFFmpegAudioSupported(QStringList &exts) {
-  exts.append("mp3");
-  exts.append("ogg");
-  exts.append("flac");
-}
 
 //-----------------------------------------------------------------------------
 
@@ -145,9 +135,6 @@ QString autodetectFFmpeg() {
 
 //-----------------------------------------------------------------------------
 
-QString getFFmpegDir() {
-  return Preferences::instance()->getStringValue(ffmpegPath);
-}
 
 //-----------------------------------------------------------------------------
 
@@ -164,10 +151,6 @@ int getFFmpegTimeout() {
 
 //-----------------------------------------------------------------------------
 
-void setFFmpegTimeout(int secs) {
-  int timeout = Preferences::instance()->getIntValue(ffmpegTimeout);
-  if (secs != timeout) Preferences::instance()->setValue(ffmpegTimeout, secs);
-}
 
 //-----------------------------------------------------------------------------
 

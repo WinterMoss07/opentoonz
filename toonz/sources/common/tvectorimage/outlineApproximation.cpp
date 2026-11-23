@@ -101,19 +101,6 @@ double curvature_t1(const TThickQuadratic *curve) {
 
 //---------------------------------------------------------------------------
 
-// estrae il punto dell'outline per il parametro specificato
-// N.B: e' sbagliata non tiene conto degli inviluppi
-TPointD getPointInOutline(const TThickQuadratic *tq, double t, int upOrDown) {
-  assert(tq);
-  const TThickPoint &p = tq->getThickPoint(t);
-  TPointD n            = tq->getSpeed(t);
-  if (norm2(n)) {
-    n = normalize(n);
-    n = upOrDown ? rotate90(n) : rotate270(n);
-  }
-
-  return convert(p) + p.thick * n;
-}
 
 //---------------------------------------------------------------------------
 

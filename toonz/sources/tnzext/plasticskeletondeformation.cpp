@@ -41,26 +41,6 @@ static const char *parMeasures[SkVD::PARAMS_COUNT] = {"angle", "fxLength", ""};
 
 //------------------------------------------------------------------
 
-// Extract the angle between edges vParent->v and vGrandParent->vParent
-double buildAngle(const PlasticSkeleton &skeleton, int v) {
-  const PlasticSkeletonVertex &vx = skeleton.vertex(v);
-  int vParent                     = vx.parent();
-
-  assert(vx.parent() >= 0);
-
-  const PlasticSkeletonVertex &vxParent = skeleton.vertex(vParent);
-  int vGrandParent                      = vxParent.parent();
-
-  // Build reference orientation
-  TPointD dir(1.0, 0.0);  // Standard horizontal axis if no grandParent
-  if (vGrandParent >= 0) {
-    // Relative orientation
-    const PlasticSkeletonVertex &vxGrandParent = skeleton.vertex(vGrandParent);
-    dir = vxParent.P() - vxGrandParent.P();
-  }
-
-  return tcg::point_ops::angle(dir, vx.P() - vxParent.P()) * M_180_PI;
-}
 
 }  // namespace
 
@@ -595,21 +575,9 @@ bool PlasticSkeletonDeformation::empty() const {
 
 //------------------------------------------------------------------
 
-int PlasticSkeletonDeformation::skeletonsCount() const {
-  return m_imp->m_skeletons.size();
-}
 
 //------------------------------------------------------------------
 
-void PlasticSkeletonDeformation::skeletonIds(skelId_iterator &begin,
-                                             skelId_iterator &end) const {
-  auto const f = [](const SkeletonSet::left_map::value_type &val) {
-    return val.first;
-  };
-
-  begin = boost::make_transform_iterator(m_imp->m_skeletons.left.begin(), f);
-  end   = boost::make_transform_iterator(m_imp->m_skeletons.left.end(), f);
-}
 
 //------------------------------------------------------------------
 
@@ -669,9 +637,6 @@ int PlasticSkeletonDeformation::skeletonId(PlasticSkeleton *skeleton) const {
 
 //------------------------------------------------------------------
 
-int PlasticSkeletonDeformation::vertexDeformationsCount() const {
-  return m_imp->m_vds.size();
-}
 
 //------------------------------------------------------------------
 
@@ -702,23 +667,6 @@ void PlasticSkeletonDeformation::vertexDeformations(vd_iterator &begin,
 
 //------------------------------------------------------------------
 
-void PlasticSkeletonDeformation::vdSkeletonVertices(const QString &vertexName,
-                                                    vx_iterator &begin,
-                                                    vx_iterator &end) const {
-  auto const f = [](const std::map<int, int>::value_type &val) {
-    return std::make_pair(val.first, val.second);
-  };
-
-  SkVDSet::const_iterator nt(m_imp->m_vds.find(vertexName));
-
-  if (nt == m_imp->m_vds.end()) {
-    begin = vx_iterator();
-    end   = vx_iterator();
-  } else {
-    begin = boost::make_transform_iterator(nt->m_vIndices.begin(), f);
-    end   = boost::make_transform_iterator(nt->m_vIndices.end(), f);
-  }
-}
 
 //------------------------------------------------------------------
 
@@ -917,28 +865,6 @@ void PlasticSkeletonDeformation::updatePosition(
 
 //------------------------------------------------------------------
 
-void PlasticSkeletonDeformation::updateAngle(
-    const PlasticSkeleton &originalSkeleton, PlasticSkeleton &deformedSkeleton,
-    double frame, int v, const TPointD &pos) {
-  const PlasticSkeletonVertex &vx = deformedSkeleton.vertex(v);
-  int vParent                     = vx.parent();
-
-  const TPointD &vParentPos = deformedSkeleton.vertex(vParent).P();
-
-  // No need to access the grandParent, we're making the diff against the old vx
-  // position
-
-  SkVD &vd = m_imp->m_vds.find(vx.name())->m_vd;
-
-  double aDelta = tcg::point_ops::angle(vx.P() - vParentPos, pos - vParentPos) *
-                  M_180_PI,
-         a = tcrop(vd.m_params[SkVD::ANGLE]->getValue(frame) + aDelta,
-                   vx.m_minAngle, vx.m_maxAngle);
-
-  vd.m_params[SkVD::ANGLE]->setValue(frame, a);
-
-  m_imp->updateBranchPositions(originalSkeleton, deformedSkeleton, frame, v);
-}
 
 //------------------------------------------------------------------
 

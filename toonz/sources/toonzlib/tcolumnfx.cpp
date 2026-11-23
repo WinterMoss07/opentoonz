@@ -159,10 +159,6 @@ inline QString traduce(const TRectD &rect, const TRenderSettings &info) {
 
 //-------------------------------------------------------------------
 
-inline int colorDistance(const TPixel32 &c0, const TPixel32 &c1) {
-  return (c0.r - c1.r) * (c0.r - c1.r) + (c0.g - c1.g) * (c0.g - c1.g) +
-         (c0.b - c1.b) * (c0.b - c1.b);
-}
 
 //-------------------------------------------------------------------
 
@@ -317,15 +313,6 @@ static void applyPaletteFilter(TPalette *&plt, bool keep,
 
 //-------------------------------------------------------------------
 
-static TPalette *getPliPalette(const TFilePath &path) {
-  TLevelReaderP levelReader = TLevelReaderP(path);
-  if (!levelReader.getPointer()) return 0;
-
-  TLevelP level = levelReader->loadInfo();
-  TPalette *plt = level->getPalette();
-
-  return plt ? plt->clone() : (TPalette *)0;
-}
 
 //-------------------------------------------------------------------
 

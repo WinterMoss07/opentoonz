@@ -169,7 +169,6 @@ public:
   virtual void setParent(TWidget *p);
   virtual void addSon(TWidget *son);
   virtual void removeSon(TWidget *son);
-  inline int getSonCount() const { return m_sons->size(); }
   inline TWidget *getSon(int i) const {
     return i < 0 || i >= (int)(m_sons->size()) ? 0 : (*m_sons)[i];
   }
@@ -187,7 +186,6 @@ public:
     return m_contextHelpReference;
   }
 
-  void setContextHelpReference(std::string s) { m_contextHelpReference = s; }
 
   // void delegateHelpToParent();
 
@@ -229,7 +227,6 @@ public:
 
   typedef unsigned int CursorIndex;
 
-  inline CursorIndex getCurrentCursor() { return m_cursorIdx; }
   void changeCursor(CursorIndex new_cur);
 
   TWidgetImp *getImp() { return m_imp; }
@@ -326,7 +323,6 @@ public:
   virtual void setBackgroundColor(const TGuiColor &);
 
   TGuiColor getBackgroundColor() const { return m_backgroundColor; }
-  TGuiColor getForegroundColor() const { return m_foregroundColor; }
 
   static const TGuiColor White;
   static const TGuiColor Black;
@@ -395,7 +391,6 @@ public:
   //
   // virtual bool acceptDrop() {return false;}
   void enableDropTarget(TDragDropListener *dragDropListener);
-  TDragDropListener *getDragDropListener() const { return m_dragDropListener; }
 
   static void yield();  // processa tutti gli eventi in attesa
   static void setMode(int mode);
@@ -405,8 +400,6 @@ public:
   static TPoint getMouseAbsolutePosition();
   TPoint getMouseRelativePosition() const;
 
-  // brutto. serve per filtrare gli eventi durante il menu event loop
-  bool isMenuRelated() const { return m_menuRelated; }
 
   // se non altro e' brutto il nome
   // NB: il nome e' brutto... ora questo e' anche sbagliato

@@ -124,20 +124,6 @@ void TargetColors::update(TPalette *palette, bool noAntialias) {
 
 //-------------------------------------------------------------------
 
-void convertToCleanupPalette(TPalette *palette) {
-  if (palette->isCleanupPalette()) return;
-  for (int i = 1; i < palette->getStyleCount(); i++) {
-    TColorStyle *cs  = palette->getStyle(i);
-    TPixel32 color   = cs->getMainColor();
-    TColorStyle *ccs = 0;
-    if (i == 1)
-      ccs = new TBlackCleanupStyle();
-    else
-      ccs = new TColorCleanupStyle(color);
-    palette->setStyle(i, ccs);
-  }
-  palette->setIsCleanupPalette(true);
-}
 
 //-------------------------------------------------------------------
 

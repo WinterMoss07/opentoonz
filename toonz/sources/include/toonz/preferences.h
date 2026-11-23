@@ -169,7 +169,6 @@ public:
     return getBoolValue(autosaveOtherFilesEnabled);
   }
   bool isStartupPopupEnabled() { return getBoolValue(startupPopupEnabled); }
-  int getUndoMemorySize() const { return getIntValue(undoMemorySize); }
   int getDefaultTaskChunkSize() const { return getIntValue(taskchunksize); }
   bool isReplaceAfterSaveLevelAsEnabled() const {
     return getBoolValue(replaceAfterSaveLevelAs);
@@ -201,8 +200,6 @@ public:
     return getStringValue(additionalStyleSheet);
   }
   bool getPixelsOnly() const { return getBoolValue(pixelsOnly); }
-  QString getOldUnits() const { return getStringValue(oldUnits); }
-  QString getOldCameraUnits() const { return getStringValue(oldCameraUnits); }
   QString getUnits() const { return getStringValue(linearUnits); }
   QString getCameraUnits() const { return getStringValue(cameraUnits); }
   QString getCurrentRoomChoice() const {
@@ -289,7 +286,6 @@ public:
 
   // Import Export Tab
   QString getFfmpegPath() const { return getStringValue(ffmpegPath); }
-  int getFfmpegTimeout() { return getIntValue(ffmpegTimeout); }
   QString getFastRenderPath() const { return getStringValue(fastRenderPath); }
   bool getFfmpegMultiThread() const { return getBoolValue(ffmpegMultiThread); }
 
@@ -304,7 +300,6 @@ public:
   double getDefLevelHeight() const { return getDoubleValue(DefLevelHeight); }
   double getDefLevelDpi() const { return getDoubleValue(DefLevelDpi); }
   bool isAutoCreateEnabled() const { return getBoolValue(EnableAutocreation); }
-  int getNumberingSystem() const { return getIntValue(NumberingSystem); }
   bool isAutoStretchEnabled() const { return getBoolValue(EnableAutoStretch); }
   bool isCreationInHoldCellsEnabled() const {
     return getBoolValue(EnableCreationInHoldCells);
@@ -367,10 +362,6 @@ public:
     return getColorValue(animateToolColor);
   }
 
-  // Xsheet  tab
-  QString getXsheetLayoutPreference() const {
-    return getStringValue(xsheetLayoutPreference);
-  }
   QString getLoadedXsheetLayout() const {
     return getStringValue(xsheetLayoutPreference);
   }
@@ -393,9 +384,6 @@ public:
   }
   bool isShowKeyframesOnXsheetCellAreaEnabled() const {
     return getBoolValue(showKeyframesOnXsheetCellArea);
-  }
-  bool isXsheetCameraColumnEnabled() const {
-    return getBoolValue(showXsheetCameraColumn);
   }
   bool isUseArrowKeyToShiftCellSelectionEnabled() const {
     return getBoolValue(useArrowKeyToShiftCellSelection);

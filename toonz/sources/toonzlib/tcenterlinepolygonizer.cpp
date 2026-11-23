@@ -179,7 +179,6 @@ public:
   void readRasterData(const TRasterPT<T> &ras, int threshold);
 
   inline int getRowSize() const { return m_rowSize; }
-  inline int getColSize() const { return m_colSize; }
 
   unsigned char *pixelByte(int x, int y) {
     return &m_array[(y + 1) * m_rowSize + x + 1];

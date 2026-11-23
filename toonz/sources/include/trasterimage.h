@@ -114,12 +114,6 @@ public:
   //! Set the \b TRasterP \b raster
   void setRaster(const TRasterP &raster);
 
-  //! Return a \b TRasterP contained the icon of the image \b m_iconRaster
-  const TRasterP &getIconRaster() const { return m_iconRaster; }
-  //! Return a \b TRasterP contained the icon of the image \b m_iconRaster
-  TRasterP &getIconRaster() { return m_iconRaster; }
-  //! Set a \b TRasterP contained the icon of the image \b m_iconRaster
-  void setIconRaster(const TRasterP &raster) { m_iconRaster = raster; }
 
   //! Return true if the raster is empty
   bool isEmpty() const { return !m_mainRaster; }

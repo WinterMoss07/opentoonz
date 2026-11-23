@@ -97,7 +97,6 @@ private:
 private slots:
   void onSegmentTypeChanged(int type);
   void onCurveChanged();
-  void onStepFieldChanged(const QString &);
 
   void onApplyButtonPressed();
   void onPrevCurveButtonPressed();
@@ -183,8 +182,6 @@ public:
   void init(int segmentLength) override;
 
 public slots:
-  void onEase0Changed();
-  void onEase1Changed();
 };
 
 //-----------------------------------------------------------------------------

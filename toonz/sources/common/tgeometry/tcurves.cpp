@@ -527,11 +527,6 @@ void TThickCubic::setThickP2(const TThickPoint &p) {
 }
 
 //-----------------------------------------------------------------------------
-void TThickCubic::setThickP3(const TThickPoint &p) {
-  m_p3.x    = p.x;
-  m_p3.y    = p.y;
-  m_thickP3 = p.thick;
-}
 
 //-----------------------------------------------------------------------------
 

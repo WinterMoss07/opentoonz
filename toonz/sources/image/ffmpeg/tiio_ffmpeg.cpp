@@ -655,36 +655,8 @@ TRasterImageP Ffmpeg::getImage(int frameIndex) {
   return TRasterImageP();
 }
 
-QString Ffmpeg::cleanPathSymbols() const {
-  // This function is kept for compatibility but no longer used for temporary
-  // files. It may be used elsewhere; we keep the original implementation.
-  QString name = QString::fromStdString(m_path.getName());
-  name.replace(QRegularExpression("[^a-zA-Z0-9_\\-\\.]"), "_");
-  return name;
-}
 
-int Ffmpeg::getGifFrameCount() {
-  int frame               = 1;
-  QString ffmpegCachePath = getFfmpegCache().getQString();
 
-  while (true) {
-    QString frameFile = ffmpegCachePath + QDir::separator() + m_tempBaseName +
-                        QString("_in%1.").arg(frame, 6, 10, QChar('0')) +
-                        m_intermediateFormat;
-    if (!TSystem::doesExistFileOrLevel(TFilePath(frameFile))) {
-      break;
-    }
-    frame++;
-  }
-
-  return frame - 1;
-}
-
-void Ffmpeg::addToCleanUp(const QString &path) {
-  if (TSystem::doesExistFileOrLevel(TFilePath(path))) {
-    m_cleanUpList.push_back(path);
-  }
-}
 
 void Ffmpeg::cleanUpFiles() {
   for (const QString &path : m_cleanUpList) {

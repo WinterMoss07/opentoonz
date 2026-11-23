@@ -1344,14 +1344,6 @@ void ImageViewer::fitView() {
 }
 
 //-----------------------------------------------------------------------------
-/*! Update image viewer, reset current matrix transformation, current position
-                and update view.
-*/
-void ImageViewer::updateImageViewer() {
-  setViewAff(TAffine());
-  m_pos = QPoint(0, 0);
-  update();
-}
 
 //-----------------------------------------------------------------------------
 

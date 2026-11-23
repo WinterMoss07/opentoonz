@@ -411,59 +411,6 @@ static void convertFromCM(
 
 //--------------------------------------------------------------------
 
-static void convertFromVI(const TLevelReaderP &lr, const TPaletteP &plt,
-                          const TLevelWriterP &lw,
-                          const std::vector<TFrameId> &frames,
-                          const TRop::ResampleFilterType &resType, int width,
-                          FrameTaskNotifier *frameNotifier) {
-  QString msg;
-  int i;
-  std::vector<TVectorImageP> images;
-  TRectD maxBbox;
-  for (i = 0; i < (int)frames.size();
-       i++) {  // trovo la bbox che possa contenere tutte le immagini
-    try {
-      TImageReaderP ir  = lr->getFrameReader(frames[i]);
-      TVectorImageP img = ir->load();
-      images.push_back(img);
-      maxBbox += img->getBBox();
-    } catch (...) {
-      msg = QObject::tr("Frame %1 : conversion failed!")
-                .arg(QString::fromStdString(frames[i].expand()));
-      DVGui::info(msg);
-    }
-  }
-  maxBbox = maxBbox.enlarge(2);
-  TAffine aff;
-  if (width)  // calcolo l'affine
-    aff = TScale((double)width / maxBbox.getLx());
-  maxBbox = aff * maxBbox;
-
-  for (i = 0; i < (int)images.size(); i++) {
-    if (frameNotifier->abortTask()) break;
-    try {
-      TVectorImageP vectorImage = images[i];
-      assert(vectorImage);
-      if (vectorImage) {
-        // faccio il render dell'immagine
-        vectorImage->transform(aff, true);
-        const TVectorRenderData rd(TTranslation(-maxBbox.getP00()), TRect(),
-                                   plt.getPointer(), 0, true, true);
-        TOfflineGL *glContext = new TOfflineGL(convert(maxBbox).getSize());
-        glContext->clear(TPixel32::Transparent);
-        glContext->draw(vectorImage, rd);
-        TRaster32P rasImage = (glContext->getRaster());
-        TImageWriterP iw    = lw->getFrameWriter(TFrameId(i + 1));
-        iw->save(TRasterImageP(rasImage));
-      }
-    } catch (...) {
-      msg = QObject::tr("Frame %1 : conversion failed!")
-                .arg(QString::fromStdString(frames[i].expand()));
-      DVGui::info(msg);
-    }
-    frameNotifier->notifyFrameCompleted(100 * (i + 1) / frames.size());
-  }
-}
 
 //-----------------------------------------------------------------------
 

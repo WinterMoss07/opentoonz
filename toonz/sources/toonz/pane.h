@@ -278,11 +278,7 @@ public:
 
   // Maximize support
   void setIsMaximizable(bool value) noexcept { m_isMaximizable = value; }
-  bool isMaximizable() const noexcept { return m_isMaximizable; }
 
-  // Hidden dock widgets management
-  QList<TPanel *> getHiddenDockWidget() const { return m_hiddenDockWidgets; }
-  QByteArray getSavedOldState() const { return m_currentRoomOldState; }
 
   // Multiple instances of floating panels; default = true
   void allowMultipleInstances(bool allowed) noexcept {
@@ -300,9 +296,6 @@ public:
   void setRoomBound(bool bound);
   QString getBoundRoomName() const { return m_boundRoomName; }
   void setBoundRoomName(const QString &roomName);
-  void setRoomBindButton(TPanelTitleBarButton *button) noexcept {
-    m_roomBindButton = button;
-  }
   
   // Add room binding toggle button to the title bar
   // This enables the "Bind to Room" feature for any panel

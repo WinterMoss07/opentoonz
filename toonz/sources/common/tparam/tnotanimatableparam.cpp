@@ -40,7 +40,6 @@ void TIntParam::saveData(TOStream &os) {
 bool TIntParam::isWheelEnabled() const { return m_isWheelEnabled; }
 //---------------------------------------------------------
 
-void TIntParam::enableWheel(bool on) { m_isWheelEnabled = on; }
 
 //=========================================================
 
@@ -131,11 +130,6 @@ public:
     std::back_insert_iterator<std::vector<std::pair<int, std::string>>> bii(
         m_items);
     std::copy(src->m_items.begin(), src->m_items.end(), bii);
-  }
-  bool checkValue(int v) {
-    std::vector<std::pair<int, std::string>>::iterator it =
-        std::find_if(m_items.begin(), m_items.end(), matchesValue<int>(v));
-    return it != m_items.end();
   }
 };
 

@@ -108,9 +108,6 @@ TPoint getClosestPurePaint(const TRasterCM32P &r, int y, int x) {
 
 //----------------------------------------------------
 
-TPoint getClosestPureInk(const TRasterCM32P &r, int y, int x) {
-  return getClosestToneValue(r, y, x, 0);
-}
 
 //----------------------------------------------------
 

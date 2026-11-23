@@ -109,14 +109,6 @@ TFxP TFxUtil::makeAffine(const TFxP &arg, const TAffine &aff) {
 
 //-------------------------------------------------------------------
 
-TFxP TFxUtil::makeBlur(const TFxP &arg, double blurValue) {
-  TFxP fx = TFx::create("STD_blurFx");
-  assert(fx);
-  setParam(fx, "value", blurValue);
-  if (!fx->connect("Source", arg.getPointer()))
-    assert(!"Could not connect ports!");
-  return fx;
-}
 
 //-------------------------------------------------------------------
 
@@ -131,24 +123,6 @@ TFxP TFxUtil::makeColumnColorFilter(const TFxP &arg, TPixel32 colorScale) {
 
 //-------------------------------------------------------------------
 
-int TFxUtil::getKeyframeStatus(const TFxP &fx, int frame) {
-  bool keyframed = false, notKeyframed = false;
-  for (int i = 0; i < fx->getParams()->getParamCount(); i++) {
-    TParamP param = fx->getParams()->getParam(i);
-    if (param->isAnimatable()) {
-      if (param->isKeyframe(frame))
-        keyframed = true;
-      else
-        notKeyframed = true;
-    }
-  }
-  if (keyframed == false)
-    return TFxUtil::NO_KEYFRAMES;
-  else if (notKeyframed == false)
-    return TFxUtil::ALL_KEYFRAMES;
-  else
-    return TFxUtil::SOME_KEYFRAMES;
-}
 
 //-------------------------------------------------------------------
 

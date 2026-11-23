@@ -366,8 +366,6 @@ public:
 
   //! Removes \b link from the scene and the m_links list; delete it .
   void eraseLink(SchematicLink *link);
-  //! Removes all links from the scene and the m_links list; delete them .
-  void eraseAllLinks();
 
   //! Returns the link indexed with \b index.\n
   //!\note A link is indexed with a progressive number when is inserted in the
@@ -460,10 +458,8 @@ public:
              QWidget *widget = 0) override;
 
   SchematicPort *addPort(int portId, SchematicPort *port);
-  void erasePort(int portId);
 
   SchematicPort *getPort(int portId) const;
-  QList<SchematicNode *> getLinkedNodes(int portId) const;
 
   virtual void setSchematicNodePos(const QPointF &pos) const = 0;
   virtual void setPosition(const QPointF &newPos)            = 0;

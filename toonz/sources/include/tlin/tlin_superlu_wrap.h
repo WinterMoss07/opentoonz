@@ -69,7 +69,6 @@ void DVAPI allocS(SuperMatrix *&A, int rows, int cols, int nnz, int *colptr,
 void DVAPI allocD(SuperMatrix *&A, int rows, int cols, int lda, double *values);
 
 void DVAPI freeS(SuperMatrix *A);   //!< Frees A allocated with allocS
-void DVAPI freeD(SuperMatrix *A);   //!< Frees A allocated with allocD
 void DVAPI freeF(SuperFactors *F);  //!< Frees F returned by factorize
 
 //! Initializes a local SuperMatrix (ie created on stack).
@@ -81,10 +80,6 @@ void DVAPI createS(SuperMatrix &A, int rows, int cols, int nnz, int *colptr,
                    int *rowind, double *values);
 void DVAPI createD(SuperMatrix &A, int rows, int cols, int lda, double *values);
 
-//! Destroys A. To be used when A is local (ie with create). Can be told to
-//! spare data deallocation.
-void DVAPI destroyS(SuperMatrix &A, bool destroyData = true);
-void DVAPI destroyD(SuperMatrix &A, bool destroyData = true);
 
 void DVAPI readDN(SuperMatrix *A, int &lda,
                   double *&values);  //!< Reads values ptr from A
@@ -123,8 +118,6 @@ void DVAPI solve(SuperMatrix *A, double *b, double *&x,
 //    BLAS-related routines
 //*****************************************************************************
 
-void DVAPI multiplyS(const SuperMatrix *A, const double *v, double *&Av);
-void DVAPI multiplyD(const SuperMatrix *A, const double *v, double *&Av);
 
 }  // namespace tlin
 

@@ -65,7 +65,6 @@ public:
       : m_filePaths(filePaths) {}
   TDataP clone() const override;
 
-  int getFilePathCount() const { return m_filePaths.size(); }
   TFilePath getFilePath(int i) const;
 };
 

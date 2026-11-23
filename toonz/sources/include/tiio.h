@@ -94,9 +94,6 @@ protected:
 
 public:
   static void getSupportedFormats(QStringList &formats, bool onlyRenderFormats);
-  static void setBlackAndWhiteThreshold(int threshold) {
-    m_bwThreshold = threshold;
-  }
 
   Writer();
   virtual ~Writer();
@@ -172,10 +169,6 @@ DVAPI void defineReaderMaker(const char *ext, Tiio::ReaderMaker *fn);
 DVAPI void defineWriterMaker(const char *ext, Tiio::WriterMaker *fn,
                              bool isRenderFormat);
 
-DVAPI void defineVectorReaderMaker(const char *ext,
-                                   Tiio::VectorReaderMaker *fn);
-DVAPI void defineVectorWriterMaker(const char *ext, Tiio::VectorWriterMaker *fn,
-                                   bool isRenderFormat);
 
 DVAPI void defineWriterProperties(const char *ext, TPropertyGroup *);
 

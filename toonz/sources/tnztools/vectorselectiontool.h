@@ -282,7 +282,6 @@ public:
 
   void setNewFreeDeformer() override;
 
-  void setCanEnterGroup(bool value) { m_canEnterGroup = value; }
 
   bool isConstantThickness() const override {
     return m_constantThickness.getValue();

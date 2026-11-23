@@ -211,11 +211,6 @@ Qt::Orientation DvScrollWidget::getOrientation() const {
 
 //------------------------------------------------------------------------------
 
-void DvScrollWidget::setEasing(QEasingCurve clickEase,
-                               QEasingCurve holdPressEase) {
-  m_clickEase = clickEase;
-  m_holdEase  = holdPressEase;
-}
 
 //------------------------------------------------------------------------------
 

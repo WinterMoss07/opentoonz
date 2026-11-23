@@ -299,41 +299,7 @@ bool readHeaderAndOffsets(FILE *chan, TzlOffsetMap &frameOffsTable,
 }
 }  // namespace
 
-static bool adjustIconAspectRatio(TDimension &outDimension,
-                                  TDimension inDimension, TDimension imageRes) {
-  TINT32 iconLx = inDimension.lx, iconLy = inDimension.ly;
-  assert(iconLx > 0 && iconLy > 0);
-  assert(imageRes.lx > 0 && imageRes.ly > 0);
-  if (iconLx <= 0 || iconLy <= 0 || imageRes.lx <= 0 || imageRes.ly <= 0)
-    return false;
-  int lx = imageRes.lx;
-  int ly = imageRes.ly;
 
-  if (std::max(double(lx) / inDimension.lx, double(ly) / inDimension.ly) ==
-      double(ly) / inDimension.ly)
-    iconLx = tround((double(lx) * inDimension.ly) / ly);
-  else
-    iconLy = tround((double(ly) * inDimension.lx) / lx);
-  outDimension = TDimension(iconLx, iconLy);
-  return true;
-}
-
-static void getThumbnail(TRasterP ras, int shrink, TRasterP &thumbnail) {
-  int j          = 0;
-  int y          = 0;
-  TPixel32 *pix2 = (TPixel32 *)thumbnail->getRawData();
-  for (j = 0; j < thumbnail->getLy(); j++) {
-    ras->lock();
-    TPixel32 *pix    = (TPixel32 *)ras->getRawData() + y * ras->getLx();
-    TPixel32 *endPix = pix2 + thumbnail->getLx();
-    while (pix2 < endPix) {
-      *pix2++ = *pix;
-      pix += shrink;
-    }
-    y += shrink;
-    ras->unlock();
-  }
-}
 
 //-------------------------------------------------------------------
 

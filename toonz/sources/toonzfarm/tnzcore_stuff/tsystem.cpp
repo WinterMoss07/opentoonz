@@ -546,21 +546,6 @@ int TSystem::getProcessId() { return getpid(); }
 
 //------------------------------------------------------------
 
-TFilePath TSystem::getHomeDirectory() {
-#ifndef WIN32
-  struct passwd *pwd = getpwnam(getUserName().c_str());
-  if (!pwd) {
-    return TFilePath();
-  }
-  return TFilePath(pwd->pw_dir);
-#else
-  char *s = getenv("USERPROFILE");
-  if (!s)
-    return TFilePath();
-  else
-    return TFilePath(s);
-#endif
-}
 
 //------------------------------------------------------------
 

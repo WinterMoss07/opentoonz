@@ -272,41 +272,6 @@ from which it's created. It has no reference to the object.
 
   //----------------------------------------------------------------------------
 
-  /*!
-Copies the samples in the given sample range and channel
-inside the dstChan channel from sample dst_s0
-*/
-  void copyChannel(const TSoundTrackT<T> &src, TINT32 src_s0, TINT32 src_s1,
-                   TSound::Channel srcChan, TINT32 dst_s0,
-                   TSound::Channel dstChan) {
-    TINT32 ss0, ss1;
-    // se i valori sono nel range ed uguali => voglio copiare il
-    // canale di un solo campione
-    if (src_s1 == src_s0 && src_s1 >= 0 && src_s1 < src.getSampleCount())
-      ss0 = ss1 = src_s1;
-    else {
-      assert(src_s1 >= src_s0);
-      ss0 = tcrop(src_s0, (TINT32)0, (TINT32)(src.getSampleCount() - 1));
-      ss1 = tcrop(src_s1, (TINT32)0, (TINT32)(src.getSampleCount() - 1));
-      assert(ss1 >= ss0);
-      // esco perche' non ha senso copiare indiscriminatamente il primo
-      // o l'ultimo campione della sorgente
-      if (ss1 == ss0) return;
-    }
-
-    assert(dst_s0 >= 0L && dst_s0 < getSampleCount());
-
-    const T *srcSample = src.samples() + ss0;
-
-    const T *srcEndSample =
-        srcSample +
-        std::min((TINT32)(ss1 - ss0 + 1), (TINT32)(getSampleCount() - dst_s0));
-
-    T *dstSample = samples() + dst_s0;
-
-    for (; srcSample < srcEndSample; srcSample++, dstSample++)
-      dstSample->setValue(srcChan, srcSample->getValue(dstChan));
-  }
 
   //----------------------------------------------------------------------------
 
@@ -339,12 +304,6 @@ inside the dstChan channel from sample dst_s0
 
   //----------------------------------------------------------------------------
 
-  //! Makes blank the samples in the given sample range and channel
-  void blankChannel(TINT32 s0, TINT32 s1, TSound::Channel chan) {
-    if (s0 > s1) return;
-    // ....
-    assert(false);
-  }
 };
 
 //==============================================================================

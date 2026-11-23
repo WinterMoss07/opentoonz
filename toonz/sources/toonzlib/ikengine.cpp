@@ -7,17 +7,6 @@ enum Method { JACOB_TRANS, PURE_PSEUDO, DLS, SDLS, COMPARE };
 
 IKEngine::IKEngine() {}
 
-int IKEngine::addJoint(const TPointD &pos, int indexParent) {
-  // TODO: evitare che si formino segmenti nulli
-  // assert(m_joints.empty() || norm2(pos-m_joints.back())>0.000001);
-  // assert(m_nodes[indexParent]);
-  assert(m_skeleton.getNode(indexParent));
-  m_skeleton.addNode(new IKNode());
-  int index = m_skeleton.getNodeCount() - 1;
-  m_skeleton.setNode(index, pos, IKNode::JOINT);
-  m_skeleton.setParent(index, indexParent);
-  return index;
-}
 // The root must be a pinned point!
 void IKEngine::setRoot(const TPointD &pos) {
   m_skeleton.addNode(new IKNode());
@@ -43,21 +32,6 @@ bool IKEngine::isLocked(int index) {
   return m_skeleton.getNode(index)->IsEffector();
 }
 
-double IKEngine::getJointAngle(int index) {
-  assert(index > -1 && index < m_skeleton.getNodeCount());
-  TPointD pos = m_skeleton.getNode(index)->getPos();
-  TPointD u(1, 0);
-  if (index != 0) {
-    int parent      = getJointParent(index);
-    TPointD prevPos = m_skeleton.getNode(parent)->getPos();
-    u               = normalize(pos - prevPos);
-  }
-  TPointD v(-u.y, u.x);
-  TPointD nextPos = m_skeleton.getNode(index + 1)->getPos();
-  TPointD d       = nextPos - pos;
-  double theta    = atan2(d * v, d * u);
-  return theta;
-}
 
 void IKEngine::drag(TPointD &pos) {
   // assert(index>-1 && index<m_skeleton.getNodeCount());

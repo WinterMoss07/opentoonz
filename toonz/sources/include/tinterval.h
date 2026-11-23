@@ -198,12 +198,6 @@ return (m_min <= w.m_min  && m_max <= w.m_max);}
   }
 
   //-----------------------------------------------------
-  inline bool isProper() const {
-    //  isProper() <=> !isEmpty() && m_min < m_max (cioe' non degenere)
-    //  TInterval (m_min = 1, m_max = -1) rappresenta l'intervallo vuoto
-    assert(m_min <= m_max || (m_min == 1 && m_max == -1));  //  intervallo vuoto
-    return (m_min < m_max);
-  }
   //-----------------------------------------------------
   inline bool contain(double t) const {
     assert(m_min <= m_max || (m_min == 1 && m_max == -1));  //  intervallo vuoto
@@ -221,16 +215,6 @@ return (m_min <= w.m_min  && m_max <= w.m_max);}
     }
   }
   //-----------------------------------------------------
-  inline bool isIncluded(const TInterval &interval) const {
-    if (isEmpty())
-      return true;
-    else if (interval.isEmpty())
-      return false;
-    else {
-      assert(!isEmpty() && !interval.isEmpty());
-      return (interval.m_min <= m_min && m_max <= interval.m_max);
-    }
-  }
   //-----------------------------------------------------
   // Friend helper function declarations
   friend TInterval operator*(const double s, const TInterval &w);
@@ -283,29 +267,7 @@ inline TInterval intersection(const TInterval &a, const TInterval &b) {
     return TInterval();  //  intervallo vuoto
 }
 //-----------------------------------------------------
-inline TInterval createTInterval(double center, double radius) {
-  if (radius >= 0)
-    return TInterval(center - radius, center + radius);
-  else
-    return TInterval();  //  intervallo vuoto
-}
 //-----------------------------------------------------
-inline TInterval createErrorTInterval(
-    double center, double minError = (std::numeric_limits<double>::min)()) {
-  //  type double standard IEEE (1 bit segno + 11 bit esponente + 52 bit
-  //  mantissa)
-  //  corrisponde ad almeno 15 decimali significativi.
-  //  minError serve ad assegnare un errore positivo quando center = 0.
-  //  Aumentare 100 volte (da 1e-15 a 1e-13) l'errore relativo serve a
-  //  compensare
-  //  la propagazione degli errori macchina (TInterval non li computa) ed a
-  //  stabilizzare il codice relativamente a processori che potrebbero male
-  //  implementare l'artimetica double standard IEEE.
-  assert(minError >= 0);
-  const double relativeDoubleError = 1e-13;
-  double error = std::max(fabs(center) * relativeDoubleError, minError);
-  return TInterval(center - error, center + error);
-}
 //-----------------------------------------------------
 
 #endif  //  __T_INTERVAL_INCLUDED__

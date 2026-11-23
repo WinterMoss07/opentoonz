@@ -62,9 +62,6 @@ signals:
   void commandChanged(const QString& oldCmdId, const QString& newCmdId);
 
 public:
-  void notifyCommandChanged(const QString& oldCmdId, const QString& newCmdId) {
-    emit commandChanged(oldCmdId, newCmdId);
-  }
 };
 
 //=============================================================================

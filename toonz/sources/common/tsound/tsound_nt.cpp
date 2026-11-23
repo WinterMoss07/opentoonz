@@ -1920,70 +1920,12 @@ MMRESULT getControlDetails(HMIXEROBJ hMixer, DWORD dwSelectControlID,
 
 //------------------------------------------------------------------------------
 
-// restituiscei l nome della linea identificata da lineID
-std::string getMixerLineName(DWORD lineID) {
-  MIXERLINE mxl;
-  MMRESULT ret;
-
-  ret = getLineInfo((HMIXEROBJ)0, mxl, lineID);
-#ifdef TNZCORE_LIGHT
-  assert(false);
-  return "";
-#else
-  return QString::fromWCharArray(mxl.szName).toStdString();
-#endif
-}
 
 //------------------------------------------------------------------------------
 
-// restituisce la lista degli identificativi delle linee sorgente associate
-// alla destinazione di tipo dstComponentType
-std::list<DWORD> getMixerSrcLines(DWORD dstComponentType) {
-  std::list<DWORD> srcList;
-  MMRESULT ret;
-  MIXERLINE mxl;
-
-  ret = getLineInfo((HMIXEROBJ)0, MIXERLINE_COMPONENTTYPE_DST_WAVEIN, mxl);
-  if (ret != MMSYSERR_NOERROR)
-    // forse bisognerebbe lanciare un'eccezione
-    return srcList;  // non ha linea di dst per la registrazione
-
-  int v;
-  for (v = 0; v < (int)mxl.cConnections; v++) {
-    MIXERLINE mxl1;
-
-    ret = getLineInfo((HMIXEROBJ)0, mxl1, mxl.dwDestination, v);
-    if (ret == MMSYSERR_NOERROR) srcList.push_back(mxl1.dwLineID);
-  }
-  return srcList;
-}
 
 //------------------------------------------------------------------------------
 
-// restituisce la lista degli identificativi delle linee sorgente di tipo
-// srcComponentType associate alla destinazione di tipo dstComponentType
-std::list<DWORD> getMixerSrcLines(DWORD dstComponentType,
-                                  DWORD srcComponentType) {
-  std::list<DWORD> srcList;
-  MMRESULT ret;
-  MIXERLINE mxl;
-
-  ret = getLineInfo((HMIXEROBJ)0, MIXERLINE_COMPONENTTYPE_DST_WAVEIN, mxl);
-  if (ret != MMSYSERR_NOERROR)
-    // forse bisognerebbe lanciare un'eccezione
-    return srcList;  // non ha linea di dst per la registrazione
-
-  int v;
-  for (v = 0; v < (int)mxl.cConnections; v++) {
-    MIXERLINE mxl1;
-
-    ret = getLineInfo((HMIXEROBJ)0, mxl1, mxl.dwDestination, v);
-    if (ret == MMSYSERR_NOERROR)
-      if (mxl1.dwComponentType == srcComponentType)
-        srcList.push_back(mxl1.dwLineID);
-  }
-  return srcList;
-}
 
 //------------------------------------------------------------------------------
 

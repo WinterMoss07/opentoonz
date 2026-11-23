@@ -81,8 +81,6 @@ public:
   }
   TSoundTrackP getSoundTrack() { return m_soundTrack; }
 
-  //! Pay Attention this is the sound frame !!
-  int getFrameSoundCount() const { return m_frameSoundCount; }
 
   int getSamplePerFrame() const { return m_samplePerFrame; }
 

@@ -135,12 +135,10 @@ private:
   void onColorCalibrationChanged();
   // Drawing
   void onDefLevelTypeChanged();
-  void onUseNumpadForSwitchingStylesClicked();
   // Tools
   void onLevelBasedToolsDisplayChanged();
   // Xsheet
   void onShowKeyframesOnCellAreaChanged();
-  void onShowXSheetToolbarClicked();
   void onUnifyColumnVisibilityTogglesChanged();
   void onShowXsheetBreadcrumbsClicked();
   // Animation

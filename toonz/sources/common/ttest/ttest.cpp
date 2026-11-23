@@ -118,69 +118,9 @@ void TTest::setInstanceCount() {
 
 //------------------------------------------------------------
 
-void TTest::verifyInstanceCount() {
-  assert(m_levelInstanceCount == TLevel::getInstanceCount());
-  assert(m_imageInstanceCount == TImage::getInstanceCount());
-
-  // assert(m_rasterInstanceCount==TRaster::getInstanceCount());
-  // commentata da gmt: in qualche test viene creata un
-  // offline gl context con annesso raster che ovviamente non
-  // viene liberato.
-
-  assert(m_imageReaderInstanceCount == TImageReader::getInstanceCount());
-  assert(m_imageWriterInstanceCount == TImageWriter::getInstanceCount());
-  assert(m_levelReaderInstanceCount == TLevelReader::getInstanceCount());
-  assert(m_levelWriterInstanceCount == TLevelWriter::getInstanceCount());
-  assert(m_paramInstanceCount == TParam::getInstanceCount());
-  assert(m_fxInstanceCount == TFx::getInstanceCount());
-}
 
 //------------------------------------------------------------
 
-void TTest::runTests(string name) {
-  TFilePath testFile = getTestFile(name);
-
-  std::vector<std::string> testType;
-  if (name == "verif_image") {
-    testType.push_back("write");
-    testType.push_back("read");
-  }
-  Tifstream is(testFile);
-  if (!is) {
-    cout << "*error* test file '" << testFile << "' not found" << endl;
-    return;
-  }
-  cout << "Test file : '" << testFile << "'" << endl;
-  char buffer[1024];
-  while (is.getline(buffer, sizeof(buffer))) {
-    std::istringstream ss(buffer);
-    while (ss) {
-      string s;
-      ss >> s;
-      if (s == "") continue;
-      if (s[0] == '#' || s[0] == '!') break;
-      // Verifica tutti i test
-      if (s == "all") {
-        TTestTable::table()->runAll();
-        continue;
-      }
-      // Verifica una parte dei test che ha come nome iniziale testType[i]
-      int i;
-      bool isTypeFound = false;
-      for (i = 0; i < (int)testType.size(); i++)
-        if (s == testType[i]) {
-          isTypeFound = true;
-          TTestTable::table()->runType(testType[i]);
-          break;
-        }
-      if (isTypeFound) continue;
-      if (s[0] == '~')
-        TTestTable::table()->skip(s.substr(1));
-      else  // Verifica il test di nome s
-        TTestTable::table()->run(s);
-    }
-  }
-}
 
 //================================================================================
 // Utility

@@ -35,13 +35,6 @@
 Particles_Engine::Particles_Engine(ParticlesFx *parent, double frame)
     : m_parent(parent), m_frame(frame) {}
 
-static void printTime(TStopWatch &sw, std::string name) {
-  std::stringstream ss;
-  ss << name << " : ";
-  sw.print(ss);
-  ss << '\n' << '\0';
-  TSystem::outputDebug(ss.str());
-}
 /*-----------------------------------------------------------------*/
 /*
 void Particles_Engine::scramble_particles(std::list <Particle*> &myParticles)

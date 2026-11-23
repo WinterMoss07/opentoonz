@@ -42,7 +42,6 @@ public:
   inline const TPointD& getStep() const { return m_step; }
 
   void setMaxLevel(int maxLevel);
-  inline int getMaxLevel() const { return m_maxLevel; }
   
   void modifyTrack(
     const TTrack &track,

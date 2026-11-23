@@ -70,12 +70,6 @@ QIcon getColorChipIcon(TPixel32 color) {
   return QIcon(pm);
 }
 
-bool hasEnoughBytes(QDataStream& stream, qint64 requiredSize) {
-  qint64 total      = stream.device()->size();
-  qint64 currentPos = stream.device()->pos();
-
-  return (total - currentPos) >= requiredSize;
-}
 
 void writeBlockHeader(QDataStream& stream, quint8 blockId) {
   stream << BLOCK_START_CODE;

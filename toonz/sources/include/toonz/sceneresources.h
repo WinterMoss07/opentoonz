@@ -45,15 +45,12 @@ public:
   ResourceImportStrategy(int strategy);
   virtual bool aborted() { return false; }
 
-  // note: this attribute is automatically initialized (from the preferences)
-  bool isChildFolderEnabled() const { return m_childFolderEnabled; }
   void setChildFolderEnabled(bool enabled) { m_childFolderEnabled = enabled; }
 
   // accepts and returns coded file (e.g. +drawings/folder/a.pli)
   virtual TFilePath process(ToonzScene *dstScene, ToonzScene *srcScene,
                             TFilePath srcFile) = 0;
 
-  const ImportLog &getImportLog() const { return m_importLog; }
 
 private:
   bool m_childFolderEnabled;

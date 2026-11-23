@@ -288,13 +288,6 @@ public:
     return result;
   }
 
-  RowIterator rowBegin(const RowKey &row) {
-    RowIterator result(this);
-    result.m_rowIt = m_table.find(row);
-    if (result.m_rowIt != m_table.end())
-      result.m_it = result.m_rowIt->second.begin();
-    return result;
-  }
 
   ColIterator colBegin(const ColKey &col) {
     ColIterator result(this, col);
@@ -488,9 +481,6 @@ bool TPassiveCacheManager::isEnabled() const { return m_enabled; }
 
 //-------------------------------------------------------------------------
 
-void TPassiveCacheManager::setStorageMode(StorageFlag mode) {
-  m_currStorageFlag = mode;
-}
 
 //-------------------------------------------------------------------------
 
@@ -693,68 +683,6 @@ void TPassiveCacheManager::disableCache(TFx *fx) {
 
 //-------------------------------------------------------------------------
 
-void TPassiveCacheManager::toggleCache(TFx *fx) {
-  int &idx = fx->getAttributes()->passiveCacheDataIdx();
-  touchFxData(idx);
-
-  FxData &data = m_fxDataVector[idx];
-
-  QMutexLocker locker(&m_mutex);
-
-  StorageFlag flag = getStorageMode();
-  if (flag) {
-    UCHAR &storedFlag = data.m_storageFlag;
-    UCHAR oldFlag     = storedFlag;
-
-    storedFlag ^= flag;
-
-#ifdef DIAGNOSTICS
-    DIAGNOSTICS_STR("#activity.txt | " + QTime::currentTime().toString() + " " +
-                    QString("Toggle Cache (now ") +
-                    ((storedFlag & IN_MEMORY) ? "enabled)" : "disabled)"));
-#endif
-
-    if (data.m_passiveCacheId == 0)
-      data.m_passiveCacheId = getNewPassiveCacheId();
-
-    if ((storedFlag & ON_DISK) && !(oldFlag & ON_DISK)) {
-      ResourcesTable::ColIterator it =
-          m_resources->getTable().colBegin(data.m_passiveCacheId);
-      for (; it; ++it) {
-        std::set<LockedResourceP> &resources = *it;
-
-        std::set<LockedResourceP>::iterator jt;
-        for (jt = resources.begin(); jt != resources.end(); ++jt)
-          (*jt)->enableBackup();
-      }
-    }
-
-    // Implementa la versione contraria - eliminazione dell'fx nell'hdPool...
-    // Metti anche questo in versione ritardata con flush... Il flush e' da
-    // unificare...
-    // e magari da spostare direttamente nell'hdPool
-
-    if ((oldFlag & IN_MEMORY) && !(storedFlag & IN_MEMORY)) {
-      m_resources->getTable().erase(data.m_passiveCacheId);
-
-      data.m_fx              = TFxP();
-      data.m_treeDescription = "";
-    }
-
-#ifndef USE_SQLITE_HDPOOL
-    if ((storedFlag & IN_MEMORY) && !(oldFlag & IN_MEMORY)) {
-      data.m_fx = fx;
-      (*m_descriptorCallback)(data.m_treeDescription, data.m_fx);
-    }
-#endif
-
-#ifdef USE_SQLITE_HDPOOL
-    if ((oldFlag & ON_DISK) && !(storedFlag & ON_DISK))
-      TCacheResourcePool::instance()->releaseReferences(
-          "P" + QString::number(data.m_passiveCacheId));
-#endif
-  }
-}
 
 //-------------------------------------------------------------------------
 

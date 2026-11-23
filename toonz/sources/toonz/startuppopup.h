@@ -127,7 +127,6 @@ public:
   StartupScenesList(QWidget *parent, const QSize &iconSize);
   ~StartupScenesList();
 
-  int countScenes() { return count(); }
   QString getName(int index) { return item(index)->text(); }
   QString getPath(int index) {
     return item(index)->data(Qt::UserRole).toString();

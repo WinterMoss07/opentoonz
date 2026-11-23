@@ -1377,22 +1377,6 @@ void TImageCache::Imp::remap(const std::string &dstId,
 
 //------------------------------------------------------------------------------
 
-void TImageCache::remapIcons(const std::string &dstId,
-                             const std::string &srcId) {
-  std::map<std::string, CacheItemP>::iterator it;
-  std::map<std::string, std::string> table;
-  std::string prefix = srcId + ":";
-  int j              = (int)prefix.length();
-  for (it = m_imp->m_uncompressedItems.begin();
-       it != m_imp->m_uncompressedItems.end(); ++it) {
-    std::string id = it->first;
-    if (id.find(prefix) == 0) table[id] = dstId + ":" + id.substr(j);
-  }
-  for (std::map<std::string, std::string>::iterator it2 = table.begin();
-       it2 != table.end(); ++it2) {
-    remap(it2->second, it2->first);
-  }
-}
 
 //------------------------------------------------------------------------------
 
@@ -1823,18 +1807,6 @@ UINT TImageCache::getMemUsage(const std::string &id) const {
 
 //------------------------------------------------------------------------------
 
-//! Returns the uncompressed image size (in KB) of the image associated with
-//! passd id, or 0 if none was found.
-UINT TImageCache::getUncompressedMemUsage(const std::string &id) const {
-  std::map<std::string, CacheItemP>::iterator it =
-      m_imp->m_uncompressedItems.find(id);
-  if (it != m_imp->m_uncompressedItems.end()) return it->second->getSize();
-
-  it = m_imp->m_compressedItems.find(id);
-  if (it != m_imp->m_compressedItems.end()) return it->second->getSize();
-
-  return 0;
-}
 
 //------------------------------------------------------------------------------
 

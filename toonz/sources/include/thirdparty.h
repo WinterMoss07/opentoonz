@@ -24,17 +24,13 @@ DVAPI void initialize();
 
 //-----------------------------------------------------------------------------
 
-DVAPI void getFFmpegVideoSupported(QStringList &exts);
-DVAPI void getFFmpegAudioSupported(QStringList &exts);
 
 DVAPI bool findFFmpeg(QString dir);
 DVAPI bool checkFFmpeg();
 DVAPI QString autodetectFFmpeg();
 
-DVAPI QString getFFmpegDir();
 DVAPI void setFFmpegDir(const QString &dir);
 DVAPI int getFFmpegTimeout();
-DVAPI void setFFmpegTimeout(int secs);
 
 DVAPI void runFFmpeg(QProcess &process, const QStringList &arguments);
 DVAPI void runFFprobe(QProcess &process, const QStringList &arguments);

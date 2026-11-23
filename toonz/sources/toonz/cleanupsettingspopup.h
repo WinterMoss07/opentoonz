@@ -75,7 +75,6 @@ public slots:
   void updateGui(bool postProcessPreviews);
 
   void enableSwatch(bool);
-  void enableOpacityCheck(bool);
 
 protected:
   void showEvent(QShowEvent *) override;

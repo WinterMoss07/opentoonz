@@ -162,8 +162,6 @@ public:
 
   ButtonHistory::Pointer buttonHistory(DeviceId deviceId) const;
 
-  inline const ButtonHistoryMap buttonHistories() const
-    { return m_buttonHistories; }
   inline ButtonState::Pointer buttonState(DeviceId deviceId) const
     { return buttonHistory(deviceId)->current(); }
 
@@ -171,14 +169,10 @@ public:
     { touch(ticks); buttonHistory(deviceId)->change(press, button, m_ticks); }
   inline void buttonPress(DeviceId deviceId, Button button, TTimerTicks ticks)
     { buttonEvent(true, deviceId, button, ticks); }
-  inline void buttonRelease(DeviceId deviceId, Button button, TTimerTicks ticks)
-    { buttonEvent(false, deviceId, button, ticks); }
   inline void buttonEvent(bool press, Button button, TTimerTicks ticks)
     { buttonEvent(press, 0, button, ticks); }
   inline void buttonPress(Button button, TTimerTicks ticks)
     { buttonEvent(true, button, ticks); }
-  inline void buttonRelease(Button button, TTimerTicks ticks)
-    { buttonEvent(false, button, ticks); }
 
   inline ButtonState::Pointer buttonFind(DeviceId deviceId, Button button)
     { return buttonState(deviceId)->find(button); }
@@ -189,10 +183,6 @@ public:
   inline double howLongButtonPressed(DeviceId deviceId, Button button)
     { return howLongButtonPressed(deviceId, button, m_ticks); }
 
-  inline ButtonState::Pointer buttonFindDefault(Button button)
-    { return buttonFind(DeviceId(), button); }
-  inline bool isButtonPressedDefault(Button button)
-    { return isButtonPressed(DeviceId(), button); }
   inline double howLongButtonPressedDefault(Button button, TTimerTicks ticks, double timeOffset = 0.0)
     { return howLongButtonPressed(DeviceId(), button, ticks, timeOffset); }
   inline double howLongButtonPressedDefault(Button button)
@@ -202,8 +192,6 @@ public:
 
   inline ButtonState::Pointer buttonFindAny(Button button)
     { DeviceId deviceId; return buttonFindAny(button, deviceId); }
-  inline bool isButtonPressedAny(Button button)
-    { return buttonFindAny(button); }
   inline double howLongButtonPressedAny(Button button, TTimerTicks ticks, double timeOffset = 0.0)
     { return ButtonState::Holder::howLongPressed(buttonFindAny(button), ticks, timeOffset); }
   inline double howLongButtonPressedAny(Button button)

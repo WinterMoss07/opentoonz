@@ -254,10 +254,6 @@ public:
   void setEnabled(bool x)
     { if (getEnabled() != x) data()[m_idEnabled].setBool(x); }
 
-  inline void selectPoint(const TStringId &name) const
-    { setPointSelection(name, true); }
-  inline void deselectPoint(const TStringId &name) const
-    { setPointSelection(name, false); }
   inline void selectAll() const
     { setAllPointsSelection(true); }
   inline void deselectAll() const

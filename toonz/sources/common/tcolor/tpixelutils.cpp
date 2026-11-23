@@ -228,24 +228,6 @@ inline double HLSValue(double n1, double n2, double h) {
     return n1;
 }
 }  // namespace
-void HLS2RGB(double h, double l, double s, double *r, double *g, double *b) {
-  if (s == 0) {
-    *r = *g = *b = l;
-    return;
-  }
-
-  double m1, m2;
-
-  if (l < 0.5)
-    m2 = l * (1 + s);
-  else
-    m2 = l + s + l * s;
-  m1 = 2 * l - m2;
-
-  *r = HLSValue(m1, m2, h + 120);
-  *g = HLSValue(m1, m2, h);
-  *b = HLSValue(m1, m2, h - 120);
-}
 
 void rgb2hls(double r, double g, double b, double *h, double *l, double *s)
 

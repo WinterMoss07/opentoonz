@@ -903,12 +903,6 @@ void ParamsPageSet::createControls(const TFxP &fx, int index) {
 
 //-----------------------------------------------------------------------------
 
-ParamsPage *ParamsPageSet::getCurrentParamsPage() const {
-  QScrollArea *scrollAreaPage =
-      dynamic_cast<QScrollArea *>(m_pagesList->currentWidget());
-  assert(scrollAreaPage);
-  return dynamic_cast<ParamsPage *>(scrollAreaPage->widget());
-}
 
 //-----------------------------------------------------------------------------
 

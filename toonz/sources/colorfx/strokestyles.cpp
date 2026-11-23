@@ -1296,8 +1296,6 @@ public:
   Stripe();
   void drawpolygon();
   void drawlines(TPixel32 blackcolor);
-  void addToSegment(vector<TSegment> *sv, vector<TSegment> &scontour,
-                    TPixel32 *colors);
 };
 
 Stripe::Stripe() {
@@ -1319,19 +1317,6 @@ void Stripe::drawpolygon() {
   glEnd();
 }
 
-void Stripe::addToSegment(vector<TSegment> *sv, vector<TSegment> &scontour,
-                          TPixel32 *colors) {
-  TPointD p0 = (oldpos1 + oldpos2) * 0.5;
-  TPointD p1 = (pos1 + pos2) * 0.5;
-  //	TPointD p0=oldpos1;
-  //	TPointD p1=pos1;
-  if (color == colors[0]) sv[0].push_back(TSegment(p0, p1));
-  if (color == colors[1]) sv[1].push_back(TSegment(p0, p1));
-  if (color == colors[2]) sv[2].push_back(TSegment(p0, p1));
-
-  scontour.push_back(TSegment(oldpos1, pos1));
-  scontour.push_back(TSegment(oldpos2, pos2));
-}
 
 void Stripe::drawlines(TPixel32 blackcolor) {
   tglColor(blackcolor);

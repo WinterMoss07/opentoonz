@@ -43,9 +43,6 @@ public:
   QString getTaskId(int index) const;
   TFarmTask *getTask(int index) const;
   TFarmTask *getTask(const QString &id) const;
-  bool getTaskInfo(const QString &id, QString &parent, QString &name,
-                   TaskState &status);
-  TaskState getTaskStatus(const QString &id) const;
   void loadTask(bool isRenderTask);
 
   void getTasks(const QString &parentId, std::vector<QString> &tasks) const;
@@ -74,7 +71,6 @@ public:
   void detach(Observer *obs);
   void notify();
 
-  void setController(TFarmController *controller);
   TFarmController *getController() const;
   void update();  // aggiorna lo stato del Batch interrogando il FarmController
 

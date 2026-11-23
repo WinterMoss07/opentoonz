@@ -264,9 +264,6 @@ void ShaderInterface::loadData(TIStream &is) {
       return TFilePath(absFileStr.toStdWString());
     }
 
-    static bool nameMatch(const QString &name, const Parameter &param) {
-      return (name == param.m_name);
-    }
   };
 
   std::string tagName;

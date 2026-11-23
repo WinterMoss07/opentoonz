@@ -41,7 +41,6 @@ public:
   ~CaptureParameters() {}
 
   std::wstring getDeviceName() const { return m_deviceName; }
-  void setDeviceName(std::wstring name) { m_deviceName = name; }
 
   TDimension getResolution() const { return m_resolution; }
   void setResolution(TDimension res) { m_resolution = res; }
@@ -50,7 +49,6 @@ public:
   void setBrightness(int value) { m_brightness = value; }
 
   int getContranst() const { return m_contranst; }
-  void setContranst(int value) { m_contranst = value; }
 
   bool isUseWhiteImage() const { return m_useWhiteImage; }
   void useWhiteImage(bool value) { m_useWhiteImage = value; }
@@ -62,13 +60,11 @@ public:
   void setFilePath(TFilePath value) { m_filePath = value; }
 
   int getIncrement() const { return m_increment; }
-  void setIncrement(int value) { m_increment = value; }
 
   int getStep() const { return m_step; }
   void setStep(int value) { m_step = value; }
 
   std::string getFileFormat() const { return m_format; }
-  void setFileFormat(std::string value) { m_format = value; }
 
   TPropertyGroup *getFileFormatProperties(std::string ext);
 

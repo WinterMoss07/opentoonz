@@ -317,7 +317,6 @@ public:
 
   bool isLinkable() const { return m_isLinkable; }
   void playNextFrame(QElapsedTimer *timer = nullptr, qint64 targetInstant = 0);
-  void updateCurrentFPS(int val);
 
   bool hasButton(std::vector<int> buttonMask, FlipConsole::EGadget buttonId) {
     if (buttonMask.size() == 0) return true;

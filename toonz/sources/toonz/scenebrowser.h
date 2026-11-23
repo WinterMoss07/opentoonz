@@ -100,7 +100,6 @@ public:
   void enableGlobalSelection(bool enabled);
   void selectNone();
 
-  QSplitter *getMainSplitter() const { return m_mainSplitter; }
 
   // Enable double-click to open a scene.
   // This is not always desirable (e.g., if a user double-clicks on a file in

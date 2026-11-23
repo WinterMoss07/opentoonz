@@ -14,8 +14,6 @@
 
 namespace Tiio {
 
-DVAPI void createJpg(std::vector<UCHAR> &buffer, const TRaster32P &ras,
-                     int quality = 99);
 
 }  // namespace
 

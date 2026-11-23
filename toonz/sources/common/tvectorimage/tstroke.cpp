@@ -367,13 +367,6 @@ inline void changeTQDirection(TThickQuadratic *tq) {
 
 //---------------------------------------------------------------------------
 
-/*
-  Local binary function to find approx values in a vector.
-  */
-bool bfAreAlmostEqual(double x, double y) {
-  double x_y = (x > y) ? x - y : y - x;
-  return x_y < TConsts::epsilon;
-}
 
 //---------------------------------------------------------------------------
 
@@ -427,21 +420,6 @@ void printContainer(ostream &os, const T &c, int maxRow = MAX_ROW) {
 
 //---------------------------------------------------------------------------
 
-template <class T>
-void printContainerOfPointer(ostream &os, const T &c, int maxRow = MAX_ROW) {
-  if (maxRow <= 0) maxRow = MAX_ROW;
-  typename T::const_iterator cit;
-  cit = c.begin();
-  os << '[' << c.size() << ']' << " - ";
-  int counter = 0;
-  for (; cit != c.end(); ++cit) {
-    if (++counter == maxRow - 1) {
-      os << '\n';
-      counter = 0;
-    }
-    os << **cit << ' ';
-  }
-}
 
 //---------------------------------------------------------------------------
 
@@ -625,7 +603,6 @@ It computes the bounding box of the subStroke in the parameter range w0-w1.
 
   TRectD computeSubBBox(double w0, double w1) const;
 
-  inline QuadStrokeChunkArray &getTQArray() { return m_centerLineArray; }
 
   /*!
 Swaps the geometrical infos only
@@ -1162,8 +1139,6 @@ void TStroke::Imp::print(ostream &os) {
   os << endl;
 
   os << "m_centerLineArray";
-  // os.setf(myIOFlags::scientific);
-  printContainerOfPointer(os, m_centerLineArray);
   os << endl;
 
 /*
@@ -1298,41 +1273,6 @@ bool TStroke::getNearestChunk(const TPointD &p, double &outT, int &chunkIndex,
 // finds all points on stroke which are "enough" close to point p. return the
 // number of such points.
 
-int TStroke::getNearChunks(const TThickPoint &p,
-                           vector<TThickPoint> &pointsOnStroke,
-                           bool checkBBox) const {
-  int currIndex    = -100;
-  double currDist2 = 100000;
-
-  for (UINT i = 0; i < m_imp->m_centerLineArray.size(); i++) {
-    TThickQuadratic *q = m_imp->m_centerLineArray[i];
-
-    if (checkBBox && !q->getBBox().enlarge(30).contains(p)) continue;
-
-    double t       = q->getT(p);
-    TThickPoint p1 = q->getThickPoint(t);
-    double dist2   = tdistance2(p1, p);
-
-    if (dist2 < (p1.thick + p.thick + 5) * (p1.thick + p.thick + 5)) {
-      if (!pointsOnStroke.empty() &&
-          areAlmostEqual(p1, pointsOnStroke.back(), 1e-3))
-        continue;
-
-      if (currIndex == i - 1) {
-        if (dist2 < currDist2)
-          pointsOnStroke.pop_back();
-        else
-          continue;
-      }
-
-      currIndex = i;
-      currDist2 = dist2;
-      pointsOnStroke.push_back(p1);
-    }
-  }
-
-  return pointsOnStroke.size();  // dist2 < (numeric_limits<double>::max)();
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1877,9 +1817,6 @@ void TStroke::computeBBox() {
 
 //-----------------------------------------------------------------------------
 
-TRectD TStroke::getCenterlineBBox() const {
-  return m_imp->computeCenterlineBBox();
-}
 
 //-----------------------------------------------------------------------------
 

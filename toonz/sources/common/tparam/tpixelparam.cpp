@@ -150,9 +150,6 @@ bool TPixelParam::setValue(double frame, const TPixel32 &pix) {
 
 //---------------------------------------------------------
 
-bool TPixelParam::setValue64(double frame, const TPixel64 &pix) {
-  return setValueD(frame, toPixelD(pix));
-}
 
 //---------------------------------------------------------
 
@@ -191,19 +188,15 @@ void TPixelParam::saveData(TOStream &os) {
 }
 //---------------------------------------------------------
 
-TDoubleParamP &TPixelParam::getRed() { return m_data->m_r; }
 
 //---------------------------------------------------------
 
-TDoubleParamP &TPixelParam::getGreen() { return m_data->m_g; }
 
 //---------------------------------------------------------
 
-TDoubleParamP &TPixelParam::getBlue() { return m_data->m_b; }
 
 //---------------------------------------------------------
 
-TDoubleParamP &TPixelParam::getMatte() { return m_data->m_m; }
 
 //---------------------------------------------------------
 

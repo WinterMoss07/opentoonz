@@ -315,19 +315,6 @@ static bool isRegionWithStroke(TRegion *region, TStroke *s) {
 
 //-----------------------------------------------------------------------------
 
-static void deleteSubRegionWithStroke(TRegion *region, TStroke *s) {
-  for (int i = 0; i < (int)region->getSubregionCount(); i++) {
-    deleteSubRegionWithStroke(region->getSubregion(i), s);
-    if (isRegionWithStroke(region->getSubregion(i), s)) {
-      TRegion *r = region->getSubregion(i);
-      r->moveSubregionsTo(region);
-      assert(r->getSubregionCount() == 0);
-      region->deleteSubregion(i);
-      delete r;
-      i--;
-    }
-  }
-}
 
 //-----------------------------------------------------------------------------
 
@@ -557,27 +544,6 @@ TRegion* TVectorImage::getRegion(TRegionId regId) const
 */
 //-----------------------------------------------------------------------------
 
-void TVectorImage::setEdgeColors(int strokeIndex, int leftColorIndex,
-                                 int rightColorIndex) {
-  std::list<TEdge *> &ll = m_imp->m_strokes[strokeIndex]->m_edgeList;
-
-  std::list<TEdge *>::const_iterator l   = ll.begin();
-  std::list<TEdge *>::const_iterator l_e = ll.end();
-  for (; l != l_e; ++l) {
-    // double w0 = (*l)->m_w0, w1 = (*l)->m_w1;
-    if ((*l)->m_w0 > (*l)->m_w1) {
-      if (leftColorIndex != -1)
-        (*l)->m_styleId = leftColorIndex;
-      else if (rightColorIndex != -1)
-        (*l)->m_styleId = rightColorIndex;
-    } else {
-      if (rightColorIndex != -1)
-        (*l)->m_styleId = rightColorIndex;
-      else if (leftColorIndex != -1)
-        (*l)->m_styleId = leftColorIndex;
-    }
-  }
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1188,9 +1154,6 @@ void TVectorImage::findRegions() {
 
 //-----------------------------------------------------------------------------
 
-void TVectorImage::putRegion(TRegion *region) {
-  m_imp->m_regions.push_back(region);
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1575,9 +1538,6 @@ void TVectorImage::enableRegionComputing(bool enabled,
 
 //------------------------------------------------------------------------------
 
-void TVectorImage::enableMinimizeEdges(bool enabled) {
-  m_imp->m_minimizeEdges = enabled;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1608,28 +1568,6 @@ TVectorImageP TVectorImage::splitImage(const std::vector<int> &indices,
 
 //-----------------------------------------------------------------------------
 
-TVectorImageP TVectorImage::splitSelected(bool removeFlag) {
-  TVectorImageP out = new TVectorImage;
-  std::vector<int> toBeRemoved;
-
-  for (UINT i = 0; i < getStrokeCount(); ++i) {
-    VIStroke *ref = m_imp->m_strokes[i];
-    assert(ref);
-    if (ref->m_s->getFlag(TStroke::c_selected_flag)) {
-      VIStroke *stroke = new VIStroke(*ref);
-      out->m_imp->m_strokes.push_back(stroke);
-      if (removeFlag) {
-        toBeRemoved.push_back(i);
-        //  	  removeStroke(i);
-        //			delete ref;
-        //  	  i--;
-      }
-    }
-  }
-  removeStrokes(toBeRemoved, true, true);
-  out->m_imp->m_areValidRegions = false;
-  return out;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1661,19 +1599,9 @@ UINT TVectorImage::getFillData(std::unique_ptr<IntersectionBranch[]> &v) {
 
 //-----------------------------------------------------------------------------
 
-void TVectorImage::enableStrokeStyle(int index, bool enable) {
-  DisabledStrokeStyles &disabledSet = getDisabledStrokeStyleSet();
-  if (enable)
-    disabledSet.erase(index);
-  else
-    disabledSet.insert(index);
-}
 
 //-----------------------------------------------------------------------------
 
-bool TVectorImage::isStrokeStyleEnabled(int index) {
-  return isStrokeStyleEnabled__(index);
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1717,18 +1645,6 @@ inline double recomputeW2(double oldW, const TStroke &oldStroke,
 
 //-----------------------------------------------------------------------------
 
-inline double recomputeW(double oldW, const TStroke &oldStroke,
-                         const TStroke &newStroke, bool isAtBegin) {
-  double oldLength = oldStroke.getLength();
-  double newLength = newStroke.getLength();
-
-  assert(newLength < oldLength);
-  double s =
-      oldStroke.getLength(oldW) - ((isAtBegin) ? 0 : oldLength - newLength);
-  assert(s <= newLength || areAlmostEqual(s, newLength, 1e-5));
-
-  return newStroke.getParameterAtLength(s);
-}
 
 //-----------------------------------------------------------------------------
 #ifdef _DEBUG
@@ -2471,24 +2387,6 @@ TThread::Mutex *TVectorImage::getMutex() const { return m_imp->m_mutex; }
 
 //-------------------------------------------------------------------
 
-void TVectorImage::areaFill(TStroke *stroke, int index, bool m_onlyUnfilled) {
-  TVectorImage v;
-  v.addStroke(stroke);
-  v.findRegions();
-
-  for (UINT i = 0; i < v.getRegionCount(); i++)
-    for (UINT j = 0; j < getRegionCount(); j++) {
-      if (m_imp->m_insideGroup != TGroupId() &&
-          !m_imp->m_insideGroup.isParentOf(
-              m_imp->m_strokes[getRegion(j)->getEdge(0)->m_index]->m_groupId))
-        continue;
-
-      if (v.getRegion(i)->contains(*getRegion(j)))
-        getRegion(j)->setStyle(index);
-    }
-
-  v.removeStroke(0);
-}
 
 VIStroke *cloneVIStroke(VIStroke *vs) { return new VIStroke(*vs); }
 
@@ -3024,22 +2922,9 @@ bool containsNoSubregion(const TRegion *r, const TPointD &p) {
 
 //------------------------------------------------------
 
-int TVectorImage::getGroupByStroke(UINT index) const {
-  VIStroke *viStroke = getVIStroke(index);
-  return viStroke->m_groupId.m_id.back();
-}
 
 //------------------------------------------------------
 
-int TVectorImage::getGroupByRegion(UINT index) const {
-  TRegion *r = m_imp->m_regions[index];
-  for (UINT i = 0; i < r->getEdgeCount(); i++)
-    if (r->getEdge(i)->m_index >= 0) {
-      return m_imp->m_strokes[r->getEdge(i)->m_index]->m_groupId.m_id.back();
-    }
-
-  return -1;
-}
 
 //------------------------------------------------------
 

@@ -127,7 +127,6 @@ public:
 
   void setScene(ToonzScene *scene);
   TDimension getDeviceResolution() const { return m_deviceResolution; }
-  CaptureParameters *getCaptureParameters() const;
 
   TXshSimpleLevel *getCurrentLevel() const;
   TFrameId getCurrentFid() const;

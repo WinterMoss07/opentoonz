@@ -66,8 +66,6 @@ public:
     m_frameHandle = frameHandle;
   }
 
-  // function graph
-  void selectCurve(TDoubleParam *curve);
   void deselectAllKeyframes();
 
   // function sheet

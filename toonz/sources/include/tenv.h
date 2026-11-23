@@ -127,9 +127,6 @@ DVAPI std::string getSystemVarPrefix();
 //   '<rootvar>'
 DVAPI TFilePath getRootVarPath();
 
-// restituisce il valore della variabile di sistema varName
-// (su window aggiunge "SOFTWARE\Digital Video\....." all'inizio)
-DVAPI std::string getSystemVarStringValue(std::string varName);
 DVAPI TFilePath getSystemVarPathValue(std::string varName);
 DVAPI TFilePathSet getSystemVarPathSetValue(std::string varName);
 

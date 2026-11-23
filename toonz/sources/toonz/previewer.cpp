@@ -1362,19 +1362,6 @@ void Previewer::updateView() {
 
 //-----------------------------------------------------------------------------
 
-void Previewer::onLevelChange(TXshLevel *xl) {
-  TFilePath fp             = xl->getPath();
-  std::string levelKeyword = ::to_string(fp);
-
-  // Inform the cache managers of level invalidation
-  if (!m_imp->m_subcamera)
-    TPassiveCacheManager::instance()->invalidateLevel(levelKeyword);
-
-  m_imp->updateAliasKeyword(levelKeyword);
-  m_imp->updateProgressBarStatus();
-
-  m_imp->notifyUpdate();
-}
 
 //-----------------------------------------------------------------------------
 

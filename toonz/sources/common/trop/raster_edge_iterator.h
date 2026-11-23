@@ -78,7 +78,6 @@ public:
   pixel_type *rightPix() const { return m_rightPix; }
 
   pixel_type *pix() const { return m_rightSide ? m_rightPix : m_leftPix; }
-  pixel_type *otherPix() const { return m_rightSide ? m_leftPix : m_rightPix; }
 
   int turn() const { return m_turn; }
 

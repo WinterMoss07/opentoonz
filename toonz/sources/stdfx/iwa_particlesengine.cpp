@@ -33,13 +33,6 @@
 namespace {
 QMutex mutex;
 
-void printTime(TStopWatch &sw, std::string name) {
-  std::stringstream ss;
-  ss << name << " : ";
-  sw.print(ss);
-  ss << '\n' << '\0';
-  TSystem::outputDebug(ss.str());
-}
 };  // namespace
 
 /*-----------------------------------------------------------------*/

@@ -856,10 +856,6 @@ void FlipConsole::playNextFrame(QElapsedTimer *timer, qint64 targetInstant) {
 
 //-----------------------------------------------------------------------------
 
-void FlipConsole::updateCurrentFPS(int val) {
-  setCurrentFPS(val);
-  m_fpsSlider->setValue(m_fps);
-}
 
 //-----------------------------------------------------------------------------
 

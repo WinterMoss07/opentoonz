@@ -308,9 +308,6 @@ void Parser::getSuggestions(Grammar::Suggestions &suggestions,
 
 //-------------------------------------------------------------------
 
-std::string Parser::getCurrentPatternString(std::string text) {
-  return "ohime";
-}
 
 //-------------------------------------------------------------------
 

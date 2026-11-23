@@ -186,23 +186,6 @@ bool isUnpremultiplied(const TRaster32P &r) {
 
 //-----------------------------------------------------------------------------
 
-void makeChessBackground(const TRaster32P &ras) {
-  ras->lock();
-
-  const TPixel32 gray1(230, 230, 230, 255), gray2(180, 180, 180, 255);
-
-  int lx = ras->getLx(), ly = ras->getLy();
-  for (int y = 0; y != ly; ++y) {
-    TPixel32 *pix = ras->pixels(y), *lineEnd = pix + lx;
-
-    int yCol = (y & 4);
-
-    for (int x = 0; pix != lineEnd; ++x, ++pix)
-      if (pix->m != 255) *pix = overPix((x & 4) == yCol ? gray1 : gray2, *pix);
-  }
-
-  ras->unlock();
-}
 
 }  // namespace
 
@@ -1142,16 +1125,6 @@ Qt::transparent)
 }
 //-----------------------------------------------------------------------------
 
-TRaster32P IconGenerator::generateSplineFileIcon(const TFilePath &path,
-                                                 const TDimension &iconSize) {
-  TStageObjectSpline *spline = new TStageObjectSpline();
-  TIStream is(path);
-  spline->loadData(is);
-  SplineIconRenderer sr("", iconSize, spline);
-  TRaster32P icon = sr.generateRaster(iconSize);
-  delete spline;
-  return icon;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1499,91 +1472,6 @@ QPixmap IconGenerator::getIcon(TXshLevel *xl, const TFrameId &fid,
 
 //-----------------------------------------------------------------------------
 
-QPixmap IconGenerator::getSizedIcon(TXshLevel *xl, const TFrameId &fid,
-                                    std::string newId, TDimension dim) {
-  if (!xl) return QPixmap();
-
-  if (TXshChildLevel *cl = xl->getChildLevel()) {
-    std::string id = XsheetIconRenderer::getId(cl, fid.getNumber() - 1);
-    QPixmap pix;
-    if (::getIcon(id, pix)) return pix;
-
-    // if (onDemand) return pix;
-
-    TDimension iconSize = TDimension(80, 60);
-    if (dim != TDimension(0, 0)) {
-      iconSize = dim;
-    }
-
-    // The icon must be calculated - add an IconRenderer task.
-    // storeIcon(id, QPixmap());   //It was automatically added by the former
-    // access
-    addTask(id, new XsheetIconRenderer(id, iconSize, cl->getXsheet()));
-  }
-
-  if (TXshSimpleLevel *sl = xl->getSimpleLevel()) {
-    // make thumbnails for cleanup preview and cameratest to be the same as
-    // normal TLV
-    std::string id;
-    int status = sl->getFrameStatus(fid);
-    if (sl->getType() == TZP_XSHLEVEL &&
-        status & TXshSimpleLevel::CleanupPreview) {
-      sl->setFrameStatus(fid, status & ~TXshSimpleLevel::CleanupPreview);
-      id = sl->getIconId(fid);
-      sl->setFrameStatus(fid, status);
-    } else
-      id = sl->getIconId(fid);
-
-    id += newId;
-
-    QPixmap pix;
-    if (::getIcon(id, pix, xl->getSimpleLevel())) return pix;
-
-    // if (onDemand) return pix;
-
-    IconGenerator::Settings oldSettings = m_settings;
-
-    // Disable transparency check for cast and xsheet icons
-    // if (!filmStrip) m_settings = IconGenerator::Settings();
-
-    TDimension iconSize = TDimension(80, 60);
-    if (dim != TDimension(0, 0)) {
-      iconSize = dim;
-    }
-
-    // storeIcon(id, QPixmap());
-
-    int type = sl->getType();
-    switch (type) {
-    case OVL_XSHLEVEL:
-    case TZI_XSHLEVEL:
-      addTask(id, new RasterImageIconRenderer(id, iconSize, sl, fid));
-      break;
-    case PLI_XSHLEVEL:
-      addTask(id,
-              new VectorImageIconRenderer(id, iconSize, sl, fid, m_settings));
-      break;
-    case TZP_XSHLEVEL:
-      // Yep, we could have rasters, due to a cleanupping process
-      if (status == TXshSimpleLevel::Scanned)
-        addTask(id, new RasterImageIconRenderer(id, iconSize, sl, fid));
-      else
-        addTask(id,
-                new ToonzImageIconRenderer(id, iconSize, sl, fid, m_settings));
-      break;
-    case MESH_XSHLEVEL:
-      addTask(id, new MeshImageIconRenderer(id, iconSize, sl, fid, m_settings));
-      break;
-    default:
-      assert(false);
-      break;
-    }
-
-    m_settings = oldSettings;
-  }
-
-  return QPixmap();
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1753,17 +1641,6 @@ void IconGenerator::remove(const TFilePath &path, const TFrameId &fid) {
 
 //-----------------------------------------------------------------------------
 
-QPixmap IconGenerator::getSceneIcon(ToonzScene *scene) {
-  std::string id(SceneIconRenderer::getId());
-
-  QPixmap pix;
-  if (::getIcon(id, pix)) return pix;
-
-  // storeIcon(id, QPixmap());
-  addTask(id, new SceneIconRenderer(getIconSize(), scene));
-
-  return QPixmap();
-}
 
 //-----------------------------------------------------------------------------
 

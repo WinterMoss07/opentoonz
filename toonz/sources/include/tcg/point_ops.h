@@ -109,13 +109,6 @@ inline typename point_traits<Point>::value_type dist(const Point &a,
 
 //-------------------------------------------------------------------------------------------
 
-template <typename Point>
-inline typename point_traits<Point>::value_type absDist(const Point &a,
-                                                        const Point &b) {
-  typename point_traits<Point>::value_type xDist = std::abs(b.x - a.x),
-                                           yDist = std::abs(b.y - a.y);
-  return (xDist < yDist) ? yDist : xDist;
-}
 
 //-------------------------------------------------------------------------------------------
 
@@ -181,26 +174,6 @@ inline Point ortRight(const Point &p) {
 
 //-------------------------------------------------------------------------------------------
 
-/*!
-  Returns the bisecting direction \p bd between \p d0 and \p d1, in the plane
-  region
-  where <TT>d x d1 > 0</TT>
-*/
-template <typename Point>
-inline Point bisecant(const Point &d0, const Point &d1) {
-  Point sum   = d0 + d1;
-  double norm = sum * sum;
-
-  if (norm < 1)
-    sum = ortLeft(d0 - d1), norm = sum * sum;
-  else if (cross(d0, d1) < 0)
-    sum.x = -sum.x, sum.y = -sum.y;
-
-  norm = sqrt(norm);
-  sum.x /= norm, sum.y /= norm;
-
-  return sum;
-}
 
 //-------------------------------------------------------------------------------------------
 
@@ -263,17 +236,6 @@ inline typename point_traits<Point>::value_type lineDist(const Point &p,
 
 //-------------------------------------------------------------------------------------------
 
-/*!
-  \brief Returns the side of line <TT>a->d</TT> where point \p p lies, where \p
-  1 means left,
-  \p -1 right, and \p 0 below tolerance (ie on the line).
-*/
-template <typename Point>
-inline int lineSide(const Point &p, const Point &a, const Point &d,
-                    typename point_traits<Point>::value_type tol = 0) {
-  typename point_traits<Point>::value_type dist = lineSignedDist(p, a, d);
-  return (dist > tol) ? 1 : (dist < -tol) ? -1 : 0;
-}
 
 //-------------------------------------------------------------------------------------------
 
@@ -314,13 +276,6 @@ inline typename point_traits<Point>::value_type angle(const Point &v1,
 
 //-------------------------------------------------------------------------------------------
 
-template <typename Point>
-inline typename point_traits<Point>::value_type segCoord(const Point &p,
-                                                         const Point &p0,
-                                                         const Point &p1) {
-  Point p1_p0 = p1 - p0;
-  return ((p - p0) * p1_p0) / (p1_p0 * p1_p0);
-}
 
 //-------------------------------------------------------------------------------------------
 
@@ -379,58 +334,6 @@ inline bool intersectionSegCoords(
 
 //-------------------------------------------------------------------------------------------
 
-/*!
-  \brief  Stores the 6 values of the bidimensional affine transform mapping
-          \p p0, \p p1, \p p2 into \p q0, \p q1, \p q1.
-
-  Returned values are in <I>row-major</I> order, with the translational
-  component
-  at multiple of 3 indexes.
-
-  Returns numeric_ops::NaN() on each entry if the system could not be solved
-  under
-  the specified determinant threshold.
-
-  \return  Whether the affine could be solved under the specified constraints
-*/
-template <typename Point>
-bool affineMap(const Point &p0, const Point &p1, const Point &p2,
-               const Point &q0, const Point &q1, const Point &q2,
-               typename point_traits<Point>::value_type affValues[],
-               typename point_traits<Point>::value_type detTol = 0) {
-  typedef typename point_traits<Point>::value_type value_type;
-
-  // Build the linear transform mapping (p1-p0) and (p2-p0) into (q1-q0) and
-  // (q2-q0)
-  value_type p1_p0_x = p1.x - p0.x, p1_p0_y = p1.y - p0.y;
-  value_type p2_p0_x = p2.x - p0.x, p2_p0_y = p2.y - p0.y;
-
-  value_type det = p1_p0_x * p2_p0_y - p1_p0_y * p2_p0_x;
-  if (std::abs(det) < detTol) {
-    affValues[0] = affValues[1] = affValues[2] = affValues[3] = affValues[4] =
-        affValues[5] = numeric_ops::NaN<value_type>();
-    return false;
-  }
-
-  value_type q1_q0_x = q1.x - q0.x, q1_q0_y = q1.y - q0.y;
-  value_type q2_q0_x = q2.x - q0.x, q2_q0_y = q2.y - q0.y;
-
-  affValues[2] = p2_p0_y / det;
-  affValues[5] = -p2_p0_x / det;  // 2 and 5 used as temps here
-  affValues[3] = -p1_p0_y / det;
-  affValues[4] = p1_p0_x / det;
-
-  affValues[0] = q1_q0_x * affValues[2] + q2_q0_x * affValues[3];
-  affValues[1] = q1_q0_x * affValues[5] + q2_q0_x * affValues[4];
-  affValues[3] = q1_q0_y * affValues[2] + q2_q0_y * affValues[3];
-  affValues[4] = q1_q0_y * affValues[5] + q2_q0_y * affValues[4];
-
-  // Finally, add the translational component
-  affValues[2] = q0.x - affValues[0] * p0.x - affValues[1] * p0.y;
-  affValues[5] = q0.y - affValues[3] * p0.x - affValues[4] * p0.y;
-
-  return true;
-}
 
 //-------------------------------------------------------------------------------------------
 

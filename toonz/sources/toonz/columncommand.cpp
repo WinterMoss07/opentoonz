@@ -453,49 +453,6 @@ TXshChildLevel *cloneChildLevel(TXshChildLevel *cl) {
 
 //-----------------------------------------------------------------------------
 
-void cloneSubXsheets(TXsheet *xsh) {
-  std::map<TXsheet *, TXshChildLevel *> visited;
-  std::set<TXsheet *> toVisit;
-
-  toVisit.insert(xsh);
-
-  while (!toVisit.empty()) {
-    xsh = *toVisit.begin();
-    toVisit.erase(xsh);
-
-    for (int i = 0; i < xsh->getColumnCount(); ++i) {
-      TXshColumn *column = xsh->getColumn(i);
-      if (!column) continue;
-
-      if (TXshCellColumn *cc = column->getCellColumn()) {
-        int r0 = 0, r1 = -1;
-        cc->getRange(r0, r1);
-        if (!cc->isEmpty() && r0 <= r1)
-          for (int r = r0; r <= r1; ++r) {
-            TXshCell cell = cc->getCell(r);
-            if (cell.m_level && cell.m_level->getChildLevel()) {
-              TXsheet *subxsh = cell.m_level->getChildLevel()->getXsheet();
-
-              std::map<TXsheet *, TXshChildLevel *>::iterator it =
-                  visited.find(subxsh);
-              if (it == visited.end()) {
-                it = visited
-                         .insert(std::make_pair(
-                             subxsh,
-                             cloneChildLevel(cell.m_level->getChildLevel())))
-                         .first;
-                toVisit.insert(subxsh);
-              }
-              assert(it != visited.end());
-
-              cell.m_level = it->second;
-              cc->setCell(r, cell);
-            }
-          }
-      }
-    }
-  }
-}
 
 //=============================================================================
 //  PasteColumnsUndo

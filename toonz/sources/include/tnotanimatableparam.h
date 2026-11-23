@@ -203,7 +203,6 @@ public:
   TParam *clone() const override { return new TIntParam(*this); }
   void loadData(TIStream &is) override;
   void saveData(TOStream &os) override;
-  void enableWheel(bool on);
 
   bool isWheelEnabled() const;
   void setValueRange(int min, int max);

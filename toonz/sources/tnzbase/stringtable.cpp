@@ -29,7 +29,6 @@ public:
 
   void load(const TFilePath &);
 
-  void loadCoded(const TFilePath &);
   void saveCoded(const TFilePath &);
 
   const Item *getItem(std::string name) const override;
@@ -150,39 +149,6 @@ public:
 const std::string magic = "stab.001";
 #endif
 
-void TStringTableImp::loadCoded(const TFilePath &fp) {
-  try {
-    Tifstream is(fp);
-    char buffer[1024];
-
-#ifdef MACOSX
-    is.read(buffer, TMagic::instance()->m_magic.length());
-#else
-    is.read(buffer, magic.length());
-#endif
-
-    m_defaultFontNameAndSize.first  = readString(is);
-    m_defaultFontNameAndSize.second = readShort(is);
-    int count                       = readShort(is);
-    for (int i = 0; i < count; i++) {
-      int m = readShort(is);
-      assert(1 <= m && m <= 3);
-      std::string id = readString(is);
-      Item &item     = m_table[id];
-      item.m_name    = readStringW(is);
-      if (m >= 2) {
-        item.m_help            = readStringW(is);
-        if (m == 3) item.m_tip = readStringW(is);
-      }
-    }
-    int check = readShort(is);
-    assert(check == 12345);
-    // if(check != 12345)
-    //  throw;
-  } catch (...) {
-    // TMessage::error("Error reading StringTable file: ", fp);
-  }
-}
 
 //-------------------------------------------------------------------
 

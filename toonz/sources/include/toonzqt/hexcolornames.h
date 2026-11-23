@@ -58,7 +58,6 @@ public:
   static bool loadMainFile(bool reload);
   static bool loadUserFile(bool reload);
   static bool loadTempFile(const TFilePath &fp);
-  static bool hasUserFile();
   static bool saveUserFile();
   static bool saveTempFile(const TFilePath &fp);
 

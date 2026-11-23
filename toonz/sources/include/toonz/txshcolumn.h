@@ -397,7 +397,6 @@ last row with not empty cell of same level.
   void setCellMark(int frame, int id);
   int getCellMark(int frame) const;
   QMap<int, int> getCellMarks() const;
-  void clearCellMarks();
 };
 
 #endif

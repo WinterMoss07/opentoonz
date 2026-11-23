@@ -216,12 +216,10 @@ public:
   void showFrame(int frame);
 
   TFx *getPreviewedFx() const;
-  TXsheet *getPreviewXsheet() const;
   bool isFreezed() const { return m_freezed; }
   TRectD getPreviewedImageGeometry() const;
   void schedulePreviewedFxUpdate();
 
-  bool canAppend();
   bool isSavable() const;
 
   void setPoolIndex(int poolIndex) { m_poolIndex = poolIndex; }
@@ -238,10 +236,6 @@ public:
 
   void adaptGeometry(const TRect &interestingImgRect, const TRect &imgRect);
 
-  // When Fx preview is called without the subcamera,
-  // render the full region of camera by resize flipbook and
-  // zoom-out the rendered image.
-  void adaptGeometryForFullPreview(const TRect &imgRect);
 
   void adaptGeometryToCurrentSize();
   void zoomAndAdaptGeometry(bool forward);

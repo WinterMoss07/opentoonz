@@ -93,27 +93,7 @@ void pri_funct_cv_end(void) {
 
 static const char *pri_param_cp_com_name = "#";
 
-void pri_funct_set_cp_title(const char *cp_title) {
-  pri_param_cp_com_name = cp_title;
-}
 
-/* print  Valiable_argument, Return_code */
-void pri_funct_msg_vr(const char *fmt, ...) {
-  int i_ret;
-  va_list ap;
-  char buf[FILENAME_MAX]; /* redhat9 : stdio.h --> bits/stdio_lim.h */
-
-  va_start(ap, fmt);
-  i_ret = vsnprintf(buf, FILENAME_MAX, fmt, ap);
-  va_end(ap);
-  if (i_ret < 0) {
-    (void)strcpy(buf, "bad argument for fprintf stdout");
-  }
-
-  /* 可変引数,改行 */
-  (void)fprintf(stdout, "%s\n", buf);
-  (void)fflush(stdout);
-}
 
 /* print  Title, Time_stamp, Valiable_argument, Return_code */
 void pri_funct_msg_ttvr(const char *fmt, ...) {
@@ -201,8 +181,6 @@ private:
   list_node *_clp_first, *_clp_last;
   int32_t _i32_count;
 
-  void _set_clp_first(list_node *clp_) { this->_clp_first = clp_; }
-  void _set_clp_last(list_node *clp_) { this->_clp_last = clp_; }
 
   void _connect(list_node *clp_previous, list_node *clp_next);
 };
@@ -577,9 +555,6 @@ public:
   /* メモリ確保 */
   int mem_alloc(void);
 
-  /* メモリへのポインターを得る */
-  double *get_dp_brush(void) { return this->_dp_brush; }
-  double *get_dp_subpixel_image(void) { return this->_dp_subpixel_image; }
   double *get_dp_pixel_image(void) { return this->_dp_pixel_image; }
 
   /* 実行 */
@@ -1054,8 +1029,6 @@ public:
     return this->_clp_previous_point;
   }
 
-  /* 連結情報表示 */
-  void print_xy_around(void);
 
 private:
   int32_t _i32_xp, _i32_yp;    /* source(元)画像上の位置 */
@@ -1094,24 +1067,6 @@ pixel_point_node *pixel_point_node::get_clp_link_near(int32_t i32) {
   return this->_clpa_link_near[i32];
 }
 
-void pixel_point_node::print_xy_around(void) {
-  int32_t ii;
-
-  pri_funct_msg_ttvr(
-      "pixel_point_node::debug_print_xy_around() : self address <0x%lx>", this);
-  pri_funct_msg_ttvr(" self    x %d y %d", this->get_i32_xp(),
-                     this->get_i32_yp());
-
-  for (ii = 0; ii < LINK_NEAR_COUNT; ++ii) {
-    if (NULL != this->get_clp_link_near(ii)) {
-      pri_funct_msg_ttvr(" link_near %d  x %d y %d", ii,
-                         this->get_clp_link_near(ii)->get_i32_xp(),
-                         this->get_clp_link_near(ii)->get_i32_yp());
-    } else {
-      pri_funct_msg_ttvr(" link_near %ld is not exist(NULL).", ii);
-    }
-  }
-}
 
 class pixel_point_root final : public list_root {
 public:
@@ -2482,8 +2437,6 @@ public:
   double get_d_bbox_y_max(void) { return this->_d_bbox_y_max; }
 
   void set_i32_smooth_retry(int32_t i32) { this->_i32_smooth_retry = i32; }
-  int32_t get_i32_smooth_retry(void) { return this->_i32_smooth_retry; }
-  void set_i_same_way_exec_sw(bool sw) { this->_i_same_way_exec_sw = sw; }
 
   int exec01020304(pixel_point_root *clp_pixel_point_root);
   void exec05_set_middle(void);
@@ -4134,17 +4087,10 @@ public:
 
   void set_i32_xs(int32_t ii) { this->_i32_xs = ii; }
   void set_i32_ys(int32_t ii) { this->_i32_ys = ii; }
-  void set_i32_xd(int32_t ii) { this->_i32_xd = ii; }
-  void set_i32_yd(int32_t ii) { this->_i32_yd = ii; }
-  void set_ui16_threshold(uint16_t ii) { this->_ui16_threshold = ii; }
-  void set_i32_exec_loop_count(int32_t ii) { this->_i32_exec_loop_count = ii; }
 
   /* パラメータを得る */
   int32_t get_i32_xs(void) { return this->_i32_xs; }
   int32_t get_i32_ys(void) { return this->_i32_ys; }
-  int32_t get_i32_xd(void) { return this->_i32_xd; }
-  int32_t get_i32_yd(void) { return this->_i32_yd; }
-  uint16_t get_ui16_threshold(void) { return this->_ui16_threshold; }
   int32_t get_i32_exec_loop_count(void) { return this->_i32_exec_loop_count; }
 
   /* メモリ確保 */

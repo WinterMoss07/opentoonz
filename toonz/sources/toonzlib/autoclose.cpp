@@ -540,28 +540,6 @@ inline int distance2(const TPoint p0, const TPoint p1) {
 
 /*=============================================================================*/
 
-int closerPoint(const std::vector<TAutocloser::Segment> &points,
-                std::vector<bool> &marks, int index) {
-  // assert(points.size() == marks.size());
-
-  int min, curr;
-  int minval = (std::numeric_limits<int>::max)();
-
-  min = index + 1;
-
-  for (curr = index + 1; curr < (int)points.size(); curr++)
-    if (!(marks[curr])) {
-      int distance = distance2(points[index].first, points[curr].first);
-
-      if (distance < minval) {
-        minval = distance;
-        min    = curr;
-      }
-    }
-
-  marks[min] = true;
-  return min;
-}
 
 /*------------------------------------------------------------------------*/
 
@@ -807,13 +785,6 @@ void TAutocloser::Imp::findMeetingPoints(
 
 /*------------------------------------------------------------------------*/
 
-static bool allMarked(const std::vector<bool> &marks, int index) {
-  int i;
-
-  for (i = index + 1; i < (int)marks.size(); i++)
-    if (!marks[i]) return false;
-  return true;
-}
 
 /*------------------------------------------------------------------------*/
 

@@ -171,8 +171,6 @@ public:
   }
   void setRegion(TRect region) { m_region = region; }
 
-  int getShrinkX() { return m_shrinkX; }
-  int getShrinkY() { return m_shrinkY; }
   TRect getRegion() { return m_region; }
 
 private:

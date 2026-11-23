@@ -506,8 +506,6 @@ return true if the method execution can have changed the current tool
               //!  if frame = -1 then it uses the current frame
               //!  \sa  TXsheet::getPlacement.
 
-  TAffine getCurrentColumnParentMatrix()
-      const;  //!< Returns the current matrix transformation of the
               //!  current stage object parent.
   TAffine getCurrentObjectParentMatrix() const;
   TAffine getCurrentObjectParentMatrix2() const;

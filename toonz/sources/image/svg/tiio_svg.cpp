@@ -83,7 +83,6 @@ int nsvg__isdigit(char c) { return strchr("0123456789", c) != 0; }
 
 int nsvg__isnum(char c) { return strchr("0123456789+-.eE", c) != 0; }
 
-NSVG_INLINE float nsvg__maxf(float a, float b) { return a > b ? a : b; }
 
 // Simple XML parser
 

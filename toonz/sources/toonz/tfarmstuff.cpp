@@ -17,20 +17,6 @@ TFarmController *FarmController = 0;
 
 //------------------------------------------------------------------------------
 
-TFarmController *TFarmStuff::getTFarmController() {
-  if (!FarmController) {
-    TFilePath groot = getGlobalRoot();
-    TFilePath fp    = groot + "config" + "controller.txt";
-
-    ::loadControllerData(fp, CtrlData);
-
-    TFarmControllerFactory factory;
-    // int ret =
-    factory.create(CtrlData, &FarmController);
-  }
-
-  return FarmController;
-}
 
 //------------------------------------------------------------------------------
 
@@ -58,14 +44,6 @@ bool TFarmStuff::testConnection(const QString &hostname, int port) {
 
 //------------------------------------------------------------------------------
 
-bool TFarmStuff::testConnectionToController() {
-  QString hostName;
-  QString ipAddr;
-  int port;
-
-  getControllerData(hostName, ipAddr, port);
-  return doTestConnection(hostName, ipAddr, port);
-}
 
 //------------------------------------------------------------------------------
 
@@ -108,7 +86,3 @@ TFilePath TFarmStuff::getGlobalRoot() {
 
 //------------------------------------------------------------------------------
 
-void TFarmStuff::setGlobalRoot(const TFilePath &fp) {
-  GRootEnvVar = ::to_string(fp);
-  // GRootEnvVar = fp;
-}

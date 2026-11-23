@@ -486,7 +486,6 @@ int TXshCellColumn::getCellMark(int frame) const {
 
 QMap<int, int> TXshCellColumn::getCellMarks() const { return m_cellMarkIds; }
 
-void TXshCellColumn::clearCellMarks() { m_cellMarkIds.clear(); }
 
 //=============================================================================
 // TXshColumn

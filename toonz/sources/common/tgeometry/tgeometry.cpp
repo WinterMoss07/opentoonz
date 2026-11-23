@@ -278,30 +278,8 @@ TAffine TAffine3::get2d() const {
     a12, a22, a32 );
 }
 
-TAffine3 TAffine3::translation2d(double x, double y) {
-  TAffine3 r;
-  r.rowZ().x = x;
-  r.rowZ().y = y;
-  return r;
-}
 
-TAffine3 TAffine3::scale2d(double x, double y) {
-  TAffine3 r;
-  r.a11 = x;
-  r.a22 = y;
-  return r;
-}
 
-TAffine3 TAffine3::rotation2d(double angle) {
-  TAffine3 r;
-  double s = sin(angle);
-  double c = cos(angle);
-  r.a11 =  c;
-  r.a12 =  s;
-  r.a21 = -s;
-  r.a22 =  c;
-  return r;
-}
 
 //==================================================================================================
 
@@ -360,12 +338,6 @@ TAffine TAffine4::get2d(double z) const {
     a12, a22, z*a32 + a42 );
 }
 
-TAffine3 TAffine4::get2dPersp(double z) const {
-  return TAffine3(
-    T3DPointD( a11       , a12       , a14       ),
-    T3DPointD( a21       , a22       , a24       ),
-    T3DPointD( a31*z+a41 , a32*z+a42 , a34*z+a44 ) );
-}
 
 TAffine4 TAffine4::translation(double x, double y, double z) {
   TAffine4 r;
@@ -432,16 +404,6 @@ TAffine4 TAffine4::rotationY(double angle) {
   return r;
 }
 
-TAffine4 TAffine4::rotationZ(double angle) {
-  TAffine4 r;
-  double s = sin(angle);
-  double c = cos(angle);
-  r.a11 =  c;
-  r.a12 =  s;
-  r.a21 = -s;
-  r.a22 =  c;
-  return r;
-}
 
 //==================================================================================================
 

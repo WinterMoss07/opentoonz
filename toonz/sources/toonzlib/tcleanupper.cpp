@@ -378,14 +378,6 @@ CleanupPreprocessedImage::~CleanupPreprocessedImage() {
 
 //-----------------------------------------------------------------------------------
 
-TRasterImageP CleanupPreprocessedImage::getPreviewImage() const {
-  TRaster32P ras(getSize());
-  TRasterImageP ri(ras);
-  double xdpi = 0, ydpi = 0;
-  getImg()->getDpi(xdpi, ydpi);
-  ri->setDpi(xdpi, ydpi);
-  return ri;
-}
 
 //**************************************************************************************
 //    TCleanupper implementation  -  Process functions

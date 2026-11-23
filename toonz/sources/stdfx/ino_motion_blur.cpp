@@ -166,15 +166,6 @@ void arr_to_ras_(const U *arr, const int channels, TRasterPT<T> ras,
     }
   }
 }
-void vec_to_ras_(unsigned char *vec, const int channels, TRasterP ras,
-                 const int margin) {
-  if ((TRaster32P)ras) {
-    arr_to_ras_<unsigned char, TPixel32>(vec, channels, ras, margin);
-  } else if ((TRaster64P)ras) {
-    arr_to_ras_<unsigned short, TPixel64>(
-        reinterpret_cast<unsigned short *>(vec), channels, ras, margin);
-  }
-}
 void fx_(const TRasterP in_ras  // with margin
          ,
          const int margin, TRasterP out_ras  // no margin

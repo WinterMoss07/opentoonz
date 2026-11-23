@@ -105,7 +105,6 @@ public slots:
 
   void adjustV(double p);
   void adjustS(double p);
-  void adjustH(double p);
   void adjustT(double p);
 
   void shiftV(double p);

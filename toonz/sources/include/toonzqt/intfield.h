@@ -106,12 +106,6 @@ public:
   /*! Set the range of field from \b minValue to \b maxValue;
                   set validator value. */
   void setRange(int minValue, int maxValue);
-  /*! Set to \b minValue minimum range value.
-                  \sa setRange() */
-  void setBottomRange(int minValue);
-  /*! Set to \b maxValue maximum range value.
-                  \sa getRange() */
-  void setTopRange(int maxValue);
 
   /*! Set \b minValue an \b maxValue to current range; to current
                   validator minimum and maximum value. */
@@ -204,15 +198,12 @@ public:
 
   /*! If \b enable is false set slider disable and hide it. */
   void enableSlider(bool enable);
-  bool sliderIsEnabled();
 
   /*! If \b enable is false set roller disable and hide it. */
   void enableRoller(bool enable);
-  bool rollerIsEnabled();
 
   /*! If \b enable is false set spinner disable and hide it. */
   void enableSpinner(bool enable);
-  bool spinnerIsEnabled();
 
   void setLineEditBackgroundColor(QColor color);
 

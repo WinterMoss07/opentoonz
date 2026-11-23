@@ -70,7 +70,6 @@ public:
   bool isFolder(int levelIndex);
   bool isSubFolder(int levelIndex, int frameIndex);
   bool subxsheet();
-  int levelNameType();
 
   int getFolderOption();
   int getSubfolderLevelIndex(int psdLevelIndex, int frameIndex);

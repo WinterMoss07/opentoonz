@@ -200,7 +200,6 @@ public:
 
   bool isApplicationStarting() { return m_isStarting; }
 
-  bool isPenCloseToTablet() const { return m_isPenCloseToTablet; }
 
   void writeSettings();
 

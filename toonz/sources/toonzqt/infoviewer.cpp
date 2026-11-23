@@ -85,11 +85,8 @@ public:
   QLabel m_historyLabel;
   QTextEdit m_history;
   Separator m_separator1, m_separator2;
-  void setFileInfo(const TFileStatus &status);
   void setImageInfo();
   void setSoundInfo();
-  // void cleanFileInfo();
-  void cleanLevelInfo();
   void setToonzSceneInfo();
   void setPaletteInfo();
   void setGeneralFileInfo(const TFilePath &path);
@@ -256,9 +253,6 @@ InfoViewerImp::~InfoViewerImp() {
 
 //----------------------------------------------------------------
 
-void InfoViewerImp::setFileInfo(const TFileStatus &status) {
-  // m_fPath.setText(status.
-}
 
 //----------------------------------------------------------------
 
@@ -473,7 +467,6 @@ void InfoViewerImp::setSoundInfo() {
 
 //----------------------------------------------------------------
 
-void InfoViewerImp::cleanLevelInfo() {}
 
 //----------------------------------------------------------------
 

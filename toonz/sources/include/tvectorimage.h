@@ -94,9 +94,6 @@ public:
   //! Transform a stroke using an affine \b TAffine
   void transform(const TAffine &aff, bool doChangeThickness = false);
 
-  // usato solo in pli
-  //! Put a region in the regions' container
-  void putRegion(TRegion *region);
 
   //! Return the regions' count
   UINT getRegionCount() const;
@@ -156,12 +153,6 @@ public:
   int areDifferentGroup(UINT index1, bool isRegion1, UINT index2,
                         bool isRegion2) const;
 
-  // utility functions
-  //! Return true if two strokes has common parent groups.
-  bool sameParentGroupStrokes(UINT index1, UINT index2) const {
-    int ret = areDifferentGroup(index1, false, index2, false);
-    return (ret == -1 || ret >= 1);
-  }
   //! Return true if two objects are contained into the same group.
   bool sameGroup(UINT index1, UINT index2) const {
     return areDifferentGroup(index1, false, index2, false) == -1;
@@ -186,8 +177,6 @@ public:
   int isInsideGroup() const;
 
   int pickGroup(const TPointD &pos) const;
-  int getGroupByStroke(UINT index) const;
-  int getGroupByRegion(UINT index) const;
 
   /*!
 get the stroke nearest at point
@@ -204,10 +193,6 @@ get the stroke nearest at point
                         double &outw, UINT &strokeIndex, double &dist2,
                         bool inCurrentGroup = true) const;
 
-  //! Enable or disable the style of a stroke according to the \b enable param.
-  static void enableStrokeStyle(int index, bool enable);
-  //! Return true if the style of the stroke identified by \b index is enabled.
-  static bool isStrokeStyleEnabled(int index);
 
   //! Remove the stroke of index \b index and if \b doComputeRegions is true
   //! recompute the regions
@@ -272,8 +257,6 @@ get the stroke nearest at point
   bool selectFill(const TRectD &selectArea, TStroke *s, int styleId,
                   bool onlyUnfilled, bool fillAreas, bool fillLines);
 
-  //! Fill all regions contained in the \b stroke area with \b styleIndex
-  void areaFill(TStroke *stroke, int styleIndex, bool onlyUnfilled);
   //! Fill the stroke which contains \b p with \b newStyleId; it returns the
   //! style of stroke before filling or -1 if not filled.
   int fillStrokes(const TPointD &p, int newStyleId);
@@ -308,16 +291,6 @@ get the stroke nearest at point
   */
   void enableRegionComputing(bool enabled, bool notIntersectingStrokes);
 
-  /*! if enabled, region edges are joined together when possible. for flash
-   * render, should be disabled!
-   */
-  void enableMinimizeEdges(bool enabled);
-  /*! Creates a new Image using the selected strokes. If removeFlag==true then
-     removes selected strokes
-      It includes (in the new image) the color information too.
-          It maintains stroke ids.
-  */
-  TVectorImageP splitSelected(bool removeFlag);
 
   //! Merge the image with the \b img.
   int mergeImage(const TVectorImageP &img, const TAffine &affine,
@@ -344,9 +317,6 @@ get the stroke nearest at point
   static void transferStrokeColors(TVectorImageP sourceImage, int sourceStroke,
                                    TVectorImageP destinationImage,
                                    int destinationStroke);
-  //! Set the edges of the stroke identified by \b strokeIndex with the styles
-  //! \b leftColorIndex and \brightColorIndex.
-  void setEdgeColors(int strokeIndex, int leftColorIndex, int rightColorIndex);
 
   /*! This functions splits stroke with index 'strokeIndex' in n+1 strokes,
      where n is the size of vector sortedW,

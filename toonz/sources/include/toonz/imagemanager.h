@@ -243,8 +243,6 @@ public:
   ImageBuilder();
   virtual ~ImageBuilder();
 
-  bool imageCached() { return m_cached; }
-  bool imageModified() { return m_modified; }
 
   /*!
 Returns whether any currently cached image is compatible with requested

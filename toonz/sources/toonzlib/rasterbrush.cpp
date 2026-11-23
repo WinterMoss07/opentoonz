@@ -355,30 +355,13 @@ public:
 
   double getRadius() const { return m_radius; }
 
-  void setCentre(const TPointD &centre) { m_centre = centre; }
 
-  void setCentre(double x, double y) {
-    m_centre.x = x;
-    m_centre.y = y;
-  }
 
   void setRadius(double radius) { m_radius = radius; }
 };
 
 //===============================================================================================================
 
-// Calcola la distanza di una curva al parametro "t" dalla retta che unisce i
-// punti nei parametri "tPrevious" e "tNext"
-double findChordalDeviation(const TQuadratic &quadratic, double t,
-                            double tPrevious, double tNext) {
-  TPointD pPrevious = quadratic.getPoint(tPrevious);
-  TPointD pNext     = quadratic.getPoint(tNext);
-  TPointD p         = quadratic.getPoint(t);
-  TPointD P(p - pPrevious), Q(pNext - pPrevious);
-  double PQ = P * Q;
-  double QQ = Q * Q;
-  return norm(P - (PQ / QQ) * Q);
-}
 
 // Accende un pixel calcolandone l'intensita'
 /*-- Drawing the anti-aliased portion of the brush tip --*/

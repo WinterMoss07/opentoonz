@@ -160,14 +160,6 @@ inline QString traduce(const TRect &rect) {
 
 //--------------------------------------------------
 
-inline QString qTraduce(const TAffine &aff) {
-  return "[" + QString::number(aff.a11, 'g', 15) + "," +
-         QString::number(aff.a12, 'g', 15) + "," +
-         QString::number(aff.a13, 'g', 15) + "," +
-         QString::number(aff.a21, 'g', 15) + "," +
-         QString::number(aff.a22, 'g', 15) + "," +
-         QString::number(aff.a23, 'g', 15) + "]";
-}
 
 //--------------------------------------------------
 
@@ -198,10 +190,6 @@ void addRenderCache(const std::string &alias, TImageP image) {
 
 //------------------------------------------------------------------------------
 
-//! The inverse function to addRenderCache.
-void removeRenderCache(const std::string &alias) {
-  TFxCacheManager::instance()->remove(alias);
-}
 
 //==============================================================================
 //

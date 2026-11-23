@@ -296,8 +296,6 @@ public:
   //! Copy files from src to dst.
   static void copyFiles(const TFilePath &dst, const TFilePath &src);
 
-  //! Rename files from src to dst.
-  static void renameFiles(const TFilePath &dst, const TFilePath &src);
 
   //! Remove files at fp.
   static void removeFiles(const TFilePath &fp);
@@ -333,8 +331,6 @@ public:
   */
   static TFilePath getExistingHookFile(const TFilePath &decodedLevelPath);
 
-  static void setCompatibilityMasks(int writeMask, int neededMask,
-                                    int forbiddenMask);
 
 public Q_SLOTS:
   void onPaletteChanged();  //!< Invoked when some colorstyle has been changed
@@ -391,6 +387,5 @@ typedef TSmartPointerT<TXshSimpleLevel> TXshSimpleLevelP;
 //=====================================================================================
 
 DVAPI void setLoadingLevelRange(const TFrameId &fromFid, const TFrameId &toFid);
-DVAPI void getLoadingLevelRange(TFrameId &fromFid, TFrameId &toFid);
 
 #endif  // TXSHSIMPLELEVEL_INCLUDED

@@ -340,37 +340,6 @@ void TRaster::xMirror() {
 
 //------------------------------------------------------------
 
-void TRaster::rotate180() {
-  // const int rowSize = m_lx * m_pixelSize;
-  const int wrapSize = m_wrap * m_pixelSize;
-  std::unique_ptr<UCHAR[]> auxBuf(new UCHAR[m_pixelSize]);
-  lock();
-  UCHAR *buff1 = getRawData();
-  UCHAR *buff2 = buff1 + wrapSize * (m_ly - 1) + m_pixelSize * (m_lx - 1);
-  if (m_wrap == m_lx) {
-    while (buff1 < buff2) {
-      ::memcpy(auxBuf.get(), buff1, m_pixelSize);
-      ::memcpy(buff1, buff2, m_pixelSize);
-      ::memcpy(buff2, auxBuf.get(), m_pixelSize);
-      buff1 += m_pixelSize;
-      buff2 -= m_pixelSize;
-    }
-  } else {
-    for (int y = 0; y < m_ly / 2; y++) {
-      UCHAR *a = buff1, *b = buff2;
-      for (int x = 0; x < m_lx; x++) {
-        ::memcpy(auxBuf.get(), a, m_pixelSize);
-        ::memcpy(a, b, m_pixelSize);
-        ::memcpy(b, auxBuf.get(), m_pixelSize);
-        a += m_pixelSize;
-        b -= m_pixelSize;
-      }
-      buff1 += wrapSize;
-      buff2 -= wrapSize;
-    }
-  }
-  unlock();
-}
 
 //------------------------------------------------------------
 

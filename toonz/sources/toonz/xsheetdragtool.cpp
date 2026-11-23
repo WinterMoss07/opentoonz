@@ -1898,10 +1898,6 @@ public:
 
 //-----------------------------------------------------------------------------
 
-XsheetGUI::DragTool *XsheetGUI::DragTool::makeColumnLinkTool(
-    XsheetViewer *viewer) {
-  return new ChangePegbarParentDragTool(viewer);
-}
 
 //=============================================================================
 // Volume adjust
@@ -2054,10 +2050,6 @@ public:
   void addSimpleLevel(
       std::pair<TXshSimpleLevelP, std::vector<TFrameId>> level) {
     m_levels.push_back(level);
-  }
-  void setSimpleLevels(
-      std::vector<std::pair<TXshSimpleLevelP, std::vector<TFrameId>>> levels) {
-    m_levels = levels;
   }
 
   TRect getLevelFrameRect(bool isVertical) {

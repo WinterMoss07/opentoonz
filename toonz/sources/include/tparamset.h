@@ -206,7 +206,6 @@ public:
   void setDefaultValue(const TPixel32 &pix);
   bool setValueD(double frame, const TPixelD &pix);
   bool setValue(double frame, const TPixel32 &pix);
-  bool setValue64(double frame, const TPixel64 &pix);
 
   void enableMatte(bool on);
 
@@ -214,10 +213,6 @@ public:
   void loadData(TIStream &is) override;
   void saveData(TOStream &os) override;
 
-  TDoubleParamP &getRed();
-  TDoubleParamP &getGreen();
-  TDoubleParamP &getBlue();
-  TDoubleParamP &getMatte();
 };
 
 DEFINE_PARAM_SMARTPOINTER(TPixelParam, TPixel32)

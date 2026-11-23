@@ -113,7 +113,6 @@ void CleanupCameraSettingsWidget::getFields(
   cleanupParameters->m_offy_lock = m_offsy_lock->isChecked();
 }
 
-double CleanupCameraSettingsWidget::getClosestFieldValue() const { return 999; }
 
 void CleanupCameraSettingsWidget::setImageInfo(const TFilePath &imgPath) {}
 

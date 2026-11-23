@@ -720,27 +720,6 @@ void Naa2TlvConverter::findSuspectInks() {
 
 //
 
-void Naa2TlvConverter::assignColorTypes() {
-  if (!m_regionRas || !m_borderRas || m_regions.empty()) return;
-  int lx = m_regionRas->getLx();
-  int ly = m_regionRas->getLy();
-
-  for (int i = 0; i < m_regions.count(); i++) {
-    RegionInfo &region = m_regions[i];
-    if (region.type != RegionInfo::Unknown) continue;
-    QList<int> &bs = region.boundaries;
-    if (bs[0] > 0) {
-      region.type = RegionInfo::LargePaint;
-    } else {
-      int b = 0;
-      for (int j = 1; j <= 2 && j < bs.count(); j++) b += bs[j];
-      if (region.pixelCount > 200 &&
-          (region.pixelCount - b) * 10 < region.pixelCount) {
-        region.type = RegionInfo::ThinInk;
-      }
-    }
-  }
-}
 
 //-----------------------------------------------------------------------------
 

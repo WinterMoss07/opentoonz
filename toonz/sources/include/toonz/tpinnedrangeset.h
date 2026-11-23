@@ -25,12 +25,10 @@ public:
   TPinnedRangeSet();
   ~TPinnedRangeSet() {}
 
-  void resetRanges() { m_ranges.clear(); }
 
   void setPlacement(const TAffine &placement);
   const TAffine &getPlacement() const { return m_placement; }
   void setRange(int first, int second);
-  void removeRange(int first, int second);
   void removeAllRanges();
 
   int isPinned(int frame) const { return getRangeIndex(frame) >= 0; }
@@ -40,13 +38,7 @@ public:
     return rangeIndex >= 0 ? &m_ranges[rangeIndex] : 0;
   }
 
-  const Range *getNextRange(int frame) const {
-    for (int i = 0; i < (int)m_ranges.size(); i++)
-      if (m_ranges[i].first > frame) return &m_ranges[i];
-    return 0;
-  }
 
-  const Range *getRangeByIndex(int index) const { return &m_ranges[index]; }
   int getRangeCount() const { return (int)m_ranges.size(); }
 
   TPinnedRangeSet *clone();

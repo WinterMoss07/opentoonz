@@ -119,9 +119,6 @@ other
   bool appliedToAll() const {
     return m_appliedToAll;
   }  //!< Returns whether the "Apply To All" button has been hit.
-  int appliedToAllResolution() const {
-    return m_appliedToAllRes;
-  }  //!< Returns the resolution associated to the "Apply To All"
      //!  button.
 private:
   QLabel *m_label;  //!< Label showing a description of the validation problem.

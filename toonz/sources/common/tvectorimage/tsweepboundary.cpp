@@ -325,62 +325,11 @@ bool getOutputOutlines(LinkedQuadraticList &inputBoundaries,
                        vector<TStroke *> &sweepStrokes);
 void removeFalseHoles(const vector<TStroke *> &strokes);
 
-inline void TraceLinkedQuadraticList(LinkedQuadraticList &quadraticList) {
-#ifdef _WIN32
-  _RPT0(_CRT_WARN, "\n__________________________________________________\n");
-  LinkedQuadraticList::iterator it = quadraticList.begin();
-  while (it != quadraticList.end()) {
-    _RPT4(_CRT_WARN, "\nP0( %f, %f)   P2( %f, %f)", it->getP0().x,
-          it->getP0().y, it->getP2().x, it->getP2().y);
-    _RPT3(_CRT_WARN, " currAddress = %p, nextAddress = %p prevAddress = %p\n",
-          &(*it), it->next, it->prev);
-    ++it;
-  }
-#endif
-}
 
-inline void drawPointSquare(const TPointD &point, double R, double G,
-                            double B) {
-#define SQUARE_DIM 0.04
-  glBegin(GL_LINE_LOOP);
-  glColor3d(R, G, B);
-  glVertex2d(point.x + SQUARE_DIM, point.y + SQUARE_DIM);
-  glVertex2d(point.x + SQUARE_DIM, point.y - SQUARE_DIM);
-  glVertex2d(point.x - SQUARE_DIM, point.y - SQUARE_DIM);
-  glVertex2d(point.x - SQUARE_DIM, point.y + SQUARE_DIM);
-  glEnd();
-}
 
-inline void drawPointCross(const TPointD &point, double R, double G, double B) {
-#define CROSS_DIM 0.04
-  glBegin(GL_LINES);
-  glColor3d(R, G, B);
-  glVertex2d(point.x - CROSS_DIM, point.y - CROSS_DIM);
-  glVertex2d(point.x + CROSS_DIM, point.y + CROSS_DIM);
-  glVertex2d(point.x + CROSS_DIM, point.y - CROSS_DIM);
-  glVertex2d(point.x - CROSS_DIM, point.y + CROSS_DIM);
-  glEnd();
-}
 
 //-------------------------------------------------------------------
 
-static TStroke *getOutStroke(LinkedQuadraticList &inputBoundaries) {
-  vector<TPointD> aux;
-  LinkedQuadraticList::iterator it = inputBoundaries.begin();
-
-  aux.push_back(inputBoundaries.front().getP0());
-  for (; it != inputBoundaries.end(); ++it)
-
-  {
-    // if (tdistance2(aux.back(), it->getP2())>0.25)
-    {
-      aux.push_back(it->getP1());
-      aux.push_back(it->getP2());
-    }
-    // inputBoundaries.remove(*it);
-  }
-  return new TStroke(aux);
-}
 
 //-------------------------------------------------------------------
 

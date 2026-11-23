@@ -981,12 +981,6 @@ void doBlurGray(TRasterPT<T> &dstRas, TRasterPT<T> &srcRas, double blur, int dx,
 
 //====================================================================
 
-int TRop::getBlurBorder(double blur) {
-  int brad = (int)ceil(blur); /* number of pixels involved in the filtering */
-
-  int border = brad * 2;  // per sicurezza
-  return border;
-}
 
 //--------------------------------------------------------------------
 

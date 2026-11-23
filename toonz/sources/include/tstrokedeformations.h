@@ -296,17 +296,7 @@ public:
 
   TThickPoint getDisplacement(double s) const;
 
-  // return integral of density in [s0,s1]
-  /*
-  / s1
- |     density( s ) ds
-/
- s0
-*/
-  double getCPCountInRange(double s0, double s1) const;
 
-  // ritorna il valode di densita' sopra il quale aggiunge punti di controllo
-  double getMinCPDensity() const;
 };
 //=============================================================================
 

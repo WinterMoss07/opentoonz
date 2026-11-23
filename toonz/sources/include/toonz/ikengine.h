@@ -26,7 +26,6 @@ public:
   // n.b. root index == 0
   void setRoot(const TPointD &pos);
 
-  int addJoint(const TPointD &pos, int parentIndex);
 
   void lock(int index);
   void unlock(int index);
@@ -38,13 +37,7 @@ public:
     target.clear();
   }
 
-  int getJointCount() const { return m_skeleton.getNodeCount(); }
 
-  const TPointD getJoint(int index) const {
-    assert(0 <= index && index < (int)m_skeleton.getNodeCount());
-    TPointD jointPos = m_skeleton.getNode(index)->getPos();
-    return jointPos;
-  }
 
   int getJointParent(int index) const {
     assert(index > -1 && index < m_skeleton.getNodeCount());
@@ -52,7 +45,6 @@ public:
     return node ? node->getIndex() : -1;
   }
 
-  double getJointAngle(int index);
 
   // trascino il punto index
   void drag(TPointD &pos);

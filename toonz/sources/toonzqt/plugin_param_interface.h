@@ -38,13 +38,6 @@ public:
   inline toonz_param_desc_t *desc() { return desc_; }
 };
 
-int hint_default_value(toonz_param_handle_t param, int size_in_bytes,
-                       const void *default_value);
-int hint_value_range(toonz_param_handle_t param, const void *minvalue,
-                     const void *maxvalue);
-int hint_unit(toonz_param_handle_t param, int unit);
-int hint_item(toonz_param_handle_t param, int item, const char *caption);
-int set_description(toonz_param_handle_t param, const char *description);
 
 int get_type(toonz_param_handle_t param, double, int *, int *);
 int get_value_type(toonz_param_handle_t param, int *pvalue_type);

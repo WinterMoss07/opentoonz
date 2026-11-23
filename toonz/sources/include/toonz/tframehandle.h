@@ -90,9 +90,7 @@ public:
   // The following methods work with both LevelFrame and SceneFrame
   int getMaxFrameIndex() const;
   int getFrameIndex() const;
-  QString getFrameIndexName(int index) const;
   void setFrameIndex(int index);
-  void setFrameIndexByName(const QString &str);
 
   void setSceneFrameSize(int frameSize) { m_sceneFrameSize = frameSize; }
   void setFrameRange(int f0, int f1) {

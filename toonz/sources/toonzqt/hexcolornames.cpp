@@ -201,10 +201,6 @@ bool HexColorNames::loadMainFile(bool reload) {
 
 //-----------------------------------------------------------------------------
 
-bool HexColorNames::hasUserFile() {
-  TFilePath userCTFp = ToonzFolder::getMyModuleDir() + COLORNAMES_FILE;
-  return TFileStatus(userCTFp).doesExist();
-}
 
 //-----------------------------------------------------------------------------
 

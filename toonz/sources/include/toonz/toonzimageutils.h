@@ -53,8 +53,6 @@ struct ChangeColorStrokeSettings {
 
 //-------------------------------------------------------------------
 
-DVAPI TRect changeColorStroke(const TToonzImageP &ti,
-                              const ChangeColorStrokeSettings &settings);
 
 //-------------------------------------------------------------------
 

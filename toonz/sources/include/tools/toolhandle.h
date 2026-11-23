@@ -67,7 +67,6 @@ public:
   /*! Notify tool parameters change (out of toolOption bar).*/
   void notifyToolChanged() { emit toolChanged(); }
   void notifyToolOptionsBoxChanged() { emit toolOptionsBoxChanged(); }
-  void notifyToolCursorTypeChanged() { emit toolCursorTypeChanged(); }
 
   void notifyToolComboBoxListChanged(std::string id) {
     emit toolComboBoxListChanged(id);

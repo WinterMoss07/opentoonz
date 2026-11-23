@@ -515,24 +515,6 @@ static void enlargeDir(TRectD &r, TPointD p, bool bidirectional) {
   }
 }
 
-static void reduceDir(TRectD &r, TPointD p, bool bidirectional) {
-  if (bidirectional) {
-    r.x1 -= fabs(p.x);
-    r.x0 += fabs(p.x);
-    r.y1 -= fabs(p.y);
-    r.y0 += fabs(p.y);
-  } else {
-    if (p.x > 0)
-      r.x1 -= p.x;
-    else
-      r.x0 += -p.x;
-
-    if (p.y > 0)
-      r.y1 -= p.y;
-    else
-      r.y0 += -p.y;
-  }
-}
 
 class DirectionalBlurBaseFx : public TStandardRasterFx {
   // FX_PLUGIN_DECLARATION(DirectionalBlurBaseFx)

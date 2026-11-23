@@ -440,9 +440,6 @@ void RenderController::setClipPath(int index, const TFilePath &path) {
 
 //-----------------------------------------------------------------------------
 
-void RenderController::addClipPath(const TFilePath &path) {
-  m_clipList.push_back(path);
-}
 
 //-----------------------------------------------------------------------------
 
@@ -549,19 +546,6 @@ static QByteArray packStringList(const QStringList &lst) {
   return ba;
 }
 
-static QStringList unpackStringList(const QByteArray &ba) {
-  QStringList lst;
-  QDataStream ds(ba);
-  qint32 n = 0;
-  ds >> n;
-  int i;
-  for (i = 0; i < n; i++) {
-    QString s;
-    ds >> s;
-    lst.append(s);
-  }
-  return lst;
-}
 
 //-----------------------------------------------------------------------------
 

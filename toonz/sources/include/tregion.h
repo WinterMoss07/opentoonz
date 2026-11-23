@@ -194,11 +194,8 @@ public:
   void deleteSubregion(UINT index);
   void addSubregion(TRegion *region);
   TEdge *getEdge(UINT index) const;
-  TEdge *getLastEdge() const;
   UINT getEdgeCount() const;
   void addEdge(TEdge *e, bool minimizeEdges);
-  TEdge *popFrontEdge();
-  TEdge *popBackEdge();
 
   void moveSubregionsTo(TRegion *r);
   // it returns the  style of the region before filling or -1 if not filled.

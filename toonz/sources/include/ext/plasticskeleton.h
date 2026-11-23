@@ -123,9 +123,7 @@ public:
 
   PlasticSkeleton &operator=(const PlasticSkeleton &other);
 
-  int parentVertex(int v) { return vertex(v).m_parent; }
 
-  void moveVertex(int v, const TPointD &pos);  //!< Moves a vertex to the
                                                //! specified position, informing
   //! associated deformers
   int addVertex(const PlasticSkeletonVertex &vx,
@@ -150,8 +148,6 @@ public:
 
   // Utility functions
 
-  int closestVertex(const TPointD &pos, double *distance = 0) const;
-  int closestEdge(const TPointD &pos, double *distance = 0) const;
 
   std::vector<PlasticHandle> verticesToHandles() const;
 

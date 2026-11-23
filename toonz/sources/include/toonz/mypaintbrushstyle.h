@@ -95,7 +95,6 @@ public:
   std::string getBrushIdName() const override;
 
   void setBaseValue(MyPaintBrushSetting id, bool enable, float value);
-  void resetBaseValues();
 
   void setBaseValue(MyPaintBrushSetting id, float value) {
     setBaseValue(id, true, value);
@@ -105,9 +104,6 @@ public:
     setBaseValue(id, enable, getBaseValue(id));
   }
 
-  const std::map<MyPaintBrushSetting, float> getBaseValues() const {
-    return m_baseValues;
-  }
 
   float getBaseValue(MyPaintBrushSetting id) const {
     std::map<MyPaintBrushSetting, float>::const_iterator i =

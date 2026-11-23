@@ -23,52 +23,8 @@
 #include <QFile>
 #include <QTextStream>
 
-static QScriptValue loadSceneFun(QScriptContext *context,
-                                 QScriptEngine *engine) {
-  if (context->argumentCount() > 0) {
-    QString fpArg = context->argument(0).toString();
-    TFilePath fp(fpArg.toStdWString());
-    IoCmd::loadScene(fp);
-  }
-  return QScriptValue();
-}
 
-static QScriptValue saveSceneFun(QScriptContext *context,
-                                 QScriptEngine *engine) {
-  if (context->argumentCount() > 0) {
-    QString fpArg = context->argument(0).toString();
-    TFilePath fp(fpArg.toStdWString());
-    IoCmd::saveScene(fp, IoCmd::SILENTLY_OVERWRITE);
-  }
-  return QScriptValue();
-}
 
-static QScriptValue loadLevelFun(QScriptContext *context,
-                                 QScriptEngine *engine) {
-  if (context->argumentCount() > 0) {
-    QString fpArg = context->argument(0).toString();
-    TFilePath fp(fpArg.toStdWString());
-    int row = 0, col = 0;
-    if (context->argumentCount() == 3) {
-      row = context->argument(1).toInteger();
-      col = context->argument(1).toInteger();
-    }
-
-    TApp *app         = TApp::instance();
-    ToonzScene *scene = app->getCurrentScene()->getScene();
-    TXsheet *xsh      = scene->getXsheet();
-
-    TFilePath actualPath = scene->decodeFilePath(fp);
-    TXshLevel *xl        = scene->loadLevel(actualPath);
-    if (xl) {
-      scene->getXsheet()->exposeLevel(row, col, xl);
-    }
-    app->getCurrentScene()->notifyCastChange();
-    app->getCurrentScene()->notifySceneChanged();
-    app->getCurrentXsheet()->notifyXsheetChanged();
-  }
-  return QScriptValue();
-}
 
 static QScriptValue dummyFun(QScriptContext *context, QScriptEngine *engine) {
   return QScriptValue(engine, 0);

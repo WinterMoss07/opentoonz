@@ -82,7 +82,6 @@ public:
   // $scenepath)
   //????????????????????????????????????????????????
   int getFolderIndexFromPath(const TFilePath &fp);
-  std::wstring getFolderNameFromPath(const TFilePath &fp);
 
   bool save(const TFilePath &projectPath);
   bool save();
@@ -136,7 +135,6 @@ public:
 
   void saveTemplate(ToonzScene *scene);
 
-  void clearProjectsRoot();
   void addProjectsRoot(const TFilePath &fp);
   void addSVNProjectsRoot(const TFilePath &fp);
 
@@ -161,7 +159,6 @@ public:
   void createSandboxIfNeeded();
 
   bool isTabKidsModeEnabled() const { return m_tabKidsMode; }
-  void enableTabKidsMode(bool tabKidsMode) { m_tabKidsMode = tabKidsMode; }
 
   bool isTabModeEnabled() const { return m_tabMode; }
   void enableTabMode(bool tabMode) { m_tabMode = tabMode; }

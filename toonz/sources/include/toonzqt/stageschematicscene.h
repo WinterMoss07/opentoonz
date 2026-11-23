@@ -50,7 +50,6 @@ public:
   }
   //--------------------------------------
 
-  void setSchematicNode(StageSchematicNode *node) { m_node = node; }
   void addChild(TreeStageNode *child) { m_cildren.push_back(child); }
 
   StageSchematicNode *getNode() { return m_node; }
@@ -177,7 +176,6 @@ private:
   //! It is usually used to place new splines that have not position.
   void placeSplineNode(StageSchematicSplineNode *splineNode);
 
-  SchematicNode *getNodeFromPosition(const QPointF &pos);
 
   void updatePosition(StageSchematicNode *node, const TPointD &pos);
   void highlightLinks(StageSchematicNode *node, bool value);

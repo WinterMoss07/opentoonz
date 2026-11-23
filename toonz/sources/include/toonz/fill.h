@@ -105,8 +105,6 @@ bool DVAPI inkSegment(const TRasterCM32P &r, const TPoint &p, int ink,
 
 void DVAPI rectFillInk(const TRasterCM32P &ras, const TRect &r, int color);
 
-void DVAPI fillautoInks(TRasterCM32P &r, TRect &rect,
-                        const TRasterCM32P &rbefore, TPalette *plt);
 
 void DVAPI fullColorFill(const TRaster32P &ras, const FillParameters &params,
                          TTileSaverFullColor *saver = 0);

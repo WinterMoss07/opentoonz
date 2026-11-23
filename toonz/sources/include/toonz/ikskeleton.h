@@ -44,9 +44,7 @@ public:
   }
   IKNode *getRoot() const { return m_nodes[0]; }
 
-  int getNumNode() const { return (numJoint + numEffector); }
   int getNumEffector() const { return numEffector; }
-  int getNumJoint() const { return numJoint; }
 
   void setRoot(int nodeIndex) {
     m_nodes[nodeIndex]->setR(m_nodes[nodeIndex]->getPos());

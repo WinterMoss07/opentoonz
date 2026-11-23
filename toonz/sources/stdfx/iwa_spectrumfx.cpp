@@ -503,73 +503,7 @@ void Iwa_SpectrumFx::convertRasterWithLight(const RASTER ras, TDimensionI dim,
   }
 }
 
-/*------------------------------------
- 素材タイルを０〜１に正規化して格納
-------------------------------------*/
-template <typename RASTER, typename PIXEL>
-void Iwa_SpectrumFx::setSourceRasters(const RASTER ras,
-                                      float4 *in_out_tile_host,
-                                      const RASTER light_ras,
-                                      float4 *light_host, TDimensionI dim,
-                                      bool useLight) {
-  float4 *chann_p      = in_out_tile_host;
-  float4 *lightChann_p = light_host;
 
-  for (int j = 0; j < dim.ly; j++) {
-    PIXEL *pix      = ras->pixels(j);
-    PIXEL *lightPix = (useLight) ? light_ras->pixels(j) : 0;
-    for (int i = 0; i < dim.lx; i++) {
-      (*chann_p).x = (float)pix->r / (float)PIXEL::maxChannelValue;
-      (*chann_p).y = (float)pix->g / (float)PIXEL::maxChannelValue;
-      (*chann_p).z = (float)pix->b / (float)PIXEL::maxChannelValue;
-      (*chann_p).w = (float)pix->m / (float)PIXEL::maxChannelValue;
-      pix++;
-      chann_p++;
-
-      if (useLight) {
-        (*lightChann_p).x = (float)lightPix->r / (float)PIXEL::maxChannelValue;
-        (*lightChann_p).y = (float)lightPix->g / (float)PIXEL::maxChannelValue;
-        (*lightChann_p).z = (float)lightPix->b / (float)PIXEL::maxChannelValue;
-        (*lightChann_p).w = (float)lightPix->m / (float)PIXEL::maxChannelValue;
-        lightPix++;
-        lightChann_p++;
-      }
-    }
-  }
-}
-
-/*------------------------------------
- 出力結果をChannel値に変換してタイルに格納
-------------------------------------*/
-template <typename RASTER, typename PIXEL>
-void Iwa_SpectrumFx::outputRasters(const RASTER outRas,
-                                   float4 *in_out_tile_host, TDimensionI dim) {
-  float4 *chann_p = in_out_tile_host;
-  for (int j = 0; j < dim.ly; j++) {
-    PIXEL *pix = outRas->pixels(j);
-    for (int i = 0; i < dim.lx; i++) {
-      float val;
-      val    = (*chann_p).x * (float)PIXEL::maxChannelValue + 0.5f;
-      pix->r = (typename PIXEL::Channel)((val > (float)PIXEL::maxChannelValue)
-                                             ? (float)PIXEL::maxChannelValue
-                                             : val);
-      val    = (*chann_p).y * (float)PIXEL::maxChannelValue + 0.5f;
-      pix->g = (typename PIXEL::Channel)((val > (float)PIXEL::maxChannelValue)
-                                             ? (float)PIXEL::maxChannelValue
-                                             : val);
-      val    = (*chann_p).z * (float)PIXEL::maxChannelValue + 0.5f;
-      pix->b = (typename PIXEL::Channel)((val > (float)PIXEL::maxChannelValue)
-                                             ? (float)PIXEL::maxChannelValue
-                                             : val);
-      val    = (*chann_p).w * (float)PIXEL::maxChannelValue + 0.5f;
-      pix->m = (typename PIXEL::Channel)((val > (float)PIXEL::maxChannelValue)
-                                             ? (float)PIXEL::maxChannelValue
-                                             : val);
-      pix++;
-      chann_p++;
-    }
-  }
-}
 
 //------------------------------------
 

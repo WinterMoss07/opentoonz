@@ -66,7 +66,6 @@ public:
   TRect getBBox() const;
 
   int getTileCount() const { return (int)m_tiles.size(); }
-  TDimension getSrcImageSize() const { return m_srcImageSize; }
 
   virtual TTileSet *clone() const = 0;
 };

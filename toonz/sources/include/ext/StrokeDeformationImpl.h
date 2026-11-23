@@ -130,12 +130,10 @@ public:
 
   ToonzExt::Potential *getPotential();
 
-  TPointD &oldW0();
 
   int getShortcutKey() const { return shortcutKey_; }
 
   int getCursorId() const { return cursorId_; }
-  void setCursorId(int id) { cursorId_ = id; }
 };
 }
 

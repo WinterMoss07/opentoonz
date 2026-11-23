@@ -145,9 +145,6 @@ private:
   template <typename RASTER, typename PIXEL>
   void setColorTileToBuffer(const RASTER colorRas, colorRGBA *buf);
 
-  // ‚½‚ß‚µ‚É
-  template <typename RASTER, typename PIXEL>
-  void setOutRaster(const RASTER outRas, double *buf);
 
   void fillGapByDilateAndErode(double *buf, const TDimension &dim,
                                const int fill_gap_size);

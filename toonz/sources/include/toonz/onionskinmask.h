@@ -78,7 +78,6 @@ public:
   bool isMos(int drow) const;
   bool isFos(int row) const;
 
-  bool getMosRange(int &drow0, int &drow1) const;
 
   bool isEmpty() const { return m_mos.empty() && m_fos.empty(); }
 

@@ -214,16 +214,6 @@ static int fillByteRaster(const TRaster32P &rin, TRasterGR8P &rout) {
 
 /*---------------------------------------------------------------------------*/
 
-static void initialize_displace_vector(void) {
-  Displace_vector[0] = -Lx - 1;
-  Displace_vector[1] = -Lx;
-  Displace_vector[2] = -Lx + 1;
-  Displace_vector[3] = -1;
-  Displace_vector[4] = +1;
-  Displace_vector[5] = Lx - 1;
-  Displace_vector[6] = Lx;
-  Displace_vector[7] = Lx + 1;
-}
 
 /*------------------------------------------------------------------------*/
 

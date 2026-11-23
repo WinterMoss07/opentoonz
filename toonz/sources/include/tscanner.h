@@ -95,39 +95,21 @@ public:
   TScannerParameters();
   ~TScannerParameters();
 
-  void setSupportedTypes(bool bw, bool gray, bool rgb);
   bool isSupported(ScanType) const;
 
-  void setMaxPaperSize(double maxWidth,
-                       double maxHeight);  // note: possibly update m_scanArea
 
-  std::string getPaperFormat() const { return m_paperFormat; }
   void setPaperFormat(std::string paperFormat);
   // assert(TPaperFormatManager::instance()->isValidFormat(paperFormat));
   // updates scanArea (cropping with maxPaperSize)
 
-  void updatePaperFormat();
   // if paperFormat=="" set default paper format; recompute (to be sure!)
   // scanArea
 
-  bool getPaperOverflow() const {
-    return m_paperOverflow;
-  }  // true iff paperSize > maxPaperSize
 
-  TRectD getScanArea() const { return m_scanArea; }
-  void setCropBox(const TRectD &cropBox) { m_cropBox = cropBox * m_scanArea; }
-  TRectD getCropBox() const { return m_cropBox; }
-  void setIsPreview(bool isPreview) { m_isPreview = isPreview; };
   bool isPreview() const { return m_isPreview; }
 
-  bool isReverseOrder() const { return m_reverseOrder; }
-  void setReverseOrder(bool reverseOrder) { m_reverseOrder = reverseOrder; }
 
-  bool isPaperFeederEnabled() const { return m_paperFeeder.m_value == 1.0; }
-  void enablePaperFeeder(bool on) { m_paperFeeder.m_value = on ? 1.0f : 0.0f; }
 
-  void setScanType(ScanType scanType);
-  ScanType getScanType() const { return m_scanType; }
 
   void assign(const TScannerParameters *params);
   void saveData(TOStream &os) const;
@@ -156,8 +138,6 @@ private:
 public:
   static TPaperFormatManager *instance();
 
-  // resitutisce la lista dei formati
-  void getFormats(std::vector<std::string> &names) const;
 
   bool isValidFormat(std::string name) const;
   std::string getDefaultFormat() const;

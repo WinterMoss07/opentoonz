@@ -15,21 +15,6 @@ enum PixelOp { OVER = 0, ADD, SUBTRACT, MULTIPLY, LIGHTEN, DARKEN };
 
 //------------------------------------------------------------------------------
 
-template <typename PIXEL>
-int doBlurValue(PIXEL *SRC, int SRC_WRAP, int BLUR) {
-  unsigned int count = 0;
-  int h, k;
-  int blur_val;
-  PIXEL *pix, *line;
-  pix = line = (SRC) + (-(BLUR) + 1) * (SRC_WRAP);
-  for (h = -(BLUR) + 1; h < (BLUR); h++) {
-    for (k = -(BLUR) + 1; k < (BLUR); k++) count += pix[k].m;
-    line += SRC_WRAP;
-    pix = line;
-  }
-  blur_val = (int)(count / (4 * (float)(BLUR) * (float)((BLUR)-1) + 1));
-  return blur_val;
-}
 
 //------------------------------------------------------------------------------
 

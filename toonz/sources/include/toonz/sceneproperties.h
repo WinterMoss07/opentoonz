@@ -143,15 +143,6 @@ ratio, level subsampling, etc....
   */
   Guides &getVGuides() { return m_vGuides; }
   /*!
-          Returns a vector of pointer to \b TCamera with all camera in scene.
-  */
-  std::vector<TCamera *> &getCameras() { return m_cameras; }
-  /*!
-          Returns a constant vector of pointer to \b TCamera with all camera in
-     scene.
-  */
-  const std::vector<TCamera *> &getCameras() const { return m_cameras; }
-  /*!
           Returns a \b TOutputProperties with output scene properties.
           Output properties are for example the render settings or output file
      format.
@@ -174,21 +165,10 @@ Returns cleanup parameters \b CleanupParameters, i.e. basic colors.
     return m_cleanupParameters;
   }
   /*!
-           Return scanner parameters as Black and white scanner , graytones
-     scanner or a color scanner.
-  */
-  TScannerParameters *getScanParameters() const { return m_scanParameters; }
-  /*!
            Return vectorizer parameters.
   */
   VectorizerParameters *getVectorizerParameters() const {
     return m_vectorizerParameters;
-  }
-  /*!
-Return device capture parameters.
-*/
-  CaptureParameters *getCaptureParameters() const {
-    return m_captureParameters;
   }
 
   /*!
@@ -282,8 +262,6 @@ and height.
     m_columnColorFilterOnRender = on;
   }
 
-  /* Returns initial save in path for the camera capture feature */
-  TFilePath cameraCaptureSaveInPath() const { return m_camCapSaveInPath; }
 
   /* Set the initial save in path for the camera capture feature */
   void setCameraCaptureSaveInPath(const TFilePath &fp) {

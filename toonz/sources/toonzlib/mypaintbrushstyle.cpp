@@ -328,10 +328,6 @@ void TMyPaintBrushStyle::setBaseValue(MyPaintBrushSetting id, bool enable,
 
 //-----------------------------------------------------------------------------
 
-void TMyPaintBrushStyle::resetBaseValues() {
-  for (int i = 0; i < MYPAINT_BRUSH_SETTINGS_COUNT; ++i)
-    setBaseValueEnabled((MyPaintBrushSetting)i, false);
-}
 
 //-----------------------------------------------------------------------------
 

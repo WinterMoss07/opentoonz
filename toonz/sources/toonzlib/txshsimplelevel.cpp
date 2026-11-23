@@ -715,51 +715,6 @@ TAffine getAffine(const TDimension& srcSize, const TDimension& dstSize) {
 
 //-----------------------------------------------------------------------------
 
-TImageP buildIcon(const TImageP& img, const TDimension& size) {
-  TRaster32P raster(size);
-  if (TVectorImageP vi = img) {
-    std::unique_ptr<TOfflineGL> glContext(new TOfflineGL(size));
-    TDimension cameraSize(1920, 1080);
-    TPalette* vPalette = img->getPalette();
-    assert(vPalette);
-    const TVectorRenderData rd(getAffine(cameraSize, size), TRect(), vPalette,
-                               0, false);
-    glContext->clear(TPixel32::White);
-    glContext->draw(vi, rd);
-    raster->copy(glContext->getRaster());
-  } else if (TToonzImageP ti = img) {
-    raster->fill(TPixel32(255, 255, 255, 255));
-    TRasterCM32P rasCM32 = ti->getRaster();
-    TRect bbox           = ti->getSavebox();
-    if (!bbox.isEmpty()) {
-      rasCM32   = rasCM32->extract(bbox);
-      double sx = static_cast<double>(raster->getLx()) / rasCM32->getLx();
-      double sy = static_cast<double>(raster->getLy()) / rasCM32->getLy();
-      double sc = std::min(sx, sy);
-      TAffine aff =
-          TScale(sc).place(rasCM32->getCenterD(), raster->getCenterD());
-      TRop::resample(raster, rasCM32, ti->getPalette(), aff);
-
-      raster->lock();
-      for (int y = 0; y < raster->getLy(); y++) {
-        TPixel32* pix    = raster->pixels(y);
-        TPixel32* endPix = pix + raster->getLx();
-        while (pix < endPix) {
-          *pix = overPix(TPixel32::White, *pix);
-          ++pix;
-        }
-      }
-      raster->unlock();
-    }
-  } else if (TRasterImageP ri = img) {
-    ri->makeIcon(raster);
-    TRop::addBackground(raster, TPixel32::White);
-  } else {
-    raster->fill(TPixel32(127, 50, 20));
-  }
-
-  return TRasterImageP(raster);
-}
 
 }  // anonymous namespace
 
@@ -1040,10 +995,6 @@ void setLoadingLevelRange(const TFrameId& fromFid, const TFrameId& toFid) {
   loadingLevelRange.m_toFid   = toFid;
 }
 
-void getLoadingLevelRange(TFrameId& fromFid, TFrameId& toFid) {
-  fromFid = loadingLevelRange.m_fromFid;
-  toFid   = loadingLevelRange.m_toFid;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -2192,24 +2143,6 @@ void TXshSimpleLevel::copyFiles(const TFilePath& dst, const TFilePath& src) {
 
 //-----------------------------------------------------------------------------
 
-void TXshSimpleLevel::renameFiles(const TFilePath& dst, const TFilePath& src) {
-  if (dst == src) return;
-  TSystem::touchParentDir(dst);
-  if (TSystem::doesExistFileOrLevel(dst)) TXshSimpleLevel::removeFiles(dst);
-  TSystem::renameFileOrLevel_throw(dst, src);
-  if (dst.getType() == "tlv")
-    TSystem::renameFile(dst.withType("tpl"), src.withType("tpl"));
-
-  const TFilePath& srcHookFile = TXshSimpleLevel::getExistingHookFile(src);
-  if (!srcHookFile.isEmpty()) {
-    const TFilePath& dstHookFile = getHookPath(dst);
-    TSystem::renameFile(dstHookFile, srcHookFile);
-  }
-
-  TFilePath files = src.getParentDir() + (src.getName() + "_files");
-  if (TFileStatus(files).doesExist() && TFileStatus(files).isDirectory())
-    TSystem::renameFile(dst.getParentDir() + (dst.getName() + "_files"), files);
-}
 
 //-----------------------------------------------------------------------------
 
@@ -2250,12 +2183,6 @@ void TXshSimpleLevel::setContentHistory(TContentHistory* contentHistory) {
 
 //-----------------------------------------------------------------------------
 
-void TXshSimpleLevel::setCompatibilityMasks(int writeMask, int neededMask,
-                                            int forbiddenMask) {
-  compatibility.writeMask     = writeMask;
-  compatibility.neededMask    = neededMask;
-  compatibility.forbiddenMask = forbiddenMask;
-}
 
 //-----------------------------------------------------------------------------
 

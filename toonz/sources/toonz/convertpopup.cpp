@@ -531,9 +531,6 @@ ConvertPopup::~ConvertPopup() {
 
 //-----------------------------------------------------------------------------
 
-QString ConvertPopup::getDestinationType() const {
-  return m_fileFormat->currentText();
-}
 
 //-----------------------------------------------------------------------------
 
@@ -541,27 +538,6 @@ QString ConvertPopup::getTlvMode() const { return m_tlvMode->currentText(); }
 
 //-----------------------------------------------------------------------------
 
-QFrame *ConvertPopup::createSvgSettings() {
-  bool ret = true;
-  QHBoxLayout *hLayout;
-  QFrame *frame        = new QFrame();
-  QVBoxLayout *vLayout = new QVBoxLayout();
-  frame->setLayout(vLayout);
-
-  hLayout = new QHBoxLayout();
-  hLayout->addWidget(new QLabel(tr("Stroke Mode:")));
-
-  hLayout->addWidget(m_tlvMode = new QComboBox());
-
-  QStringList items;
-  items << tr("Centerline") << tr("Outline");
-  m_tlvMode->addItems(items);
-
-  hLayout->addStretch();
-  vLayout->addLayout(hLayout);
-  frame->setVisible(false);
-  return frame;
-}
 
 QFrame *ConvertPopup::createTlvSettings() {
   QFrame *frame = new QFrame();

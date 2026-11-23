@@ -66,7 +66,6 @@ public:
   static DragTool *makeDragAndDropDataTool(XsheetViewer *viewer);
 
   static DragTool *makeColumnSelectionTool(XsheetViewer *viewer);
-  static DragTool *makeColumnLinkTool(XsheetViewer *viewer);
   static DragTool *makeColumnMoveTool(XsheetViewer *viewer);
   static DragTool *makeVolumeDragTool(XsheetViewer *viewer);
 

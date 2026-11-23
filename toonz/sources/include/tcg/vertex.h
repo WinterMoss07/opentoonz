@@ -54,7 +54,6 @@ public:
   edges_iterator edgesBegin() { return m_edgeList.begin(); }
   edges_iterator edgesEnd() { return m_edgeList.end(); }
 
-  void setP(const point_type &p) { m_p = p; }
   const point_type &P() const { return m_p; }
   point_type &P() { return m_p; }
 

@@ -637,11 +637,6 @@ std::size_t TColorStyle::getBrushIdHash() {
 
 //-------------------------------------------------------------------
 
-std::string TColorStyle::getBrushIdNameClass(std::string brushIdName) {
-  int index = brushIdName.find(':');
-  if (index >= 0) return brushIdName.substr(0, index);
-  return brushIdName;
-}
 
 //-------------------------------------------------------------------
 

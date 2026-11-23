@@ -211,7 +211,6 @@ public:
   void reset() override;
 
   void attachHandles();
-  void detachHandles();
 
   bool widgetInThisPanelIsFocused() override;
 

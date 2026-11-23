@@ -376,8 +376,6 @@ etc...
   static std::size_t generateHash(std::string brushIdName);
   std::size_t getBrushIdHash();  //!< Hash for quick comparison (cached).
 
-  static std::string getBrushIdNameClass(
-      std::string brushIdName);  //!< Get class inside brush id name
   static std::string getBrushIdNameParam(
       std::string brushIdName);  //!< Get parameter inside brush id name
 

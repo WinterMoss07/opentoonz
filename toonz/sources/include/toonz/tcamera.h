@@ -81,11 +81,6 @@ Return camera Dpi.
 */
   TPointD getDpi() const;
 
-  /*!
-Return true if "resolution width per size height" is equal to
-"resolution height per size width".
-*/
-  bool isPixelSquared() const;
 
   /*!
 Returns the reference change matrix from stage reference to camera (resolution)
@@ -124,7 +119,6 @@ Returns the interest rect in stage coordinates.
 */
   TRectD getInterestStageRect() const;
 
-  void setXPrevalence(bool value) { m_xPrevalence = value; }
   bool isXPrevalence() { return m_xPrevalence; }
 
   void saveData(TOStream &os) const;

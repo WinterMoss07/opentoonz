@@ -225,52 +225,6 @@ found:
 
 /*---------------------------------------------------------------------------*/
 
-bool do_autoalign(const TRasterImageP &image) {
-  int wrap, lx, ly, mx, my;
-  int pix_origin, dpix_dx, dpix_dy;
-  int strip_width;
-
-  // assumo che sia sempre orientata nel modo corretto
-
-  TRasterP ras = image->getRaster();
-  wrap         = ras->getWrap();
-  assert(TRaster32P(ras) ||
-         TRasterGR8P(ras));  // per ricordare di gestire le img bw!
-
-  // assumo TOR_BOTLEFT:__OR TOR_BOTRIGHT:__OR TOR_TOPLEFT:__OR TOR_TOPRIGHT:
-  double dpix, dpiy;
-  image->getDpi(dpix, dpiy);
-  strip_width = (int)mmToPixel(5.0, dpix);
-  lx          = ras->getLx();
-  ly          = ras->getLy();
-
-  mx = lx - 1;
-  my = ly - 1;
-
-  // assumo  CASE TOR_BOTLEFT:
-  pix_origin = 0;
-  dpix_dx    = 1;
-  dpix_dy    = wrap;
-
-  TRasterGR8P ras8(ras);
-  TRaster32P ras32(ras);
-  ras->lock();
-  bool ret = false;
-
-  if (ras8)
-    ret = autoalign_gr8(ras8->getRawData(), wrap, lx, ly, pix_origin, dpix_dx,
-                        dpix_dy, strip_width);
-
-  else if (ras32)
-    ret = autoalign_rgb(ras32->pixels(), wrap, lx, ly, pix_origin, dpix_dx,
-                        dpix_dy, strip_width);
-  else
-    assert(!"Unsupported pixel type");
-
-  ras->unlock();
-
-  return false;
-}
 
 /*===========================================================================*/
 /*

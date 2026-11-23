@@ -200,12 +200,6 @@ DVAPI void terminateCurrentBackgroundProcess();
 DVAPI bool startBackgroundProcess(QString cmdlineProgram,
                                   QStringList cmdlineArguments);
 
-DVAPI QString applicationSpecificServerName(QString srvName);
-DVAPI bool startSlaveConnection(QLocalSocket *socket, QString srvName,
-                                int msecs                    = -1,
-                                QString cmdlineProgram       = QString(),
-                                QStringList cmdlineArguments = QStringList(),
-                                QString threadName           = QString());
 DVAPI bool startSlaveServer(QString srvName, QString cmdlineProgram,
                             QStringList cmdlineArguments);
 
@@ -219,7 +213,6 @@ readMessageNB(Stream &stream, Message &msg, int msecs = -1,
 DVAPI int shm_maxSegmentSize();
 DVAPI int shm_maxSegmentCount();
 DVAPI int shm_maxSharedPages();
-DVAPI int shm_maxSharedCount();
 
 DVAPI void shm_set(int maxSegmentSize, int maxSegmentCount, int maxSharedSize,
                    int maxSharedCount);

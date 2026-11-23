@@ -9,7 +9,6 @@
 
 /*---------------------------------------------------------------------------*/
 
-bool do_autoalign(const TRasterImageP &image);
 
 int compute_strip_pixel(CleanupTypes::FDG_INFO *fdg, double dpi);
 

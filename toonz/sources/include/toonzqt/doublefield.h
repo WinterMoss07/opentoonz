@@ -137,7 +137,6 @@ public:
 
   /*! If \b enable is false set slider disable and hide it. */
   void enableSlider(bool enable);
-  bool isSliderEnabled();
 
   /*! If \b enable is false set roller disable and hide it. */
   void enableRoller(bool enable);

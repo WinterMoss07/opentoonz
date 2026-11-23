@@ -87,17 +87,6 @@ inline TThickPoint randomized(const TThickPoint &P) {
 
 //------------------------------------------------------------------------
 
-// Give stroke extremities a random shake. May help for region computing.
-static void randomizeExtremities(TVectorImageP vi) {
-  unsigned int i;
-  for (i = 0; i < vi->getStrokeCount(); ++i) {
-    TThickPoint P = vi->getStroke(i)->getControlPoint(0);
-    vi->getStroke(i)->setControlPoint(0, randomized(P));
-    int n = vi->getStroke(i)->getControlPointCount();
-    P     = vi->getStroke(i)->getControlPoint(n - 1);
-    vi->getStroke(i)->setControlPoint(n - 1, randomized(P));
-  }
-}
 
 //========================================================================
 

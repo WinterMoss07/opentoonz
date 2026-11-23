@@ -501,17 +501,6 @@ int TProject::getFolderIndexFromPath(const TFilePath &folderDir) {
 }
 
 //-------------------------------------------------------------------
-/*! Returns the folder's name of the specified TFilePath \b folderDir.\n
-        Returns the empty string if \b folderDir isn't a folder of the
-   project.*/
-wstring TProject::getFolderNameFromPath(const TFilePath &folderDir) {
-  int index = getFolderIndexFromPath(folderDir);
-  if (index < 0) return L"";
-  if (getFolder(index).isAbsolute())
-    return ::to_wstring("+" + getFolderName(index));
-  else
-    return folderDir.getWideName();
-}
 
 //-------------------------------------------------------------------
 /*! Saves the project in the specified path.
@@ -791,8 +780,6 @@ TProjectManager *TProjectManager::instance() {
 }
 
 //-------------------------------------------------------------------
-// Clear all projects roots container.
-void TProjectManager::clearProjectsRoot() { m_projectsRoots.clear(); }
 
 //-------------------------------------------------------------------
 /*! Adds the specified folder \b fp in the projects roots container.\n

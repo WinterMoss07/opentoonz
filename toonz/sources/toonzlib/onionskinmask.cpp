@@ -143,15 +143,6 @@ bool OnionSkinMask::isMos(int drow) const {
 
 //-------------------------------------------------------------------
 
-bool OnionSkinMask::getMosRange(int &drow0, int &drow1) const {
-  if (m_mos.empty()) {
-    drow0 = 0, drow1 = -1;
-    return false;
-  } else {
-    drow0 = m_mos.front(), drow1 = m_mos.back();
-    return true;
-  }
-}
 
 //-------------------------------------------------------------------
 

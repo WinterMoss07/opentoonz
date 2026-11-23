@@ -55,9 +55,6 @@ public:
     return m_exist && (getPermissions() & QFile::ReadUser) != 0;
   }
 
-  bool isWritableDir() const {
-    return doesExist() && isDirectory() && isWritable();
-  };
 };
 
 #endif
@@ -89,7 +86,6 @@ extern const int MaxPathLen;      // Maximum length of full path
 extern const int MaxFNameLen;     // Maximum length of filename component
 extern const int MaxHostNameLen;  // Maximum length of the host name  ==64
 
-DVAPI bool doHaveMainLoop();
 DVAPI void hasMainLoop(bool state);
 // DVAPI void enableFrameGrouping(bool on);
 // DVAPI bool isFrameGroupingEnabled();
@@ -137,7 +133,6 @@ DVAPI TFilePathSet readDirectoryTree(const TFilePathSet &pathSet,
 //
 DVAPI TFilePathSet packLevelNames(const TFilePathSet &);
 
-DVAPI TFilePath getHomeDirectory();
 DVAPI TFilePath getTempDir();
 DVAPI TFilePath getTestDir(std::string name = "verify_tnzcore");
 DVAPI TFilePath getBinDir();

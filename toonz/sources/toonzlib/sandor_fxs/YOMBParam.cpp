@@ -173,11 +173,6 @@ void CYOMBParam::scale(const double d) {
   }
 }
 
-void CYOMBParam::makeItUS() {
-  m_dA *= 200.0;
-  m_dAB *= 200.0;
-  makeColorsUS();
-}
 
 void CYOMBParam::makeColorsUS() {
   for (vector<I_PIXEL>::iterator p = m_color.begin(); p != m_color.end(); ++p) {

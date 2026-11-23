@@ -33,7 +33,6 @@ public:
 
   int getIndex() const { return m_index; }
   int getPos() const { return m_pos; }
-  int getX0() const { return m_pos; }
   int getX1() const { return m_pos + m_width - 1; }
 
   void getCoords(int &x0, int &x1) const {
@@ -81,32 +80,10 @@ public:
 
   //---------------------------------------------------------
 
-  void col2pos(int index, int &x0, int &x1) const {
-    assert(index >= 0);
-    int columnCount = (int)m_columns.size();
-    if (index < columnCount)
-      m_columns[index]->getCoords(x0, x1);
-    else {
-      x0 = (columnCount > 0 ? m_columns.back()->getX1() + 1 : 0) +
-           (index - columnCount) * m_defaultWidth;
-      x1 = x0 + m_defaultWidth - 1;
-    }
-  }
 
   //---------------------------------------------------------
   // versione con upper_bound
 
-  int pos2col(int pos) const {
-    // n.b. endPos e' la coordinata del primo pixel non occupato da colonne
-    int endPos = m_columns.empty() ? 0 : m_columns.back()->getX1() + 1;
-    if (pos >= endPos)
-      return m_columns.size() + (pos - endPos) / m_defaultWidth;
-
-    typename std::vector<ColumnP>::const_iterator loc;
-    loc = std::upper_bound(m_columns.begin(), m_columns.end(), pos,
-                           compareColumnPos);
-    return std::distance(m_columns.begin(), loc);
-  }
 
   //---------------------------------------------------------
 

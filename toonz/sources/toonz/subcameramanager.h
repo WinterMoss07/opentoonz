@@ -90,12 +90,8 @@ public:
   static PreviewSubCameraManager *instance();
 
   UCHAR getDragType() const { return m_dragType; }
-  void setDragType(UCHAR dragType) { m_dragType = dragType; }
 
   TRect getEditingCameraInterestRect() const;
-  void setEditingCameraInterestRect(const TRect &rect) {
-    m_editingInterestRect = rect;
-  }
 
   TRectD getEditingCameraInterestStageRect() const;
 

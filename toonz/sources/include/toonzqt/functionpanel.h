@@ -131,10 +131,6 @@ public:
   void setFrameHandle(TFrameHandle *frameHandle);
   TFrameHandle *getFrameHandle() const { return m_frameHandle; }
 
-  QTransform getViewTransform() const { return m_viewTransform; }
-  void setViewTransform(const QTransform &viewTransform) {
-    m_viewTransform = viewTransform;
-  }
 
   // frame pixel size / value pixel size
   double getPixelRatio(TDoubleParam *curve) const;
@@ -154,7 +150,6 @@ public:
   void fitSelectedPoints();
   void fitCurve();
   void fitGraphToWindow(bool currentCurveOnly = false);
-  void fitRegion(double f0, double v0, double f1, double v1);
 
   QPointF getWinPos(TDoubleParam *curve, double frame, double value) const;
   QPointF getWinPos(TDoubleParam *curve, const TPointD &frameValuePos) const {
@@ -164,7 +159,6 @@ public:
   QPointF getWinPos(TDoubleParam *curve, const TDoubleKeyframe &kf) const;
 
   int getCurveDistance(TDoubleParam *curve, const QPoint &winPos);
-  TDoubleParam *findClosestCurve(const QPoint &winPos, int maxWinDistance);
   FunctionTreeModel::Channel *findClosestChannel(const QPoint &winPos,
                                                  int maxWinDistance);
 
@@ -183,7 +177,6 @@ public:
 
   TDoubleParam *getCurrentCurve() const;
 
-  void emitKeyframeSelected(double frame) { emit keyframeSelected(frame); }
 
   void setBGColor(const QColor &color) { m_bgColor = color; }
   QColor getBGColor() const { return m_bgColor; }

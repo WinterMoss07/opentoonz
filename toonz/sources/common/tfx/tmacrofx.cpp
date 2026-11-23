@@ -175,28 +175,6 @@ bool TMacroFx::analyze(const std::vector<TFxP> &fxs) {
 
 //--------------------------------------------------
 
-bool TMacroFx::isaLeaf(TFx *fx) const {
-  int count = fx->getInputPortCount();
-  if (count == 0) return true;
-
-  for (int i = 0; i < count; ++i) {
-    TFxPort *port = fx->getInputPort(i);
-    TFx *inputFx  = port->getFx();
-    if (inputFx) {
-      if (std::find_if(m_fxs.begin(), m_fxs.end(), MatchesFx(inputFx)) ==
-          m_fxs.end()) {
-        // il nodo di input non appartiene al macroFx
-        return true;
-      }
-    } else {
-      // la porta di input non e' connessa
-      return true;
-    }
-  }
-
-  // tutte le porte di input sono connesse verso nodi appartenenti al macroFx
-  return false;
-}
 
 //--------------------------------------------------
 

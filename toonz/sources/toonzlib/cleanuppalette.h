@@ -9,7 +9,6 @@ TPalette *createStandardCleanupPalette();
 TPalette *createToonzPalette(TPalette *cleanupPalette);
 TPalette *createToonzPalette(TPalette *cleanupPalette, int colorParamIndex);
 
-void convertToCleanupPalette(TPalette *palette);
 void convertToLevelPalette(TPalette *palette);
 
 #endif

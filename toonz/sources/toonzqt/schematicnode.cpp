@@ -979,9 +979,6 @@ void SchematicPort::eraseLink(SchematicLink *link) {
 
 //--------------------------------------------------------
 
-void SchematicPort::eraseAllLinks() {
-  while (!m_links.empty()) eraseLink(m_links[0]);
-}
 
 //--------------------------------------------------------
 
@@ -1200,14 +1197,6 @@ SchematicPort *SchematicNode::addPort(int portId, SchematicPort *port) {
 
 //--------------------------------------------------------
 
-/*!Erase the pair (portId, SchematicPort*port) from the mapping*/
-void SchematicNode::erasePort(int portId) {
-  auto it = m_ports.find(portId);
-  if (it != m_ports.end()) {
-    delete it.value();
-    m_ports.erase(it);
-  }
-}
 
 //--------------------------------------------------------
 
@@ -1222,21 +1211,6 @@ SchematicPort *SchematicNode::getPort(int portId) const {
 
 //--------------------------------------------------------
 
-/*! Returns a list of all node connected by links to a SchematicPort identified
- * by \b portId.
- */
-QList<SchematicNode *> SchematicNode::getLinkedNodes(int portId) const {
-  QList<SchematicNode *> list;
-  SchematicPort *port = getPort(portId);
-  if (port) {
-    //  Use index-based loop to match the original API
-    int linkCount = port->getLinkCount();
-    for (int i = 0; i < linkCount; i++) {
-      list.push_back(port->getLinkedNode(i));
-    }
-  }
-  return list;
-}
 
 //--------------------------------------------------------
 

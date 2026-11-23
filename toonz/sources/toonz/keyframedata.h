@@ -55,9 +55,7 @@ public:
   }
 
   int getColumnSpanCount() const { return m_columnSpanCount; }
-  int getRowSpanCount() const { return m_rowSpanCount; }
 
-  void setKeyframesOffset(int row, int col);
   Position getKeyframesOffset() const { return m_offset; }
 };
 

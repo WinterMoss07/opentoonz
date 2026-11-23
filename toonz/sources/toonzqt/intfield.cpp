@@ -178,13 +178,9 @@ void IntLineEdit::getRange(int &minValue, int &maxValue) {
 
 //-----------------------------------------------------------------------------
 
-void IntLineEdit::setBottomRange(int minValue) {
-  m_validator->setBottom(minValue);
-}
 
 //-----------------------------------------------------------------------------
 
-void IntLineEdit::setTopRange(int maxValue) { m_validator->setTop(maxValue); }
 
 //-----------------------------------------------------------------------------
 
@@ -390,7 +386,6 @@ void IntField::enableSlider(bool enable) {
 
 //-----------------------------------------------------------------------------
 
-bool IntField::sliderIsEnabled() { return m_slider->isEnabled(); }
 
 //-----------------------------------------------------------------------------
 
@@ -404,7 +399,6 @@ void IntField::enableRoller(bool enable) {
 
 //-----------------------------------------------------------------------------
 
-bool IntField::rollerIsEnabled() { return m_roller->isEnabled(); }
 
 //-----------------------------------------------------------------------------
 
@@ -422,7 +416,6 @@ void IntField::enableSpinner(bool enable) {
 
 //-----------------------------------------------------------------------------
 
-bool IntField::spinnerIsEnabled() { return m_inc->isEnabled(); }
 
 //-----------------------------------------------------------------------------
 

@@ -403,23 +403,9 @@ void EaseInOutSegmentPage::refresh() {
 
 //-----------------------------------------------------------------------------
 
-void EaseInOutSegmentPage::onEase0Changed() {
-  TDoubleParam *curve = getCurve();
-  int kIndex          = getViewer()->getSegmentIndex();
-  if (!curve || kIndex < 0) return;
-  KeyframeSetter setter(curve, kIndex);
-  setter.setEaseOut(m_ease0Fld->getValue() * m_fieldScale);
-}
 
 //-----------------------------------------------------------------------------
 
-void EaseInOutSegmentPage::onEase1Changed() {
-  TDoubleParam *curve = getCurve();
-  int kIndex          = getViewer()->getSegmentIndex();
-  if (!curve || kIndex < 0) return;
-  KeyframeSetter setter(curve, kIndex + 1);
-  setter.setEaseIn(-m_ease1Fld->getValue() * m_fieldScale);
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1275,14 +1261,6 @@ void FunctionSegmentViewer::onCurveChanged() {
   update();
 }
 
-void FunctionSegmentViewer::onStepFieldChanged(const QString &text) {
-  if (!segmentIsValid()) return;
-  int step = 1;
-  if (text != "") step = text.toInt();
-  if (step < 1) step = 1;
-  KeyframeSetter setter(m_curve, m_segmentIndex);
-  setter.setStep(step);
-}
 
 int FunctionSegmentViewer::typeToIndex(int typeId) const {
   for (int i = 0; i < m_typeId.size(); ++i)

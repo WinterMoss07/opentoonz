@@ -97,7 +97,6 @@ public:
   DvTextEdit(QWidget *parent = 0);
   ~DvTextEdit();
 
-  void setMiniToolBarEnabled(bool value) { m_miniToolBarEnabled = value; }
   void changeFont(const QFont &f);
 
 protected:

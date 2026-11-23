@@ -74,16 +74,8 @@ public:
                           TXshLevelHandle *currentLevelHandle);
   ~StudioPaletteTreeViewer();
 
-  void setLevelPaletteHandle(TPaletteHandle *paletteHandle);
-  TPaletteHandle *getLevelPaletteHandle() const { return m_levelPaletteHandle; }
 
-  void setCurrentLevelHandle(TXshLevelHandle *currentLevelHandle);
-  TXshLevelHandle *getCurrentLevelHandle() const {
-    return m_currentLevelHandle;
-  }
 
-  void setStdPaletteHandle(TPaletteHandle *stdPaletteHandle);
-  TPaletteHandle *getStdPaletteHandle() const { return m_studioPaletteHandle; }
 
   /*!	Overridden from StudioPalette::Listener. */
   void onStudioPaletteTreeChange() override { refresh(); }

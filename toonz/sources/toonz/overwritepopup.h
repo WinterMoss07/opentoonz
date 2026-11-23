@@ -84,9 +84,6 @@ public:
   //! Returns the resolution type chosen by the user
   Resolution getChoice() const { return m_choice; }
 
-  //! Returns the suffix to be added at the base file name when the chosen
-  //! resolution type is \t KEEP_OLD.
-  std::wstring getSuffix();
 
   //! Resets state variables
   void reset();

@@ -68,9 +68,6 @@ void inbetweenWithoutUndo(TXshSimpleLevel *sl, const TFrameId &fid0,
 void inbetween(TXshSimpleLevel *sl, const TFrameId &fid0, const TFrameId &fid1,
                InbetweenInterpolation interpolation);
 
-// Renumber a single drawing
-void renumberDrawing(TXshSimpleLevel *sl, const TFrameId &oldFid,
-                     const TFrameId &desiredNewFid);
 
 }  // namespace FilmstripCmd
 

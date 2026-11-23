@@ -65,7 +65,6 @@ public:
   ~ThreadGroup();
 
   void add(Thread *thread);
-  void joinAll();
 
 private:
   class Imp;
@@ -274,7 +273,6 @@ void ThreadGroup::add(Thread *thread) {
   m_imp->m_boostThreadGroup.add_thread(thread->m_imp->m_boostThread);
 }
 
-void ThreadGroup::joinAll() { m_imp->m_boostThreadGroup.join_all(); }
 
 //==============================================================================
 

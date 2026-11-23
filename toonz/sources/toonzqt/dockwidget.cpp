@@ -418,63 +418,12 @@ void DockWidget::wheelEvent(QWheelEvent *we) {
 //! none.
 //! Convenience function combining parentLayout() and containerOf(\b point).
 
-//!\b NOTE: Observe that, in any case, the use of QEnterEvents is discouraged
-//! for this purpose:
-//! remember that we forcedly remain within its boundaries when dragging a dock
-//! widget;
-//! instead, we are rather interested about entering the dock widgets *below*.
-QWidget *DockWidget::hoveredWidget(QMouseEvent *me) {
-  if (!m_parentLayout) return 0;
-
-  QPoint point = parentWidget()->mapFromGlobal(me->globalPos());
-  return m_parentLayout->containerOf(point);
-}
 
 //-------------------------------------
 
-//! Returns adjacent placeholders to hovered widget. If hovered is a separator,
-//! just return associated placeholder.
-DockPlaceholder *DockWidget::placeAdjacentTo(DockWidget *dockWidget,
-                                             int boundary) {
-  Region *r = parentLayout()->find(dockWidget);
-
-  if (((boundary == DockPlaceholder::left ||
-        boundary == DockPlaceholder::right) &&
-       r->getOrientation() == Region::horizontal) ||
-      ((boundary == DockPlaceholder::top ||
-        boundary == DockPlaceholder::bottom) &&
-       r->getOrientation() == Region::vertical)) {
-    // Placeholder is coherent with region orientation
-    return r->placeholders().size() ? r->placeholder(boundary % 2) : 0;
-  } else {
-    // Search in parent region
-    Region *parent = r->getParent();
-    if (parent) {
-      unsigned int i = parent->find(r);
-      return parent->placeholders().size()
-                 ? parent->placeholder(i + (boundary % 2))
-                 : 0;
-    } else {
-      // No parent region - dockWidget is the only widget of the whole layout;
-      // Then check the first 2 elements of placeholders vector.
-      if (!m_placeholders[boundary % 2]->getParentRegion()) {
-        return m_placeholders.size() ? m_placeholders[boundary % 2] : 0;
-      }
-    }
-  }
-
-  return 0;
-}
 
 //-------------------------------------
 
-//! Returns placeholder associated with input separator.
-DockPlaceholder *DockWidget::placeOfSeparator(DockSeparator *sep) {
-  Region *r = sep->getParentRegion();
-  int idx   = sep->getIndex();
-
-  return r->placeholders().size() ? r->placeholder(idx + 1) : 0;
-}
 
 //-------------------------------------
 
@@ -625,9 +574,6 @@ DockPlaceholder::DockPlaceholder(DockWidget *owner, Region *r, int idx,
 
 //------------------------------------------------------
 
-inline DockSeparator *DockPlaceholder::getSeparator() const {
-  return m_separator;
-}
 
 //------------------------------------------------------
 
@@ -720,33 +666,9 @@ DockPlaceholder *DockPlaceholder::childPlaceholder(QPoint p) {
 
 //------------------------------------------------------
 
-//! Returns greatest placeholder which contains this one.
-inline DockPlaceholder *DockPlaceholder::greatestPlaceholder() {
-  DockPlaceholder *old = this, *current = parentPlaceholder();
-
-  while (current != old) {
-    old     = current;
-    current = old->parentPlaceholder();
-  }
-
-  return current;
-}
 
 //------------------------------------------------------
 
-//! Returns smallest placeholder contained by this one - a point belonging to
-//! the child
-//! region to be selected is requested as univoque key among all children.
-inline DockPlaceholder *DockPlaceholder::smallestPlaceholder(QPoint p) {
-  DockPlaceholder *old = this, *current = childPlaceholder(p);
-
-  while (current != old) {
-    old     = current;
-    current = old->childPlaceholder(p);
-  }
-
-  return current;
-}
 
 //========================================================================
 

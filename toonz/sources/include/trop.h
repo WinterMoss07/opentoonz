@@ -213,9 +213,6 @@ DVAPI void quickPut(const TRasterP &dn, const TRasterCM32P &upCM32,
                     const TPaletteP &plt, const TAffine &aff,
                     const CmappedQuickputSettings &settings);
 
-DVAPI void quickResampleColorFilter(const TRasterP &dn, const TRasterP &up,
-                                    const TAffine &aff, const TPaletteP &plt,
-                                    UCHAR colorMask);
 
 DVAPI void convolve_3_i(TRasterP rout, TRasterP rin, int dx, int dy,
                         double conv[]);
@@ -283,8 +280,6 @@ DVAPI void ropout(const TRasterP &source, const TRasterP &matte,
 DVAPI void atop(const TRasterP &rup, const TRasterP &rdown,
                 const TRasterP &rout);
 
-DVAPI void txor(const TRasterP &rup, const TRasterP &rdown,
-                const TRasterP &rout);
 
 DVAPI void crossDissolve(const TRasterP &rup, const TRasterP &rdown,
                          const TRasterP &rout, UCHAR v);  //[0..255]
@@ -335,8 +330,6 @@ DVAPI void gammaCorrect(TRasterP raster, double gamma);
 DVAPI void gammaCorrectRGBM(TRasterP raster, double gammar, double gammag,
                             double gammab, double gammam);
 
-//! Return the pixel size of the \b blur border
-DVAPI int getBlurBorder(double blur);
 
 //! Inserts antialias around jaggy lines. Threshold is a pixel distance intended
 //! from 0 to 256.
@@ -378,8 +371,6 @@ DVAPI void despeckle(const TRasterP &ras, int sizeThreshold, bool check,
 DVAPI void despeckle(const TRasterP &rout, const TRasterP &rin,
                      int sizeThreshold, bool check);
 
-//! Return a raster with r b channels swapped
-DVAPI TRaster32P copyAndSwapRBChannels(const TRaster32P &srcRaster);
 
 // result in 'left'
 DVAPI void makeStereoRaster(const TRasterP &left, const TRasterP &right);
@@ -415,8 +406,6 @@ DVAPI _RASTER *convertRaster50to46(const TRasterP &inRas,
   */
 DVAPI void releaseRaster46(_RASTER *&r, bool doReleaseBuffer = false);
 
-//! Read an image in the path \b filename and put it in an old toonz raster
-DVAPI _RASTER *readRaster46(const char *filename);
 
 //! Retrieves the input raster from Toonz internal cache. Need to call it before
 //! using the raster.

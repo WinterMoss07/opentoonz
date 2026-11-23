@@ -48,7 +48,6 @@ public:
 
   TDimension getSize() const { return m_size; }
   TToonzImageP getImg() const;
-  TRasterImageP getPreviewImage() const;
 };
 
 //****************************************************************************************

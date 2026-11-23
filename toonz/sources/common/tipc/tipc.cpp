@@ -260,12 +260,6 @@ tipc::Stream& operator<<(tipc::Stream& stream, tipc::Message& msg) {
 //    tipc Utilities
 //********************************************************
 
-/*!
-  Appends the invoking process' pid to the passed srvName.
-*/
-QString tipc::applicationSpecificServerName(QString srvName) {
-  return srvName + QString::number(QCoreApplication::applicationPid());
-}
 
 //-------------------------------------------------------------
 
@@ -392,59 +386,6 @@ bool tipc::startSlaveServer(QString srvName, QString cmdlineProgram,
 
 //-------------------------------------------------------------
 
-/*!
-  Connects the passed socket to the server with name <srvName> + <threadName>.
-  Awaits for the connection up to msecs milliseconds before returning false.
-  If no server was found, a new slave server is started by invoking
-  the supplied command line and connection is re-attempted.
-  Returns true on success, false otherwise.
-
-  \warning Please, observe that a correct slave server name should be
-  ensured to be unique to the parent process.
-*/
-bool tipc::startSlaveConnection(QLocalSocket* socket, QString srvName,
-                                int msecs, QString cmdlineProgram,
-                                QStringList cmdlineArguments,
-                                QString threadName) {
-  QElapsedTimer time;
-  time.start();
-
-  if (msecs == -1) msecs = std::numeric_limits<int>::max();
-
-  QString fullSrvName(srvName + threadName);
-  socket->connectToServer(fullSrvName);
-
-  // If the socket is not connecting, the server lookup table returned that the
-  // no server with
-  // the passed name exists. This means that a server must be created.
-  if (socket->state() == QLocalSocket::UnconnectedState &&
-      !cmdlineProgram.isEmpty()) {
-    // Completely serialize the server start
-    static QMutex mutex;
-    QMutexLocker locker(&mutex);
-
-    // Retry connection - this is required due to the mutex
-    socket->connectToServer(fullSrvName);
-    if (socket->state() != QLocalSocket::UnconnectedState) goto connecting;
-
-    // Invoke the supplied command line to start the server
-    if (!tipc::startSlaveServer(srvName, cmdlineProgram, cmdlineArguments))
-      return false;
-
-    // Reconnect to the server
-    socket->connectToServer(fullSrvName);
-    if (socket->state() == QLocalSocket::UnconnectedState) return false;
-  }
-
-connecting:
-
-  // Now, the server is connecting or already connected. Wait until the socket
-  // is connected.
-  socket->waitForConnected(msecs - time.elapsed());
-  if (socket->state() != QLocalSocket::ConnectedState) return false;
-
-  return true;
-}
 
 //-------------------------------------------------------------
 
@@ -562,21 +503,6 @@ int tipc::shm_maxSharedPages() {
 
 //-------------------------------------------------------------
 
-int tipc::shm_maxSharedCount() {
-  if (shm_mni < 0) {
-#ifdef MACOSX
-    size_t valSize = sizeof(TINT64);
-    TINT64 val;
-    sysctlbyname("kern.sysv.shmmni", &val, &valSize, nullptr, 0);
-    shm_mni =
-        std::min(val, static_cast<TINT64>(std::numeric_limits<int>::max()));
-#else
-    shm_mni = std::numeric_limits<int>::max();
-#endif
-  }
-
-  return shm_mni;
-}
 
 //-------------------------------------------------------------
 

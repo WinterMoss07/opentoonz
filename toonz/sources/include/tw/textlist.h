@@ -51,7 +51,6 @@ public:
   virtual ~TTextListItem() {}
 
   std::string getId() { return m_id; }
-  std::string getCaption() { return m_caption; }
 
 private:
   std::string m_id;

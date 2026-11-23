@@ -89,8 +89,6 @@ public:
 
   inline bool isSubPathOf(const TVariantPath &other) const
     { return compare(*this, 0, other, 0, (int)size()) == 0; }
-  inline bool isBasePathOf(const TVariantPath &other) const
-    { return other.isSubPathOf(*this); }
   inline int compare(const TVariantPath &other) const
     { return compare(*this, 0, other, 0, (int)std::max(size(), other.size())); }
   inline bool operator==(const TVariantPath &other) const
@@ -258,8 +256,6 @@ public:
   inline const TVariantMap& getMap() const
     { return m_map; }
 
-  inline void setNone()
-    { reset(); }
   inline void setBool(bool v)
     { setType(Bool); m_bool = v; touch(); }
   inline void setDouble(double v)
@@ -278,8 +274,6 @@ public:
   TVariant& operator[] (int index);
   inline int size() const
     { return (int)(m_type == List ? m_list.size() : m_map.size()); }
-  inline void clearList()
-    { resize(0); }
   inline void append(const TVariant &v)
     { insert((int)m_list.size(), v); }
   inline const TVariant& operator[] (int index) const {
@@ -356,10 +350,6 @@ public:
   inline bool getParentPath(TVariantPath &outPath) const
     { return getParentPath(outPath, *m_root); }
 
-  inline int getChildPathSize(const TVariant &child) const
-    { return child.getParentPathSize(*this); }
-  inline bool getChildPath(TVariantPath &outPath, const TVariant &child) const
-    { return child.getParentPath(outPath, *this); }
   bool getChildPathEntry(const TVariant &child, TVariantPathEntry &outEntry) const;
 
   bool isChildOf(const TVariant &other) const;
@@ -368,10 +358,7 @@ public:
     { return other.isChildOf(*this); }
   inline bool isParentOrEqual(const TVariant &other) const
     { return other.isChildOrEqual(*this); }
-  inline bool isChildOrParent(const TVariant &other) const
-    { return isChildOrEqual(other) || isParentOrEqual(other); }
 
-  const TVariant* findCommonParent(const TVariant &other) const;
 
   // memory
   size_t getMemSize() const;

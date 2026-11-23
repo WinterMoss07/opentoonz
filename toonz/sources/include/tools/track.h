@@ -179,8 +179,6 @@ public:
     return p;
   }
 
-  inline void recalcTiltTransform()
-    { tiltTransform = makeTiltTransform(transform); }
 
   static TAffine makeTiltTransform(const TAffine &a);
 };
@@ -280,8 +278,6 @@ public:
 
   const TTrackInterpolatorP& getInterpolator() const
     { return interpolator; }
-  void removeInterpolator()
-    { interpolator.reset(); }
 
   inline TTimerTicks ticks() const
     { return keyHistory.ticks(); }
@@ -366,14 +362,10 @@ public:
     { return keyHistory.get(time); }
   inline TInputState::KeyState::Holder getKeyState(const TTrackPoint &point) const
     { return getKeyState(rootTimeOffset + point.time); }
-  inline TInputState::KeyState::Holder getCurrentKeyState() const
-    { return getKeyState(rootTimeOffset + current().time); }
   inline TInputState::ButtonState::Holder getButtonState(double time) const
     { return buttonHistory.get(time); }
   inline TInputState::ButtonState::Holder getButtonState(const TTrackPoint &point) const
     { return getButtonState(rootTimeOffset + point.time); }
-  inline TInputState::ButtonState::Holder getCurrentButtonState() const
-    { return getButtonState(rootTimeOffset + current().time); }
 
 private:
   template<double TTrackPoint::*Field>
@@ -399,8 +391,6 @@ private:
 public:
   inline double indexByOriginalIndex(double originalIndex) const
     { return binarySearch<&TTrackPoint::originalIndex>(originalIndex); }
-  inline double indexByTime(double time) const
-    { return binarySearch<&TTrackPoint::time>(time); }
   inline double indexByLength(double length) const
     { return binarySearch<&TTrackPoint::length>(length); }
 
@@ -409,18 +399,6 @@ public:
     const TTrackPoint &p0 = floorPoint(index, &frac);
     const TTrackPoint &p1 = ceilPoint(index);
     return interpolationLinear(p0.originalIndex, p1.originalIndex, frac);
-  }
-  inline double timeByIndex(double index) const {
-    double frac;
-    const TTrackPoint &p0 = floorPoint(index, &frac);
-    const TTrackPoint &p1 = ceilPoint(index);
-    return interpolationLinear(p0.time, p1.time, frac);
-  }
-  inline double lengthByIndex(double index) const {
-    double frac;
-    const TTrackPoint &p0 = floorPoint(index, &frac);
-    const TTrackPoint &p1 = ceilPoint(index);
-    return interpolationLinear(p0.length, p1.length, frac);
   }
 
   inline TTrackPoint calcPoint(double index) const

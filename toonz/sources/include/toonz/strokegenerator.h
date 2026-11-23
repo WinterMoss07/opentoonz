@@ -92,16 +92,12 @@ In caso affermativo li cancella.
   */
   void filterPoints();
 
-  //! Visualizza l'ultimo frammento
-  void drawLastFragments();
 
   //! Visualizza tutti i frammenti
   void drawAllFragments();
 
   void drawFilledStroke();
 
-  // Only keep first and last points. Used for straight lines
-  void removeMiddlePoints();
 
   //! Restituisce il rettangolo che contiene la regione modificata
   TRectD getModifiedRegion() const;

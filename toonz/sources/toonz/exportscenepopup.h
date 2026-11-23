@@ -177,10 +177,6 @@ class ExportScenePopup final : public DVGui::Dialog {
 public:
   ExportScenePopup(std::vector<TFilePath> scenes);
 
-  void setScenes(std::vector<TFilePath> scenes) {
-    m_scenes = scenes;
-    //    updateCommandLabel();
-  }
 
 protected slots:
   void switchMode(int id);

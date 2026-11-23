@@ -1001,9 +1001,6 @@ TFx *TFx::create(std::string name) {
 
 //--------------------------------------------------
 
-void TFx::listFxs(std::vector<TFxInfo> &info) {
-  TFxFactory::instance()->getFxInfos(info);
-}
 
 //--------------------------------------------------
 

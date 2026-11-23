@@ -115,11 +115,6 @@ DVAPI TStroke *rotateControlPoint(const TStroke *stroke,
                                   double atLength);
 
 /**
-   * Retrieve all parameters where stroke has a minimum.
-   */
-DVAPI bool getAllW(const TStroke *stroke, const TPointD &pnt, double &dist2,
-                   std::vector<double> &parameters);
-/**
    * @brief Replace a stroke in a vector image.
    */
 DVAPI bool replaceStroke(TStroke *old_stroke, TStroke *new_stroke,

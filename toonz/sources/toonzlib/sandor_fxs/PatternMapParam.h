@@ -26,7 +26,6 @@ public:
   virtual ~CPatternMapParam();
 
   void null();
-  void testValue();
   bool isOK();
 };
 

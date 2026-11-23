@@ -112,8 +112,6 @@ inline void tglColor(const TPixelD &p) { glColor4d(p.r, p.g, p.b, p.m); }
 //! retrieve the square of pixel size from current GL_MODELVIEW matrix
 DVAPI double tglGetPixelSize2();
 
-//! retrieve the current viewport bounds in world coordinates
-DVAPI TRectD tglGetBounds();
 
 //! Draw text in string s at position p.
 
@@ -189,7 +187,6 @@ inline void tglMultMatrix(const TAffine4 &aff) { glMultMatrixd(aff.a); }
 //=============================================================================
 
 void DVAPI tglRgbOnlyColorMask();
-void DVAPI tglAlphaOnlyColorMask();
 
 void DVAPI tglEnableBlending(GLenum src = GL_SRC_ALPHA,
                              GLenum dst = GL_ONE_MINUS_SRC_ALPHA);
@@ -245,8 +242,6 @@ void DVAPI tglDraw(const TRectD &rect, const std::vector<TRaster32P> &textures,
 void DVAPI tglDraw(const TRectD &rect, const TRaster32P &tex,
                    bool blending = true);
 
-void DVAPI tglBuildMipmaps(std::vector<TRaster32P> &rasters,
-                           const TFilePath &filepath);
 
 //-----------------------------------------------------------------------------
 

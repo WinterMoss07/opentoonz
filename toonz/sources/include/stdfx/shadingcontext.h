@@ -71,7 +71,6 @@ public:
   void addShaderProgram(const QString &shaderName,
                         QOpenGLShaderProgram *program,
                         const QDateTime &lastModified);
-  bool removeShaderProgram(const QString &shaderName);
 
   QOpenGLShaderProgram *shaderProgram(const QString &shaderName) const;
   QDateTime lastModified(const QString &shaderName) const;

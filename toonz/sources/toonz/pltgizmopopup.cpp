@@ -745,7 +745,6 @@ void PltGizmoPopup::adjustS(double p) {
 
 //-----------------------------------------------------------------------------
 
-void PltGizmoPopup::adjustH(double p) { modifyColor(HueModifier((int)(p))); }
 
 //-----------------------------------------------------------------------------
 

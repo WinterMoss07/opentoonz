@@ -30,9 +30,6 @@ public:
   void addLevelCommands(std::vector<int> &indices);
 
 public slots:
-  // Vector image group operations (used by CommandManager actions)
-  void enterVectorImageGroup();
-  void exitVectorImageGroup();
 };
 
 // Helper GUI class for toggling zero thickness lines visibility

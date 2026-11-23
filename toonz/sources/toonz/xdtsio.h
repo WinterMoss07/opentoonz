@@ -168,7 +168,6 @@ public:
   QStringList getLayerNames() const { return m_names; }
 
   void build(const QStringList& columnLabels) { m_names = columnLabels; }
-  void addName(const QString& name) { m_names.append(name); }
 };
 
 //=============================================================================

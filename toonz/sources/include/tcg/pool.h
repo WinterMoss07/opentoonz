@@ -137,7 +137,6 @@ public:
   value_type releasedSize() const { return m_releasedIndices.size(); }
   value_type acquiredSize() const { return size() - releasedSize(); }
 
-  const container_type &releasedIndices() const { return m_releasedIndices; }
 
   value_type acquire() {
     if (!m_releasedIndices.empty()) {

@@ -497,18 +497,6 @@ void FileSelection::convertFiles() {
 // Premultiply files
 //------------------------------------------------------------------------
 
-void FileSelection::premultiplyFiles() {
-  QString question = QObject::tr(
-      "You are going to premultiply selected files.\nThe operation cannot be "
-      "undone: are you sure?");
-  int ret = DVGui::MsgBox(question, QObject::tr("Premultiply"),
-                          QObject::tr("Cancel"), 1);
-  if (ret == 2 || ret == 0) return;
-
-  std::vector<TFilePath> files;
-  getSelectedFiles(files);
-  for (const TFilePath &fp : files) ImageUtils::premultiply(fp);
-}
 
 //------------------------------------------------------------------------
 // Duplicate files
@@ -666,15 +654,6 @@ void FileSelection::exportScenes() {
   popup->activateWindow();
 }
 
-void FileSelection::exportScene(TFilePath scenePath) {
-  if (scenePath.isEmpty()) return;
-  std::vector<TFilePath> files = {scenePath};
-  auto *popup                  = new ExportScenePopup(files);
-  popup->setAttribute(Qt::WA_DeleteOnClose);
-  popup->show();
-  popup->raise();
-  popup->activateWindow();
-}
 
 //------------------------------------------------------------------------
 // Select all

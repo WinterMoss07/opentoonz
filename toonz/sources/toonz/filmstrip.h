@@ -61,7 +61,6 @@ public:
   TXshSimpleLevel *getLevel() const;
 
   QSize getIconSize() const { return m_iconSize; }
-  int getFrameLabelWidth() const { return m_frameLabelWidth; }
 
   bool isOutOfBounds(int n) const;
 

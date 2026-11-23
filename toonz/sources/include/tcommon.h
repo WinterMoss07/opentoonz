@@ -130,10 +130,6 @@ inline UCHAR byteFromFloat(float f) {
     It is used in dithering ...
  */
 
-inline UCHAR ditheredByteFromUshort(USHORT u, int r) {
-  return ((((u * (256U * 255U + 1U)) - ((u * (256U * 255U + 1U)) >> 24)) + r) >>
-          24);
-}
 
 /*! ushortFromByte(u) converts integer from [0..255] to  [0..65535]*/
 inline USHORT ushortFromByte(UCHAR u) { return u | u << 8; }

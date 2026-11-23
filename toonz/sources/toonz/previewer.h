@@ -72,7 +72,6 @@ public:
   void onChange(const TFxChange &change) override;
 
   void onImageChange(TXshLevel *xl, const TFrameId &fid);
-  void onLevelChange(TXshLevel *xl);
 
   void clear(int frame);
   void clear();

@@ -201,9 +201,6 @@ public:
   std::string getApplicationFileName() { return m_applicationFileName; }
   std::string getApplicationName() { return m_version.getAppName(); }
   std::string getApplicationVersion() { return m_applicationVersion; }
-  std::string getApplicationVersionWithoutRevision() {
-    return m_version.getAppVersionString();
-  }
 
   TFilePath getEnvFile() { return m_envFile; }
   TFilePath getTemplateEnvFile() {
@@ -318,15 +315,7 @@ public:
 
   bool getIsPortable() { return m_isPortable; }
 
-  void setDllRelativeDir(const TFilePath &dllRelativeDir) {
-    delete m_dllRelativeDir;
-    m_dllRelativeDir = new TFilePath(dllRelativeDir);
-  }
 
-  TFilePath getDllRelativeDir() {
-    if (m_dllRelativeDir) return *m_dllRelativeDir;
-    return TFilePath(".");
-  }
 
   void setArgPathValue(std::string key, std::string value) {
     m_argPathValues.insert_or_assign(key, value);
@@ -618,9 +607,6 @@ TFilePath TEnv::getRootVarPath() {
   return EnvGlobals::instance()->getRootVarPath();
 }
 
-std::string TEnv::getSystemVarStringValue(std::string varName) {
-  return EnvGlobals::instance()->getSystemVarValue(varName);
-}
 
 TFilePath TEnv::getSystemVarPathValue(std::string varName) {
   return EnvGlobals::instance()->getSystemVarPathValue(varName);

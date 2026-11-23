@@ -806,18 +806,6 @@ TAffine TTool::getCurrentColumnMatrix(int frame) const {
 
 //-----------------------------------------------------------------------------
 
-TAffine TTool::getCurrentColumnParentMatrix() const {
-  if (!m_application) return TAffine();
-
-  TFrameHandle *fh = m_application->getCurrentFrame();
-  if (fh->isEditingLevel()) return TAffine();
-  int frame       = fh->getFrame();
-  int columnIndex = m_application->getCurrentColumn()->getColumnIndex();
-  TXsheet *xsh    = m_application->getCurrentXsheet()->getXsheet();
-  TStageObjectId parentId =
-      xsh->getStageObjectParent(TStageObjectId::ColumnId(columnIndex));
-  return xsh->getPlacement(parentId, frame);
-}
 
 //-----------------------------------------------------------------------------
 

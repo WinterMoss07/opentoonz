@@ -226,9 +226,6 @@ void ShadingContext::addShaderProgram(const QString &shaderName,
 
 //--------------------------------------------------------
 
-bool ShadingContext::removeShaderProgram(const QString &shaderName) {
-  return (m_imp->m_shaderPrograms.erase(shaderName) > 0);
-}
 
 //--------------------------------------------------------
 

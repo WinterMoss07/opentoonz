@@ -146,21 +146,6 @@ void Iwa_FlowPaintBrushFx::setColorTileToBuffer(const RASTER colorRas,
 }
 
 //------------------------------------------------------------
-template <typename RASTER, typename PIXEL>
-void Iwa_FlowPaintBrushFx::setOutRaster(const RASTER outRas, double *buf) {
-  double *buf_p = buf;
-  for (int j = 0; j < outRas->getLy(); j++) {
-    PIXEL *pix = outRas->pixels(j);
-    for (int i = 0; i < outRas->getLx(); i++, pix++, buf_p++) {
-      typename PIXEL::Channel val =
-          (typename PIXEL::Channel)(*buf_p * double(PIXEL::maxChannelValue));
-      pix->r = val;
-      pix->g = val;
-      pix->b = val;
-      pix->m = PIXEL::maxChannelValue;
-    }
-  }
-}
 
 //------------------------------------------------------------
 Iwa_FlowPaintBrushFx::Iwa_FlowPaintBrushFx()

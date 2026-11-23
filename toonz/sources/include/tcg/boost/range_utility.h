@@ -41,11 +41,6 @@ C &substitute(C &c, const Rng &rng) {
             <TT>boost::insert</TT>.
 */
 
-template <typename C, typename Rng>
-C &insert2(C &c, const Rng &rng) {
-  c.insert(boost::begin(rng), boost::end(rng));
-  return c;
-}
 
 }  // namespace tcg
 

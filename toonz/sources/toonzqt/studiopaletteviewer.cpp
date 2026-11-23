@@ -159,24 +159,12 @@ StudioPaletteTreeViewer::~StudioPaletteTreeViewer() {
 }
 
 //-----------------------------------------------------------------------------
-void StudioPaletteTreeViewer::setCurrentLevelHandle(
-    TXshLevelHandle *currentLevelHandle) {
-  m_currentLevelHandle = currentLevelHandle;
-}
 
 //---------------------------------------------------------------------------
 
-void StudioPaletteTreeViewer::setLevelPaletteHandle(
-    TPaletteHandle *paletteHandle) {
-  m_levelPaletteHandle = paletteHandle;
-}
 
 //-----------------------------------------------------------------------------
 
-void StudioPaletteTreeViewer::setStdPaletteHandle(
-    TPaletteHandle *studioPaletteHandle) {
-  m_studioPaletteHandle = studioPaletteHandle;
-}
 
 //-----------------------------------------------------------------------------
 

@@ -68,9 +68,6 @@ struct SxfProperty {
   void setVisiblity(Visibility item, bool isVisible) {
     visibilities[item] = isVisible ? 1 : 0;
   }
-  bool getVisiblity(Visibility item) const {
-    return visibilities[item] != (quint32)0;
-  }
 };
 
 struct SxfDirection {

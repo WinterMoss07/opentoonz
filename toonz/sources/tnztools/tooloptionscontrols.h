@@ -77,8 +77,6 @@ public:
 
   void onPropertyChanged() override { updateStatus(); }
   void notifyTool(bool addToUndo = true);
-  // return true if the control is belonging to the visible viewer
-  bool isInVisibleViewer(QWidget *widget);
 
   virtual void updateStatus() = 0;
 };
@@ -234,7 +232,6 @@ public:
 
 public slots:
   void onActivated(int);
-  void doSetCurrentIndex(int);
 };
 
 //-----------------------------------------------------------------------------
@@ -308,7 +305,6 @@ public:
   ToolOptionParamRelayField(TTool *tool, TDoubleParamRelayProperty *property,
                             int decimals = 2);
 
-  void setGlobalKey(TBoolProperty *globalKey, TPropertyGroup *globalGroup);
 
   void updateStatus() override;
 
@@ -352,9 +348,6 @@ public:
 
   void setMeasure(std::string name);
 
-  void enableGlobalKeyframe(bool isGlobalKeyframe) {
-    m_isGlobalKeyframe = isGlobalKeyframe;
-  }
 
   TMeasuredValue *getMeasuredValue() const { return m_value; }
 

@@ -426,25 +426,9 @@ void SceneViewerContextMenu::addLevelCommands(std::vector<int> &indices) {
 
 //-----------------------------------------------------------------------------
 
-void SceneViewerContextMenu::enterVectorImageGroup() {
-  if (m_groupIndexToBeEntered == -1) return;
-
-  TVectorImageP vi = (TVectorImageP)TTool::getImage(false);
-  if (!vi) return;
-  vi->enterGroup(m_groupIndexToBeEntered);
-  TSelection *selection = TSelection::getCurrent();
-  if (selection) selection->selectNone();
-  m_viewer->update();
-}
 
 //-----------------------------------------------------------------------------
 
-void SceneViewerContextMenu::exitVectorImageGroup() {
-  TVectorImageP vi = (TVectorImageP)TTool::getImage(false);
-  if (!vi) return;
-  vi->exitGroup();
-  m_viewer->update();
-}
 
 // Helper classes
 class ZeroThickToggle : public MenuItemHandler {

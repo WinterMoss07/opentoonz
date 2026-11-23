@@ -205,7 +205,6 @@ public:
   void addLayout(QLayout *layout, bool isRight = true);
   void addWidgetLayout(QWidget *widget, QLayout *layout);
   void addLayout(QString labelName, QLayout *layout);
-  void addLayouts(QLayout *firstL, QLayout *secondL);
 
   void addSpacing(int spacing);
   void addSeparator(QString name = QString());
@@ -218,8 +217,6 @@ public:
   void setLabelWidth(int labelWidth);
   int getLabelWidth() const { return m_labelWidth; };
 
-  void setLayoutInsertedSpacing(int spacing);
-  int getLayoutInsertedSpacing();
 
   void setButtonBarMargin(int margin);
   void setButtonBarSpacing(int spacing);

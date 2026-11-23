@@ -449,43 +449,6 @@ public:
   }
   //--------------------------------------------
 
-  GLuint getDisplayListId(TVectorImage *image, std::string name, TFrameId fid,
-                          const TVectorRenderData &rd) {
-    QMutexLocker sl(&m_mutex);
-    TColorFunction::Parameters parameters;
-    if (rd.m_cf) rd.m_cf->getParameters(parameters);
-    CHECK_GL_ERROR
-
-    HDC hDC               = wglGetCurrentDC();
-    T_hGlContext hContext = wglGetCurrentContext();
-    Info listInfo(0, hDC, parameters);
-    Key key(name, fid, hContext);
-    DisplayListMap::iterator it = m_displayListMap.find(key);
-    if (it != m_displayListMap.end()) {
-      if (listInfo.isDrawnAs(it->second)) {
-        // lascia tutto com'e' ed utilizza la displaliList
-        listInfo.m_displayListId = it->second.m_displayListId;
-      } else {  // aggiorna la displayList con le nuove info (attualmente solo
-                // la cf)
-        listInfo.m_displayListId = it->second.m_displayListId;
-        recordList(listInfo.m_displayListId, image, rd);
-        m_displayListMap[key] = listInfo;
-      }
-    } else  // se non ho mai disegnato l'immagine creo la displayList
-    {
-      CHECK_GL_ERROR
-      listInfo.m_displayListId = glGenLists(1);
-
-      if (listInfo.m_displayListId != 0)
-        recordList(listInfo.m_displayListId, image, rd);
-      else
-        std::cout << "list of " << name << fid << " is 0." << std::endl;
-
-      CHECK_GL_ERROR
-      m_displayListMap[key] = listInfo;
-    }
-    return listInfo.m_displayListId;
-  }
 
   void clearLists() {
     // save current context and others
@@ -536,10 +499,6 @@ TOutlineStyle::~TOutlineStyle() { delete m_regionOutlineModifier; }
 
 //-----------------------------------------------------------------------------
 
-void TOutlineStyle::setRegionOutlineModifier(RegionOutlineModifier *modifier) {
-  delete m_regionOutlineModifier;
-  m_regionOutlineModifier = modifier;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1607,13 +1566,6 @@ void TVectorImagePatternStrokeStyle::computeTransformations(
 
 //-----------------------------------------------------------------------------
 
-void TVectorImagePatternStrokeStyle::clearGlDisplayLists() {
-#ifdef _WIN32
-  DisplayListManager *pmgr = DisplayListManager::instance();
-  assert(pmgr);
-  pmgr->clearLists();
-#endif
-}
 
 //--------------------------------------------------------------------------------------------------
 

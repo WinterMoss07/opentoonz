@@ -86,7 +86,6 @@ public:
   // get parameter
   double getValue(int index) const;
 
-  void setGlobalKeyframe();
 
   /*--
    * HistoryPanel表示のために、動かしたObject/Channel名・フレーム番号の文字列を返す

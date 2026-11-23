@@ -118,7 +118,6 @@ void ToolHandle::setToolBusy(bool value) {
 
 QIcon currentIcon;
 
-static QIcon getCurrentIcon() { return currentIcon; }
 
 //-----------------------------------------------------------------------------
 

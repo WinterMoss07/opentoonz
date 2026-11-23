@@ -60,7 +60,6 @@ public:
   void getFrames(std::set<TFrameId> &frameId) const;
   TXshSimpleLevel *getLevel() const { return m_level.getPointer(); }
   void setKeepVectorFills(bool keep) { m_keepVectorFills = keep; }
-  bool getKeepVectorFills() { return m_keepVectorFills; }
 
 protected:
   TImageP getImage(QString imageId, TXshSimpleLevel *sl,

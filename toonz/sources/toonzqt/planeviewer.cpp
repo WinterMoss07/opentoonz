@@ -89,9 +89,6 @@ PlaneViewer::PlaneViewer(QWidget *parent)
 
 //=========================================================================================
 
-void PlaneViewer::setZoomRange(double zoomMin, double zoomMax) {
-  m_zoomRange[0] = zoomMin, m_zoomRange[1] = zoomMax;
-}
 
 //------------------------------------------------------------------------
 

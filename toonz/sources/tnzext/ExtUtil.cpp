@@ -68,17 +68,6 @@ int getStrokeId(const TStroke *s, const TVectorImageP &vi) {
 
 //---------------------------------------------------------------------------
 
-/**
-   * Verify if a curve is a "almost" point.
-   */
-template <class T>
-bool isImproper(const T *tq) {
-  TPointD v1 = tq->getP0() - tq->getP1(), v2 = tq->getP2() - tq->getP1();
-
-  if (isAlmostZero(norm2(v1)) && isAlmostZero(norm2(v2))) return true;
-
-  return false;
-}
 
 //---------------------------------------------------------------------------
 
@@ -444,70 +433,12 @@ bool addQuadraticIntervalInStroke(const TStroke *stroke,
 
 //---------------------------------------------------------------------------
 
-bool addQuadraticSetInStroke(const TStroke *stroke,
-                             ToonzExt::Intervals &stroke_intervals,
-                             const TThickQuadratic *ttq,
-                             const std::set<double> &ttq_set) {
-  if (!ttq || !ToonzExt::isValid(stroke)) return false;
-
-  const int size = ttq_set.size();
-
-  if (size < 1) return false;
-
-  std::set<double>::const_iterator cit, cit_end = ttq_set.end();
-
-  for (cit = ttq_set.begin(); cit != cit_end; ++cit) {
-    if (0.0 > *cit || *cit > 1.0) return false;
-  }
-
-  cit                                       = ttq_set.begin();
-  std::set<double>::const_iterator next_cit = cit;
-  std::advance(next_cit, 1);
-
-  for (; next_cit != cit_end; ++next_cit) {
-    ToonzExt::Interval stroke_interval;
-
-    bool check = mapValueInStroke(stroke, ttq, *cit, stroke_interval.first);
-    assert(check);
-    if (!check) return false;
-
-    check = mapValueInStroke(stroke, ttq, *next_cit, stroke_interval.second);
-
-    assert(check);
-    if (!check) return false;
-
-    assert(stroke_interval.first <= stroke_interval.second);
-    if (stroke_interval.first > stroke_interval.second) return false;
-    stroke_intervals.push_back(stroke_interval);
-    cit = next_cit;
-  }
-
-  return true;
-}
 
 //---------------------------------------------------------------------------
 
-bool isThere(double value, const ToonzExt::Intervals &intervals) {
-  ToonzExt::Intervals::const_iterator cit     = intervals.begin(),
-                                      cit_end = intervals.end();
-
-  while (cit != cit_end) {
-    if (cit->first == value || cit->second == value) return true;
-    ++cit;
-  }
-
-  return false;
-}
 
 //---------------------------------------------------------------------------
 
-bool isThere(double value, const std::set<double> &mySet) {
-  std::set<double>::const_iterator cit_end = mySet.end();
-
-  if (cit_end == mySet.find(value)) return false;
-
-  return true;
-}
 
 //---------------------------------------------------------------------------
 
@@ -1154,48 +1085,6 @@ DVAPI bool ToonzExt::replaceStroke(TStroke *old_stroke, TStroke *new_stroke,
 
 //-----------------------------------------------------------------------------
 
-DVAPI bool ToonzExt::getAllW(const TStroke *stroke, const TPointD &pnt,
-                             double &dist2, std::vector<double> &parameters) {
-  assert(!"To be finished!!!");
-  std::set<double> tmp;
-
-  assert(stroke);
-  if (ToonzExt::isValid(stroke)) return false;
-
-  double outT, w;
-
-  const TThickQuadratic *tq = 0;
-
-  int chunkFound = -1;
-
-  double distance2;
-
-  if (stroke->getNearestChunk(pnt, outT, chunkFound, distance2, false)) {
-    dist2 = distance2;
-    tq    = stroke->getChunk(chunkFound);
-    if (tq) {
-      w = stroke->getW(tq->getPoint(outT));
-      if (ToonzExt::isValid(w)) tmp.insert(w);
-    }
-  }
-
-  int i, chunkCount = stroke->getChunkCount();
-
-  for (i = 0; i < chunkCount; i++) {
-    if (i != chunkFound) {
-      tq              = stroke->getChunk(i);
-      TPointD tmp_pnt = tq->getPoint(tq->getT(pnt));
-      if (areAlmostEqual(tdistance2(tmp_pnt, pnt), dist2)) {
-        w = stroke->getW(tmp_pnt);
-        if (ToonzExt::isValid(w)) tmp.insert(w);
-      }
-    }
-  }
-
-  std::copy(tmp.begin(), tmp.end(), std::back_inserter(parameters));
-
-  return !tmp.empty();
-}
 
 //-----------------------------------------------------------------------------
 

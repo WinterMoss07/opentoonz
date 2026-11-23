@@ -345,13 +345,6 @@ bool StudioPalette::hasGlobalName(const TFilePath &path) {
 
 //-------------------------------------------------------------------
 
-bool StudioPalette::isLevelPalette(const TFilePath &path) {
-  TPalette *palette = getPalette(path);
-  if (!palette) return false;
-  bool ret = !palette->isCleanupPalette();
-  delete palette;
-  return ret;
-}
 
 //-------------------------------------------------------------------
 

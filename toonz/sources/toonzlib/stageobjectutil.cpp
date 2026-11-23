@@ -145,11 +145,6 @@ double TStageObjectValues::getValue(int index) const {
 
 //-----------------------------------------------------------------------------
 
-void TStageObjectValues::setGlobalKeyframe() {
-  TXsheet *xsh              = m_xsheetHandle->getXsheet();
-  TStageObject *stageObject = xsh->getStageObject(m_objectId);
-  stageObject->setKeyframeWithoutUndo(m_frame);
-}
 
 //-----------------------------------------------------------------------------
 /*-- HistoryViewerに、動かしたObject/Channel名・フレーム番号の文字列を返す --*/

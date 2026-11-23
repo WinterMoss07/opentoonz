@@ -186,8 +186,6 @@ namespace mypaint {
     bool isConstant(MyPaintBrushSetting id) const
     { return mypaint_brush_is_constant(m_brush, id); }
 
-    int getInputsUsedN(MyPaintBrushSetting id) const
-    { return mypaint_brush_get_inputs_used_n(m_brush, id); }
 
     void setMappingN(MyPaintBrushSetting id, MyPaintBrushInput input, int n)
     { mypaint_brush_set_mapping_n(m_brush, id, input, n); }
@@ -201,17 +199,11 @@ namespace mypaint {
     void getMappingPoint(MyPaintBrushSetting id, MyPaintBrushInput input, int index, float &x, float &y) const
     { mypaint_brush_get_mapping_point(m_brush, id, input, index, &x, &y); }
 
-    float getState(MyPaintBrushState i) const
-    { return mypaint_brush_get_state(m_brush, i); }
 
     void setState(MyPaintBrushState i, float value)
     { return mypaint_brush_set_state(m_brush, i, value); }
 
-    double getTotalStrokePaintingTime() const
-    { return mypaint_brush_get_total_stroke_painting_time(m_brush); }
 
-    void setPrintInputs(bool enabled)
-    { mypaint_brush_set_print_inputs(m_brush, enabled); }
 
     void fromDefaults() {
       mypaint_brush_from_defaults(m_brush);

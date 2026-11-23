@@ -846,31 +846,6 @@ int solveEquation4(std::complex<double> *roots, double a, double b, double c, do
 
 //-----------------------------------------------------------------------------
 
-/*
-*/
-int numberOfRootsInInterval(int order, const double *polyH, double min,
-                            double max) {
-  poly sseq[MAX_ORDER];
-
-  int i, nchanges_0, nchanges_1, np;
-
-  if (order > MAX_ORDER) return -1;
-
-  while (polyH[order] == 0.0 && order > 0) --order;
-
-  // init a sturm's sequence with our polynomious
-  for (i = order; i >= 0; --i) sseq[0].coef[i] = polyH[i];
-
-  //  build the Sturm sequence
-  np = buildsturm(order, sseq);
-
-  // compute number of variation on 0.0
-  nchanges_0 = numchanges(np, sseq, min);
-
-  nchanges_1 = numchanges(np, sseq, max);
-
-  return (nchanges_0 - nchanges_1);
-}
 
 //-----------------------------------------------------------------------------
 

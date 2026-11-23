@@ -190,9 +190,6 @@ private:
   void hideEvent(QHideEvent *) override;
 
 public:  //  :(
-  void emitCurveChanged() {
-    emit curveChanged();
-  }  //!< \deprecated  Should not be public.
   void emitIoCurve(int type, TDoubleParam *curve, const std::string &name) {
     emit curveIo(type, curve, name);
   }  //!< \deprecated  Should not be public.

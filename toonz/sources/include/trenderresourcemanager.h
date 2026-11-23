@@ -99,7 +99,6 @@ public:
 
   virtual TRenderResourceManager *operator()(void) = 0;
 
-  bool hasInstanceScope() const { return m_instanceScope; }
 
   TRenderResourceManager *getManager(const TRenderer &renderer) const;
   TRenderResourceManager *getManager(unsigned long renderId) const;

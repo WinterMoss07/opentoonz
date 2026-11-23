@@ -42,7 +42,6 @@ public:
   ~TImageException() {}
 
   TString getMessage() const override;
-  TString getRawMessage() const { return TException::getMessage(); }
   const TFilePath &getFilePath() const { return m_fp; }
 };
 
@@ -60,8 +59,6 @@ public:
     major = m_major;
     minor = m_minor;
   }
-  int getMajor() const { return m_major; }
-  int getMinor() const { return m_minor; }
 };
 
 //===========================================================
@@ -100,9 +97,6 @@ protected:
   double m_colorSpaceGamma;
 
 public:
-  static void setSafeModeReadingForTzl(bool activated) {
-    m_safeMode = activated;
-  }
   TImageReader(const TFilePath &path);
   virtual ~TImageReader();
 
@@ -146,7 +140,6 @@ Note: if the region, or part of it, is not contained in the image
 
   static void define(QString extension, TImageReaderCreateProc *proc);
 
-  void doReadGraytones(bool readThem);
   void enable16BitRead(bool is64bitEnabled) {
     m_is64BitEnabled = is64bitEnabled;
   }
@@ -154,7 +147,6 @@ Note: if the region, or part of it, is not contained in the image
     m_isFloatEnabled = isFloatEnabled;
   }
 
-  int getShrink() const { return m_shrink; }
   /*!
      Setta lo shrink in modo che al load() viene letta da disco
            una riga ogni "shrink" righe ed all'interno di queste righe viene

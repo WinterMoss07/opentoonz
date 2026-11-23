@@ -42,11 +42,6 @@
 
 namespace {
 
-void resetMarksBar(MarksBar *marksBar) {
-  QVector<int> &values = marksBar->values();
-  values[0]            = 0;
-  values[1]            = 255;
-}
 
 //--------------------------------------------------------------
 

@@ -47,7 +47,6 @@ sl->getFids(fids);
   return !fids.empty();
 }
 
-TFrameId getLastLevelFid() { return TFrameId(1); }
 
 }  // namespace
 
@@ -291,16 +290,6 @@ int TFrameHandle::getFrameIndex() const {
 
 //-----------------------------------------------------------------------------
 
-QString TFrameHandle::getFrameIndexName(int index) const {
-  if (m_frameType == LevelFrame) {
-    if (m_fid.getNumber() <= 0)
-      return "";
-    else {
-      return QString::number(m_fid.getNumber());
-    }
-  } else
-    return QString::number(m_frame + 1);
-}
 
 void TFrameHandle::setFrameIndex(int index) {
   if (m_frameType == LevelFrame) {
@@ -311,13 +300,6 @@ void TFrameHandle::setFrameIndex(int index) {
     setFrame(index);
 }
 
-void TFrameHandle::setFrameIndexByName(const QString &str) {
-  int num = str.toInt();
-  if (m_frameType == LevelFrame) {
-    setFid(TFrameId(num));
-  } else
-    setFrame(num - 1);
-}
 
 void TFrameHandle::scrubColumn(int r0, int r1, TXshSoundColumn *audioColumn,
                                double framePerSecond) {

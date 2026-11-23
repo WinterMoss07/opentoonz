@@ -35,14 +35,6 @@ public:
     QueryPerformanceCounter(&m_startTime);
   }
 
-  double elapsedSeconds() {
-    LARGE_INTEGER curTime;
-    QueryPerformanceCounter(&curTime);
-    LONGLONG microseconds = 1000000 * (curTime.QuadPart - m_startTime.QuadPart -
-                                       m_overhead.QuadPart) /
-                            m_freq.QuadPart;
-    return 0.000001 * (double)microseconds;
-  }
 };
 #endif
 
@@ -490,7 +482,6 @@ void TL2LAutocloser::setMaxDistance2(double dist2) {
 
 //-----------------------------------------------------------------------------
 
-double TL2LAutocloser::getMaxDistance2() const { return m_imp->m_maxDist2; }
 
 //-----------------------------------------------------------------------------
 

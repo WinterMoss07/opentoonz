@@ -30,17 +30,6 @@ typedef std::vector<TThickQuadratic *> QuadStrokeChunkArray;
 
 //---------------------------------------------------------------------------
 
-int getControlPointIndex(const TStroke &stroke, double w) {
-  TThickPoint p = stroke.getControlPointAtParameter(w);
-
-  int i                 = 0;
-  int controlPointCount = stroke.getControlPointCount();
-
-  for (; i < controlPointCount; ++i)
-    if (stroke.getControlPoint(i) == p) return i;
-
-  return controlPointCount - 1;
-}
 
 //---------------------------------------------------------------------------
 
@@ -131,107 +120,6 @@ double computeIncrement(double strokeLength, double pixelSize) {
 
 //-----------------------------------------------------------------------------
 
-void detectEdges(const std::vector<TPointD> &pointArray,
-                 std::vector<UINT> &edgeIndexArray) {
-  // ASSUMPTION: sharpPointArray does not contain adjacent coincident points
-
-  int size = pointArray.size();
-  // I check that there are more than three elements
-  if (size < 3) return;
-  //  runs pointArray and for each of its points tries to inscribe triangles
-  //  (using left and right points) considering potential corners those with
-  //  sides l such that dMin <= l <= dMax (actually at the first time that l >
-  //  dMax: break) and with angular aperture alpha <= alphaMax.
-  // Then it looks for local maxes among the potential corners in a window of
-  // semiamplitude dMax(actually at the first time dMax : break is exceeded)
-  //  default values: dMin = 7; dMax = dMin + 2; alphaMax = 2.6 (150 degrees)
-
-  const double dMin     = 4;
-  const double dMax     = dMin + 3;
-  const double alphaMax = 2.4;  // ( 137.5 degrees)
-  const double dMin2    = dMin * dMin;
-  const double dMax2    = dMax * dMax;
-  std::vector<double> sharpnessArray;
-  sharpnessArray.push_back(M_PI);  //  the first point is a corner
-  int nodeCount;
-  for (nodeCount = 1; nodeCount < size - 1;
-       ++nodeCount) {  //  scrolls the sharpPointArray excluding the extremes
-    sharpnessArray.push_back(0);
-    TPointD point(pointArray[nodeCount]);
-    int leftCount;
-    for (leftCount = nodeCount - 1; leftCount >= 0;
-         --leftCount) {  //  Calculates the "left" sides of the inscribed
-                         //  triangles...
-      TPointD left  = pointArray[leftCount];
-      double dLeft2 = norm2(left - point);
-      if (dLeft2 < dMin2)
-        continue;
-      else if (dLeft2 > dMax2)
-        break;
-      int rightCount;
-      for (rightCount = nodeCount + 1; rightCount < size;
-           ++rightCount) {  // Calculates the "right" sides of the inscribed
-                            // triangles...
-        TPointD right  = pointArray[rightCount];
-        double dRight2 = norm2(right - point);
-        if (dRight2 < dMin2)
-          continue;
-        else if (dMax2 < dRight2)
-          break;
-
-        //  Calculates the "center" sides of the inscribed triangles
-        double dCenter2 = norm2(left - right);
-        assert(dLeft2 != 0.0 && dRight2 != 0.0);
-
-        double cs =
-            (dLeft2 + dRight2 - dCenter2) / (2 * sqrt(dLeft2 * dRight2));
-        double alpha = acos(cs);
-        if (alpha > alphaMax) continue;
-
-        double sharpness = M_PI - alpha;
-
-        if (sharpnessArray[nodeCount] < sharpness)
-          sharpnessArray[nodeCount] = sharpness;
-      }
-    }
-  }
-
-  edgeIndexArray.push_back(0);  // the first point is a corner
-
-  // I find local maxima by excluding extremes
-  for (nodeCount = 1; nodeCount < size - 1;
-       ++nodeCount) {  // scroll through the list excluding the extremes
-    bool isCorner = true;
-    TPointD point(pointArray[nodeCount]);
-    int leftCount;
-    for (leftCount = nodeCount - 1; leftCount >= 0;
-         --leftCount) {  //  scrolls down the list of sharpPoints to the left of
-                         //  node...
-      TPointD left  = pointArray[leftCount];
-      double dLeft2 = norm2(left - point);
-      if (dLeft2 > dMax2) break;
-      if (sharpnessArray[leftCount] > sharpnessArray[nodeCount]) {
-        isCorner = false;
-        break;
-      }
-    }
-    if (isCorner) continue;
-    int rightCount;
-    for (rightCount = nodeCount + 1; rightCount < size;
-         ++rightCount) {  // scrolls the list of sharpPoints to the right of
-                          // node..
-      TPointD right  = pointArray[rightCount];
-      double dRight2 = norm2(right - point);
-      if (dRight2 > dMax2) break;
-      if (sharpnessArray[rightCount] > sharpnessArray[nodeCount]) {
-        isCorner = false;
-        break;
-      }
-    }
-    if (isCorner) edgeIndexArray.push_back(nodeCount);
-  }
-  edgeIndexArray.push_back(size - 1);  //  the last point is a corner
-}
 }  // namespace
 
 //*******************************************************************************

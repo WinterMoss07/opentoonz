@@ -115,34 +115,8 @@ public:
     return vertex(edge(e).vertex(i));
   }  //!< Returns the <TT>i</TT>-th vertex in the edge of index \p e.
 
-  const F &edgeFace(int e, int i) const { return face(edge(e).face(i)); }
-  F &edgeFace(int e, int i)  //!  \param e  Host edge index.  \param i  Face
-                             //!  index in e.  \return See description.
-  {
-    return face(edge(e).face(i));
-  }  //!< Returns the <TT>i</TT>-th face in the edge of index \p e.
 
-  const V &otherEdgeVertex(int e, int v) const {
-    return vertex(edge(e).otherVertex(v));
-  }
-  V &otherEdgeVertex(int e, int v)  //!  \param e  Host edge index.  \param v
-                                    //!  Index of the adjacent vertex to \p e
-                                    //!  we're not interested in.  \return See
-                                    //!  description.
-  {
-    return vertex(edge(e).otherVertex(v));
-  }  //!< Retrieves the vertex adjacent to \p e whose index is \a not \p v.
 
-  const F &otherEdgeFace(int e, int f) const {
-    return face(edge(e).otherFace(f));
-  }
-  F &otherEdgeFace(int e, int f)  //!  \param e  Host edge index.  \param f
-                                  //!  Index of the adjacent face to \p e we're
-                                  //!  not interested in.  \return See
-                                  //!  description.
-  {
-    return face(edge(e).otherFace(f));
-  }  //!< Retrieves the face adjacent to \p e whose index is \a not \p f.
 
   /*!
 \remark   Index \p n is arbitrary. Use it to traverse all edges inciding \p v1

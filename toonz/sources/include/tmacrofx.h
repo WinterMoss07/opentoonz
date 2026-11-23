@@ -28,7 +28,6 @@ class DVAPI TMacroFx final : public TRasterFx {
   std::vector<TFxP> m_fxs;
   bool m_isEditing;
 
-  bool isaLeaf(TFx *fx) const;
 
   bool m_isLoading          = false;
   TMacroFx *m_waitingLinkFx = nullptr;

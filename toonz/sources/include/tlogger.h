@@ -54,7 +54,6 @@ public:
   public:
     Message(MessageType type, std::string text);
     MessageType getType() const { return m_type; }
-    std::string getTimestamp() const { return m_timestamp; }
     std::string getText() const { return m_text; }
   };
 

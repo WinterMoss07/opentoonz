@@ -107,7 +107,6 @@ class ToonzRasterBrushTool final : public TTool,
   Q_DECLARE_TR_FUNCTIONS(ToonzRasterBrushTool)
 
   void updateCurrentStyle();
-  double restartBrushTimer();
 
 public:
   ToonzRasterBrushTool(std::string name, int targetType);

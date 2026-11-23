@@ -255,23 +255,6 @@ void fixBiancoProblem(ToonzScene *scene, TXsheet *xsh) {
 
 //=============================================================================
 
-static void deleteAllUntitledScenes() {
-  TFilePath tempDir = getUntitledScenesDir();
-  try {
-    if (TFileStatus(tempDir).isDirectory()) {
-      TFilePathSet fps;
-      TSystem::readDirectory(fps, tempDir);
-      TFilePathSet::iterator fpsIt;
-      for (fpsIt = fps.begin(); fpsIt != fps.end(); ++fpsIt) {
-        TFilePath fp = *fpsIt;
-        if (TFileStatus(fp).isDirectory() &&
-            fp.getName().find("untitled") != -1)
-          TSystem::rmDirTree(fp);
-      }
-    }
-  } catch (...) {
-  }
-}
 
 //=============================================================================
 // ToonzScene

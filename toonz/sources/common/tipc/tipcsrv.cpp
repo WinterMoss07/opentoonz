@@ -76,10 +76,6 @@ void tipc::Server::addParser(MessageParser *parser) {
 
 //-----------------------------------------------------------------------
 
-void tipc::Server::removeParser(QString header) {
-  MessageParser *parser = m_parsers.take(header);
-  delete parser;  // delete is safe even if parser is nullptr
-}
 
 //-----------------------------------------------------------------------
 

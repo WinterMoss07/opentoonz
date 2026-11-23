@@ -412,7 +412,6 @@ public:
   bool addOutputConnection(TFxPort *port);
   bool removeOutputConnection(TFxPort *port);
 
-  static void listFxs(std::vector<TFxInfo> &fxInfos);
   static TFxInfo getFxInfo(const std::string &fxIdentifier);  //!< Returns info
                                                               //! associated to
   //! an fx
