@@ -1901,18 +1901,6 @@ QAction *MainWindow::createSpecialModifierAction(
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::setCommandToWIP(QAction *action) {
-  if (!action) return;
-  action->setText(action->text() + tr(" [WIP]"));
-  action->setToolTip(
-      tr("This feature is a work in progress.\n"
-         "Please be advised that it may have incomplete implementation or "
-         "cause unexpected behavior.\n"
-         "We welcome your feedback and assistance with its development!"));
-}
-
-//-----------------------------------------------------------------------------
-
 QAction *MainWindow::createToggle(const char *id, const char *name,
                                   const QString &defaultShortcut,
                                   bool startStatus, CommandType type,
@@ -2528,17 +2516,6 @@ void MainWindow::defineActions() {
                           "comboviewer");
   createMenuWindowsAction(MI_OpenHistoryPanel, QT_TR_NOOP("&History"), "Ctrl+H",
                           "history");
-
-  // Shortcut keys will be assigned once the feature is complete.
-  QAction *brushPresetAct = createMenuWindowsAction(
-      MI_OpenBrushPresetPanel, QT_TR_NOOP("&Brush Presets"),
-      "" /* Ctrl+Shift+B */, "brush");
-  QAction *ToolPropertiesAct = createMenuWindowsAction(
-      MI_OpenToolPropertiesPanel, QT_TR_NOOP("&Tool Properties"),
-      "" /* Ctrl+Shift+P */, "properties");
-  // set WIP label
-  setCommandToWIP(brushPresetAct);
-  setCommandToWIP(ToolPropertiesAct);
 
   createMenuWindowsAction(MI_AudioRecording, QT_TR_NOOP("Record Audio"),
                           "Alt+A", "recordaudio");

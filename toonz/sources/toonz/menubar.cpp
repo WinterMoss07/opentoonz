@@ -468,8 +468,6 @@ QMenuBar *StackedMenuBar::createCleanupMenuBar() {
     addMenuItem(otherWindowsMenu, MI_OpenToolbar);
     addMenuItem(otherWindowsMenu, MI_OpenToolOptionBar);
     addMenuItem(otherWindowsMenu, MI_OpenHistoryPanel);
-    addMenuItem(otherWindowsMenu, MI_OpenBrushPresetPanel);
-    addMenuItem(otherWindowsMenu, MI_OpenToolPropertiesPanel);
     addMenuItem(otherWindowsMenu, MI_OpenTMessage);
   }
 
@@ -639,8 +637,6 @@ QMenuBar *StackedMenuBar::createPltEditMenuBar() {
     addMenuItem(otherWindowsMenu, MI_OpenToolbar);
     addMenuItem(otherWindowsMenu, MI_OpenToolOptionBar);
     addMenuItem(otherWindowsMenu, MI_OpenHistoryPanel);
-    addMenuItem(otherWindowsMenu, MI_OpenBrushPresetPanel);
-    addMenuItem(otherWindowsMenu, MI_OpenToolPropertiesPanel);
     addMenuItem(otherWindowsMenu, MI_OpenTMessage);
   }
 
@@ -819,8 +815,6 @@ QMenuBar *StackedMenuBar::createInknPaintMenuBar() {
     addMenuItem(otherWindowsMenu, MI_OpenSchematic);
     addMenuItem(otherWindowsMenu, MI_OpenTasks);
     addMenuItem(otherWindowsMenu, MI_OpenHistoryPanel);
-    addMenuItem(otherWindowsMenu, MI_OpenBrushPresetPanel);
-    addMenuItem(otherWindowsMenu, MI_OpenToolPropertiesPanel);
     addMenuItem(otherWindowsMenu, MI_OpenTMessage);
   }
 
@@ -1005,8 +999,6 @@ QMenuBar *StackedMenuBar::createXsheetMenuBar() {
     addMenuItem(otherWindowsMenu, MI_OpenToolbar);
     addMenuItem(otherWindowsMenu, MI_OpenToolOptionBar);
     addMenuItem(otherWindowsMenu, MI_OpenHistoryPanel);
-    addMenuItem(otherWindowsMenu, MI_OpenBrushPresetPanel);
-    addMenuItem(otherWindowsMenu, MI_OpenToolPropertiesPanel);
     addMenuItem(otherWindowsMenu, MI_OpenTMessage);
   }
 
@@ -1451,8 +1443,6 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
   addMenuItem(windowsMenu, MI_OpenCommandToolbar);
   addMenuItem(windowsMenu, MI_OpenToolbar);
   addMenuItem(windowsMenu, MI_OpenToolOptionBar);
-  addMenuItem(windowsMenu, MI_OpenBrushPresetPanel);
-  addMenuItem(windowsMenu, MI_OpenToolPropertiesPanel);
   windowsMenu->addSeparator();
   addMenuItem(windowsMenu, MI_OpenStyleControl);
   addMenuItem(windowsMenu, MI_OpenPalette);
