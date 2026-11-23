@@ -19,8 +19,6 @@
 #include <math.h>
 
 // Common includes
-#include "./quantel/tiio_quantel.h"
-#include "./sgi/tiio_sgi.h"
 #include "./tga/tiio_tga.h"
 #include "./png/tiio_png.h"
 /* Can't build this on FreeBSD: libtiff requires internal API access.
@@ -173,16 +171,6 @@ void initImageIo(bool lightVersion) {
   TFileType::declare("tiff", TFileType::RASTER_IMAGE);
   Tiio::defineWriterProperties("tiff", new Tiio::TifWriterProperties());
 #endif
-
-  Tiio::defineReaderMaker("sgi", Tiio::makeSgiReader);
-  Tiio::defineWriterMaker("sgi", Tiio::makeSgiWriter, true);
-  TFileType::declare("sgi", TFileType::RASTER_IMAGE);
-  Tiio::defineWriterProperties("sgi", new Tiio::SgiWriterProperties());
-
-  Tiio::defineReaderMaker("rgb", Tiio::makeSgiReader);
-  Tiio::defineWriterMaker("rgb", Tiio::makeSgiWriter, true);
-  TFileType::declare("rgb", TFileType::RASTER_IMAGE);
-  Tiio::defineWriterProperties("rgb", new Tiio::SgiWriterProperties());
 
   TLevelWriter::define("spritesheet", TLevelWriterSprite::create, true);
   TFileType::declare("spritesheet", TFileType::RASTER_LEVEL);

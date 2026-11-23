@@ -1,14 +1,10 @@
 set(HEADERS
-    sgi/tiio_sgi.h
     pli/pli_io.h
     pli/tiio_pli.h
     tga/tiio_tga.h
     compatibility/inforegion.h
     compatibility/tfile_io.h
     compatibility/tnz4.h
-    quantel/filequantel.h
-    quantel/filequantelP.h
-    quantel/tiio_quantel.h
     png/tiio_png.h
     psd/tiio_psd.h
     svg/tiio_svg.h
@@ -31,7 +27,6 @@ set(HEADERS
 
 set(SOURCES
     tiio.cpp
-    sgi/filesgi.cpp
     pli/pli_io.cpp
     pli/tags.cpp
     pli/tiio_pli.cpp
@@ -40,8 +35,6 @@ set(SOURCES
     compatibility/tfile_io.c
     compatibility/tnz4.c
     compatibility/tnz4_cpp.cpp
-    quantel/filequantel.c
-    quantel/tiio_quantel.cpp
     png/tiio_png.cpp
     psd/tiio_psd.cpp
     svg/tiio_svg.cpp
