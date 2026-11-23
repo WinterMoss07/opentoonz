@@ -181,7 +181,6 @@ DVAPI void defineWriterProperties(const char *ext, TPropertyGroup *);
 
 DVAPI bool isQuicktimeInstalled();
 
-DVAPI bool useQuicktime(bool enable = false);
 
 DVAPI void updateFileWritersPropertiesTranslation();
 

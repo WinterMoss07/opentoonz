@@ -1276,8 +1276,6 @@ QString PreferencesPopup::getUIString(PreferencesItemId id) {
       {fastRenderPath, tr("Fast Render Path:")},
       {ffmpegMultiThread,
        tr("Allow Multi-Thread in FFMPEG Rendering (UNSTABLE)")},
-      {quickTimeBackend,
-       tr("Use QuickTime to decode/code .mov and .3gp (If Installed)")},
 
       // Drawing
       {DefRasterFormat, tr("Default Raster / Scan Level Format:")},
@@ -1991,7 +1989,6 @@ QWidget* PreferencesPopup::createCodecPage() {
          "but a random crash might occur, use at your own risk."),
       lay);
   insertUI(ffmpegMultiThread, lay);
-  insertUI(quickTimeBackend, lay);
 
   lay->setRowStretch(lay->rowCount(), 1);
   insertFootNote(lay);

@@ -354,7 +354,6 @@ endmacro()
 set(TNZSTDFX_Location)
 set(TFARM_Location)
 
-set(QT_LIB)  # avoid warning
 
 if(BUILD_ENV_MSVC)
     set(MSVC_LIB_VERSION 2015)
@@ -382,9 +381,6 @@ if(BUILD_ENV_MSVC)
     set(OPENBLAS_LIB ${SDKROOT}/openblas/libopenblas_${PLATFORM}.lib)
     set(USB_LIB)  # unused
 
-    if(PLATFORM EQUAL 32)
-        set(QT_LIB ${SDKROOT}/quicktime/QT73SDK/Libraries/QTMLClient.lib)
-    endif()
     set(MYPAINT_LIB_INCLUDE_DIRS ${SDKROOT}/libmypaint/dist/${PLATFORM}/include/libmypaint)
     set(MYPAINT_LIB_LDFLAGS ${SDKROOT}/libmypaint/dist/${PLATFORM}/libmypaint.lib)
 
@@ -429,9 +425,6 @@ elseif(BUILD_ENV_APPLE)
 
     pkg_check_modules(USB_LIB REQUIRED libusb-1.0)
     set(OPENBLAS_LIB) # unused?
-    if(PLATFORM EQUAL 32)
-        find_library(QT_LIB QuickTime)
-    endif()
 
     set(JPEG_LIB ${JPEG_LIBRARY})
     set(LZ4_LIB ${LZ4_LIB_LDFLAGS})
@@ -729,10 +722,6 @@ add_subdirectory(tcomposer)
 
 if(BUILD_ENV_APPLE)
     add_subdirectory(mousedragfilter)
-endif()
-
-if((PLATFORM EQUAL 32) AND ((BUILD_TARGET_WIN AND BUILD_ENV_MSVC) OR BUILD_TARGET_APPLE))
-    add_subdirectory(t32bitsrv)
 endif()
 
 if(BUILD_ENV_UNIXLIKE AND NOT BUILD_TARGET_WIN)

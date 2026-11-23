@@ -435,15 +435,6 @@ if(BUILD_ENV_APPLE)
     include_directories(../../sources/mousedragfilter)
 endif()
 
-if(BUILD_TARGET_WIN)
-    if(PLATFORM EQUAL 32)
-        include_directories(
-            SYSTEM
-            ${SDKROOT}/quicktime/QT73SDK/CIncludes
-        )
-    endif()
-endif()
-
 if(BUILD_ENV_MSVC)
     set(EXTRA_LIBS)
     if(CMAKE_CXX_FLAGS_DEBUG)

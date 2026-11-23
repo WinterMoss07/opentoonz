@@ -512,7 +512,6 @@ void Preferences::definePreferenceItems() {
          std::numeric_limits<int>::max());
   define(fastRenderPath, "fastRenderPath", QMetaType::QString, "desktop");
   define(ffmpegMultiThread, "ffmpegMultiThread", QMetaType::Bool, false);
-  define(quickTimeBackend, "quickTimeBackend", QMetaType::Bool, false);
 
   // Drawing
   define(DefRasterFormat, "DefRasterFormat", QMetaType::QString, "tif");
