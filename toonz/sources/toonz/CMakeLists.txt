@@ -137,7 +137,14 @@ set(MOC_HEADERS
     exportcameratrackpopup.h
 )
 
-if(PLATFORM EQUAL 64)
+set(MOC_HEADERS
+    ${MOC_HEADERS}
+    framenumberlineedit.h
+    navtageditorpopup.h
+    xshbreadcrumbs.h
+)
+
+if(WITH_STOPMOTION AND (PLATFORM EQUAL 64))
     set(MOC_HEADERS
         ${MOC_HEADERS}
         ../stopmotion/stopmotion.h
@@ -149,16 +156,6 @@ if(PLATFORM EQUAL 64)
         ../stopmotion/stopmotionlight.h
         cameracapturelevelcontrol.h
         penciltestpopup.h
-        navtageditorpopup.h
-        xshbreadcrumbs.h
-    )
-else()
-    set(MOC_HEADERS
-        ${MOC_HEADERS}
-        cameracapturelevelcontrol_qt.h
-        penciltestpopup_qt.h
-        navtageditorpopup.h
-        xshbreadcrumbs.h
     )
 endif()
 
@@ -405,7 +402,14 @@ set(SOURCES
     predict3d.cpp
 )
 
-if(PLATFORM EQUAL 64)
+set(SOURCES
+    ${SOURCES}
+    framenumberlineedit.cpp
+    navtageditorpopup.cpp
+    xshbreadcrumbs.cpp
+)
+
+if(WITH_STOPMOTION AND (PLATFORM EQUAL 64))
     set(SOURCES
         ${SOURCES}
         ../stopmotion/stopmotion.cpp
@@ -417,16 +421,6 @@ if(PLATFORM EQUAL 64)
         ../stopmotion/stopmotionlight.cpp
         cameracapturelevelcontrol.cpp
         penciltestpopup.cpp
-        navtageditorpopup.cpp
-        xshbreadcrumbs.cpp
-    )
-else()
-    set(SOURCES
-        ${SOURCES}
-        cameracapturelevelcontrol_qt.cpp
-        penciltestpopup_qt.cpp
-        navtageditorpopup.cpp
-        xshbreadcrumbs.cpp
     )
 endif()
 
@@ -490,6 +484,10 @@ include_directories(
     ../../sources/stopmotion
 )
 
+if (WITH_STOPMOTION AND (PLATFORM EQUAL 64))
+    add_definitions(-DWITH_STOPMOTION)
+endif()
+
 if (WITH_CANON)
     add_definitions(-DWITH_CANON)
 endif()
@@ -519,7 +517,7 @@ if(BUILD_ENV_MSVC)
     if(CMAKE_CXX_FLAGS_DEBUG)
         target_compile_options(OpenToonz PRIVATE /EHsc) # Enable C++ Exceptions in Debug Mode.
     endif()
-    if(PLATFORM EQUAL 64)
+    if(WITH_STOPMOTION AND (PLATFORM EQUAL 64))
         set(EXTRA_LIBS ${EXTRA_LIBS} Qt5::SerialPort ${TURBOJPEG_LIB} ${OpenCV_LIBS})
         if(WITH_CANON)
             set(EXTRA_LIBS ${EXTRA_LIBS} ${CANON_LIB})

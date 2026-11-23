@@ -2120,8 +2120,10 @@ void MainWindow::defineActions() {
                MenuScanCleanupCommandType, "opacity_check");
   createMenuScanCleanupAction(MI_Cleanup, QT_TR_NOOP("&Cleanup"), "",
                               "cleanup");
+#if defined(WITH_STOPMOTION)
   createMenuScanCleanupAction(MI_PencilTest, QT_TR_NOOP("&Camera Capture..."),
                               "", "camera_capture");
+#endif
 
   // Menu - Level
 
@@ -2503,7 +2505,7 @@ void MainWindow::defineActions() {
                           "", "tool_options");
   createMenuWindowsAction(MI_OpenCommandToolbar, QT_TR_NOOP("&Command Bar"), "",
                           "star");
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
   createMenuWindowsAction(MI_OpenStopMotionPanel,
                           QT_TR_NOOP("&Stop Motion Controls"), "");
 #endif
@@ -3261,7 +3263,7 @@ void MainWindow::defineActions() {
 
   // Stop Motion
 
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
   createStopMotionAction(MI_StopMotionExportImageSequence,
                          QT_TR_NOOP("&Export Stop Motion Image Sequence"), "");
   createStopMotionAction(MI_StopMotionCapture,
@@ -3292,7 +3294,7 @@ void MainWindow::defineActions() {
                          "");
   createStopMotionAction(MI_StopMotionToggleUseLiveViewImages,
                          QT_TR_NOOP("Show original live view images."), "");
-#endif  // x64
+#endif  // WITH_STOPMOTION
 
   // Special Modifier Keys
   createSpecialModifierAction(V_Scrub, QT_TR_NOOP("Viewer Scrub"), "#");

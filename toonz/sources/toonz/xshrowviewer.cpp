@@ -12,7 +12,7 @@
 #include "cellselection.h"
 #include "menubarcommandids.h"
 #include "toonzqt/menubarcommand.h"
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
 #include "../stopmotion/stopmotion.h"
 #endif
 
@@ -415,7 +415,7 @@ void RowArea::drawCurrentRowGadget(QPainter &p, int r0, int r1) {
   p.fillRect(header, m_viewer->getCurrentRowBgColor());
 }
 
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
 //-----------------------------------------------------------------------------
 
 void RowArea::drawStopMotionCameraIndicator(QPainter &p) {
@@ -976,7 +976,7 @@ void RowArea::paintEvent(QPaintEvent *event) {
     // current frame
     drawCurrentRowGadget(p, r0, r1);
 
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
   StopMotion *stopMotion = StopMotion::instance();
   if (stopMotion->getPlaceOnXSheet() && (stopMotion->m_liveViewStatus > 0)) {
     drawStopMotionCameraIndicator(p);

@@ -17,7 +17,7 @@
 #include "cellselection.h"
 #include "styleshortcutswitchablepanel.h"
 
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
 #include "stopmotion.h"
 #endif
 
@@ -1539,7 +1539,7 @@ void SceneViewer::keyPressEvent(QKeyEvent *event) {
 #endif
 
   // Handle stop motion capture
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
       if (m_stopMotion->m_liveViewStatus == 2 &&
           (key == Qt::Key_Enter || key == Qt::Key_Return)) {
     m_stopMotion->captureImage();

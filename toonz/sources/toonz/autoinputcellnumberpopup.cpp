@@ -6,11 +6,7 @@
 #include "cellselection.h"
 #include "columnselection.h"
 
-#if defined(x64)
-#include "penciltestpopup.h"
-#else
-#include "penciltestpopup_qt.h"
-#endif
+#include "framenumberlineedit.h"
 
 // TnzQt includes
 #include "toonzqt/intfield.h"

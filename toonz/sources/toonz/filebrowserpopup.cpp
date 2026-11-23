@@ -15,11 +15,7 @@
 #include "convertpopup.h"
 #include "matchline.h"
 #include "colormodelbehaviorpopup.h"
-#if defined(x64)
-#include "penciltestpopup.h"  // FrameNumberLineEdit
-#else
-#include "penciltestpopup_qt.h"
-#endif
+#include "framenumberlineedit.h"
 
 // TnzQt includes
 #include "toonzqt/gutil.h"

@@ -1148,7 +1148,7 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
     addMenuItem(exportMenu, MI_ExportSXF);
     addMenuItem(exportMenu, MI_ExportOCA);
     addMenuItem(exportMenu, MI_ExportXsheetPDF);
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
     addMenuItem(exportMenu, MI_StopMotionExportImageSequence);
 #endif
     addMenuItem(exportMenu, MI_ExportTvpJson);
@@ -1221,7 +1221,9 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
   addMenuItem(scanCleanupMenu, MI_CameraTest);
   addMenuItem(scanCleanupMenu, MI_Cleanup);
   scanCleanupMenu->addSeparator();
+#if defined(WITH_STOPMOTION)
   addMenuItem(scanCleanupMenu, MI_PencilTest);
+#endif
 #ifdef LINETEST
   scanCleanupMenu->addSeparator();
   addMenuItem(scanCleanupMenu, MI_Autocenter);
@@ -1471,7 +1473,7 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
   addMenuItem(windowsMenu, MI_OpenTMessage);
   addMenuItem(windowsMenu, MI_OpenHistoryPanel);
   addMenuItem(windowsMenu, MI_AudioRecording);
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
   addMenuItem(windowsMenu, MI_OpenStopMotionPanel);
 #endif
   addMenuItem(windowsMenu, MI_StartupPopup);

@@ -10,7 +10,7 @@
 #include "menubarcommandids.h"
 #include "ruler.h"
 #include "locatorpopup.h"
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
 #include "../stopmotion/stopmotion.h"
 #endif
 #include "tenv.h"
@@ -830,7 +830,7 @@ SceneViewer::SceneViewer(ImageUtils::FullScreenWidget *parent)
     , m_mouseScrubbing(0) {
   m_visualSettings.m_sceneProperties =
       TApp::instance()->getCurrentScene()->getScene()->getProperties();
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
   m_stopMotion = StopMotion::instance();
 #endif
   // Enables multiple key input.
@@ -1147,7 +1147,7 @@ void SceneViewer::showEvent(QShowEvent *) {
           &SceneViewer::onToolChanged);
 
   connect(app, &TApp::tabletLeft, this, &SceneViewer::resetTabletStatus);
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
   if (m_stopMotion) {
     connect(m_stopMotion, &StopMotion::newLiveViewImageReady, this,
             &SceneViewer::onNewStopMotionImageReady);
@@ -1213,7 +1213,7 @@ void SceneViewer::hideEvent(QHideEvent *) {
 
   disconnect(app, &TApp::tabletLeft, this, &SceneViewer::resetTabletStatus);
 
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
   if (m_stopMotion) {
     disconnect(m_stopMotion, &StopMotion::newLiveViewImageReady, this,
                &SceneViewer::onNewStopMotionImageReady);
@@ -1239,7 +1239,7 @@ int SceneViewer::getHGuideCount() {
 double SceneViewer::getVGuide(int index) { return m_vRuler->getGuide(index); }
 double SceneViewer::getHGuide(int index) { return m_hRuler->getGuide(index); }
 
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
 //-----------------------------------------------------------------------------
 
 void SceneViewer::onNewStopMotionImageReady() {
@@ -1272,7 +1272,7 @@ void SceneViewer::onStopMotionLiveViewStopped() {
   onSceneChanged();
 }
 
-#endif  // x64
+#endif  // WITH_STOPMOTION
 //-----------------------------------------------------------------------------
 
 void SceneViewer::onPreferenceChanged(const QString &prefName) {
@@ -2251,7 +2251,7 @@ void SceneViewer::drawScene() {
       args.m_guidedFrontStroke      = guidedFrontStroke;
       args.m_guidedBackStroke       = guidedBackStroke;
 
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
       if (m_stopMotion->m_alwaysUseLiveViewImages &&
           m_stopMotion->m_liveViewStatus > 0 &&
           frame != m_stopMotion->getXSheetFrameNumber() - 1 &&
@@ -2306,7 +2306,7 @@ void SceneViewer::drawScene() {
           // painter.onRasterImage(m_stopMotionImage.getPointer(), smPlayer);
         }
       }
-#endif  // x64
+#endif  // WITH_STOPMOTION
       Stage::visit(painter, args);
     }
 

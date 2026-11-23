@@ -29,7 +29,7 @@
 
 #include "expressionreferencemanager.h"
 
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
 #include "stopmotioncontroller.h"
 #endif
 
@@ -1508,7 +1508,7 @@ OpenFloatingPanel openHistoryPanelCommand(MI_OpenHistoryPanel, "HistoryPanel",
                                           QObject::tr("History"));
 //=============================================================================
 
-#if defined(x64)
+#if defined(WITH_STOPMOTION)
 //=============================================================================
 // Stop Motion Controller
 //-----------------------------------------------------------------------------
@@ -1534,7 +1534,7 @@ OpenFloatingPanel openStopMotionPanelCommand(
     QObject::tr("Stop Motion Controller"));
 //-----------------------------------------------------------------------------
 
-#endif  // x64
+#endif  // WITH_STOPMOTION
 
 //-----------------------------------------------------------------------------
 
