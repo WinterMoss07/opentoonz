@@ -753,12 +753,6 @@ add_subdirectory(${SDKROOT}/lzo/driver lzodriver)
 add_subdirectory(toonz)
 add_subdirectory(tcleanupper)
 add_subdirectory(tcomposer)
-add_subdirectory(tconverter)
-add_subdirectory(toonzfarm)
-
-if(BUILD_TARGET_WIN)
-    add_subdirectory(toonzpreview)
-endif()
 
 if(BUILD_ENV_APPLE)
     add_subdirectory(mousedragfilter)
