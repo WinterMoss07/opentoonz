@@ -4,7 +4,9 @@
 #include "tfilepath_io.h"
 #include "tversion.h"
 
+#include <QCoreApplication>
 #include <QDir>
+#include <QFileInfo>
 #include <QSettings>
 #include <QStandardPaths>
 #include <QStringList>
