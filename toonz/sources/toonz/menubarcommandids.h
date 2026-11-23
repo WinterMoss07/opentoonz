@@ -263,7 +263,6 @@
 #define MI_ConvertToVectors "MI_ConvertToVectors"
 #define MI_ConvertToToonzRaster "MI_ConvertToToonzRaster"
 #define MI_ConvertVectorToVector "MI_ConvertVectorToVector"
-#define MI_Tracking "MI_Tracking"
 #define MI_RemoveLevel "MI_RemoveLevel"
 #define MI_CollectAssets "MI_CollectAssets"
 #define MI_ImportScenes "MI_ImportScenes"
@@ -412,16 +411,7 @@
 #define MI_RGBPickerFreehand "MI_RGBPickerFreehand"
 #define MI_RGBPickerPolyline "MI_RGBPickerPolyline"
 
-#define MI_SkeletonNextMode "MI_SkeletonNextMode"
-#define MI_SkeletonBuildSkeleton "MI_SkeletonBuildSkeleton"
-#define MI_SkeletonAnimate "MI_SkeletonAnimate"
-#define MI_SkeletonInverseKinematics "MI_SkeletonInverseKinematics"
 
-#define MI_PlasticNextMode "MI_PlasticNextMode"
-#define MI_PlasticEditMesh "MI_PlasticEditMesh"
-#define MI_PlasticPaintRigid "MI_PlasticPaintRigid"
-#define MI_PlasticBuildSkeleton "MI_PlasticBuildSkeleton"
-#define MI_PlasticAnimate "MI_PlasticAnimate"
 
 #define MI_DeactivateUpperColumns "MI_DeactivateUpperColumns"
 #define MI_CompareToSnapshot "MI_CompareToSnapshot"

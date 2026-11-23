@@ -4,8 +4,6 @@ set(MOC_HEADERS
     filltool.h
     fullcolorbrushtool.h
     fullcolorfilltool.h
-    plastictool.h
-    skeletonsubtools.h
     tooloptionscontrols.h
     toonzrasterbrushtool.h
     viewtools.h
@@ -23,7 +21,6 @@ set(HEADERS
     ${MOC_HEADERS}
     autofill.h
     bluredbrush.h
-    hookselection.h
     mypainttoonzbrush.h
     rasterselectiontool.h
     rgbpickertool.h
@@ -74,10 +71,8 @@ set(SOURCES
     tool.cpp
     toolhandle.cpp
     toolutils.cpp
-    bendertool.cpp
     bluredbrush.cpp
     controlpointeditortool.cpp
-    cuttertool.cpp
     edittool.cpp
     edittoolgadgets.cpp
     filltool.cpp
@@ -85,31 +80,17 @@ set(SOURCES
     fullcolorerasertool.cpp
     fullcolorfilltool.cpp
     geometrictool.cpp
-    hooktool.cpp
-    hookselection.cpp
     imagegrouping.cpp
-    irontool.cpp
     levelselection.cpp
-    magnettool.cpp
     morphtool.cpp
     paintbrushtool.cpp
-    pinchtool.cpp
-    plastictool.cpp
-    plastictool_animate.cpp
-    plastictool_build.cpp
-    plastictool_meshedit.cpp
-    plastictool_rigidity.cpp
-    pumptool.cpp
     rastererasertool.cpp
     rastertapetool.cpp
     rasterselectiontool.cpp
     rgbpickertool.cpp
     selectiontool.cpp
     setsaveboxtool.cpp
-    skeletonsubtools.cpp
-    skeletontool.cpp
     stylepickertool.cpp
-    trackertool.cpp
     typetool.cpp
     tooloptionscontrols.cpp
     tooloptions.cpp

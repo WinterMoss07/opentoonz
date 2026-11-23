@@ -2209,7 +2209,6 @@ void MainWindow::defineActions() {
       "");
   createMenuLevelAction(MI_FillHoles, QT_TR_NOOP("&Fill Holes..."), "",
                         "Fill small holes in Toonz Raster Level");
-  createMenuLevelAction(MI_Tracking, QT_TR_NOOP("Tracking..."), "", "focus");
 
   // Menu - Xsheet
 
@@ -2769,20 +2768,10 @@ void MainWindow::defineActions() {
                    "Shift+I");
   createToolAction(T_ControlPointEditor, "controlpointeditor",
                    QT_TR_NOOP("Control Point Editor Tool"), "C");
-  createToolAction(T_Pinch, "pinch", QT_TR_NOOP("Pinch Tool"), "M");
-  createToolAction(T_Pump, "pump", QT_TR_NOOP("Pump Tool"), "");
-  createToolAction(T_Magnet, "magnet", QT_TR_NOOP("Magnet Tool"), "");
-  createToolAction(T_Bender, "bender", QT_TR_NOOP("Bender Tool"), "");
-  createToolAction(T_Iron, "iron", QT_TR_NOOP("Iron Tool"), "");
 
-  createToolAction(T_Cutter, "cutter", QT_TR_NOOP("Cutter Tool"), "");
-  createToolAction(T_Skeleton, "skeleton", QT_TR_NOOP("Skeleton Tool"), "V");
-  createToolAction(T_Tracker, "radar", QT_TR_NOOP("Tracker Tool"), "");
-  createToolAction(T_Hook, "hook", QT_TR_NOOP("Hook Tool"), "O");
   createToolAction(T_Zoom, "zoom", QT_TR_NOOP("Zoom Tool"), "Z");
   createToolAction(T_Rotate, "rotate", QT_TR_NOOP("Rotate Tool"), "R");
   createToolAction(T_Hand, "hand", QT_TR_NOOP("Hand Tool"), "H");
-  createToolAction(T_Plastic, "plastic", QT_TR_NOOP("Plastic Tool"), "X");
   createToolAction(T_Ruler, "ruler", QT_TR_NOOP("Ruler Tool"), "");
   createToolAction(T_Finger, "finger", QT_TR_NOOP("Finger Tool"), "");
   createToolAction(T_EditAssistants, "assistant", QT_TR_NOOP("Edit Assistants"),
@@ -2941,31 +2930,6 @@ void MainWindow::defineActions() {
                "", ToolCommandType);
   createAction(MI_RGBPickerPolyline, QT_TR_NOOP("RGB Picker Tool - Polyline"),
                "", ToolCommandType);
-
-  /*-- Skeleton tool + mode switching shortcuts --*/
-  createAction(MI_SkeletonNextMode, QT_TR_NOOP("Skeleton Tool - Next Mode"), "",
-               ToolCommandType);
-  createAction(MI_SkeletonBuildSkeleton,
-               QT_TR_NOOP("Skeleton Tool - Build Skeleton"), "",
-               ToolCommandType);
-  createAction(MI_SkeletonAnimate, QT_TR_NOOP("Skeleton Tool - Animate"), "",
-               ToolCommandType);
-  createAction(MI_SkeletonInverseKinematics,
-               QT_TR_NOOP("Skeleton Tool - Inverse Kinematics"), "",
-               ToolCommandType);
-
-  /*-- Plastic tool + mode switching shortcuts --*/
-  createAction(MI_PlasticNextMode, QT_TR_NOOP("Plastic Tool - Next Mode"), "",
-               ToolCommandType);
-  createAction(MI_PlasticEditMesh, QT_TR_NOOP("Plastic Tool - Edit Mesh"), "",
-               ToolCommandType);
-  createAction(MI_PlasticPaintRigid, QT_TR_NOOP("Plastic Tool - Paint Rigid"),
-               "", ToolCommandType);
-  createAction(MI_PlasticBuildSkeleton,
-               QT_TR_NOOP("Plastic Tool - Build Skeleton"), "",
-               ToolCommandType);
-  createAction(MI_PlasticAnimate, QT_TR_NOOP("Plastic Tool - Animate"), "",
-               ToolCommandType);
 
   // Tool Modifiers
 

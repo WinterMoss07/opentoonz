@@ -111,7 +111,6 @@ set(MOC_HEADERS
     timestretchpopup.h
     toolbar.h
     tpanels.h
-    trackerpopup.h
     vectorguideddrawingpane.h
     vectorizerpopup.h
     vectorizerswatch.h
@@ -202,12 +201,7 @@ set(HEADERS
     xdtsio.h
     sxfio.h
     levelcommand.h
-# Tracker file
-    ObjectTracker.h
-    dummyprocessor.h
-    metnum.h
     processor.h
-    predict3d.h
     tvpjson_io.h
 )
 
@@ -305,7 +299,6 @@ set(SOURCES
     subcameramanager.cpp
     kis_tablet_support_win8.cpp
     timestretchpopup.cpp
-    trackerpopup.cpp
     vectorguideddrawingpane.cpp
     vectorizerpopup.cpp
     rasterizecommand.cpp
@@ -395,11 +388,6 @@ set(SOURCES
     custompaneleditorpopup.cpp
     convertfolderpopup.cpp
     exportcameratrackpopup.cpp
-# Tracker file
-    dummyprocessor.cpp
-    metnum.cpp
-    ObjectTracker.cpp
-    predict3d.cpp
 )
 
 set(SOURCES

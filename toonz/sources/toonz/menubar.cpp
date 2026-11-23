@@ -554,17 +554,7 @@ QMenuBar *StackedMenuBar::createPltEditMenuBar() {
     addMenuItem(moreToolsMenu, T_Selection);
     moreToolsMenu->addSeparator();
     addMenuItem(moreToolsMenu, T_ControlPointEditor);
-    addMenuItem(moreToolsMenu, T_Pinch);
-    addMenuItem(moreToolsMenu, T_Pump);
-    addMenuItem(moreToolsMenu, T_Magnet);
-    addMenuItem(moreToolsMenu, T_Bender);
-    addMenuItem(moreToolsMenu, T_Iron);
-    addMenuItem(moreToolsMenu, T_Cutter);
     moreToolsMenu->addSeparator();
-    addMenuItem(moreToolsMenu, T_Skeleton);
-    addMenuItem(moreToolsMenu, T_Tracker);
-    addMenuItem(moreToolsMenu, T_Hook);
-    addMenuItem(moreToolsMenu, T_Plastic);
     moreToolsMenu->addSeparator();
     addMenuItem(moreToolsMenu, T_Zoom);
     addMenuItem(moreToolsMenu, T_Rotate);
@@ -729,17 +719,7 @@ QMenuBar *StackedMenuBar::createInknPaintMenuBar() {
     addMenuItem(moreToolsMenu, T_Selection);
     moreToolsMenu->addSeparator();
     addMenuItem(moreToolsMenu, T_ControlPointEditor);
-    addMenuItem(moreToolsMenu, T_Pinch);
-    addMenuItem(moreToolsMenu, T_Pump);
-    addMenuItem(moreToolsMenu, T_Magnet);
-    addMenuItem(moreToolsMenu, T_Bender);
-    addMenuItem(moreToolsMenu, T_Iron);
-    addMenuItem(moreToolsMenu, T_Cutter);
     moreToolsMenu->addSeparator();
-    addMenuItem(moreToolsMenu, T_Skeleton);
-    addMenuItem(moreToolsMenu, T_Tracker);
-    addMenuItem(moreToolsMenu, T_Hook);
-    addMenuItem(moreToolsMenu, T_Plastic);
     moreToolsMenu->addSeparator();
     addMenuItem(moreToolsMenu, T_Zoom);
     addMenuItem(moreToolsMenu, T_Rotate);
@@ -905,7 +885,6 @@ QMenuBar *StackedMenuBar::createXsheetMenuBar() {
   addMenuItem(levelsMenu, MI_ConvertToVectors);
   addMenuItem(levelsMenu, MI_ConvertToToonzRaster);
   addMenuItem(levelsMenu, MI_ConvertFileWithInput);
-  addMenuItem(levelsMenu, MI_Tracking);
   addMenuItem(levelsMenu, MI_ExposeResource);
   addMenuItem(levelsMenu, MI_EditLevel);
   addMenuItem(levelsMenu, MI_RemoveUnused);
@@ -1253,7 +1232,6 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
   addMenuItem(levelMenu, MI_ReplaceLevel);
   addMenuItem(levelMenu, MI_RevertToCleanedUp);
   addMenuItem(levelMenu, MI_RevertToLastSaved);
-  addMenuItem(levelMenu, MI_Tracking);
   levelMenu->addSeparator();
   QMenu *adjustMenu = levelMenu->addMenu(tr("Adjust"));
   {

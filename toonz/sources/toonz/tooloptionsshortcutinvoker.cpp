@@ -576,29 +576,6 @@ void ToolOptionsShortcutInvoker::initialize() {
                     &ToolOptionsShortcutInvoker::toggleRGBPickerFreehand);
   setCommandHandler(MI_RGBPickerPolyline, this,
                     &ToolOptionsShortcutInvoker::toggleRGBPickerPolyline);
-
-  /*-- Skeleton tool + mode switching shortcuts --*/
-  setCommandHandler(MI_SkeletonNextMode, this,
-                    &ToolOptionsShortcutInvoker::ToggleSkeletonNextMode);
-  setCommandHandler(MI_SkeletonBuildSkeleton, this,
-                    &ToolOptionsShortcutInvoker::ToggleSkeletonBuildSkeleton);
-  setCommandHandler(MI_SkeletonAnimate, this,
-                    &ToolOptionsShortcutInvoker::ToggleSkeletonAnimate);
-  setCommandHandler(
-      MI_SkeletonInverseKinematics, this,
-      &ToolOptionsShortcutInvoker::ToggleSkeletonInverseKinematics);
-
-  /*-- Plastic tool + mode switching shortcuts --*/
-  setCommandHandler(MI_PlasticNextMode, this,
-                    &ToolOptionsShortcutInvoker::TogglePlasticNextMode);
-  setCommandHandler(MI_PlasticEditMesh, this,
-                    &ToolOptionsShortcutInvoker::TogglePlasticEditMesh);
-  setCommandHandler(MI_PlasticPaintRigid, this,
-                    &ToolOptionsShortcutInvoker::TogglePlasticPaintRigid);
-  setCommandHandler(MI_PlasticBuildSkeleton, this,
-                    &ToolOptionsShortcutInvoker::TogglePlasticBuildSkeleton);
-  setCommandHandler(MI_PlasticAnimate, this,
-                    &ToolOptionsShortcutInvoker::TogglePlasticAnimate);
 }
 
 //-----------------------------------------------------------------------------
@@ -1093,75 +1070,5 @@ void ToolOptionsShortcutInvoker::toggleRGBPickerPolyline() {
   CommandManager::instance()->getAction("A_ToolOption_Type:Normal")->trigger();
   CommandManager::instance()
       ->getAction("A_ToolOption_Type:Polyline")
-      ->trigger();
-}
-//-----------------------------------------------------------------------------
-/*-- Skeleton tool + type switching shortcuts --*/
-void ToolOptionsShortcutInvoker::ToggleSkeletonNextMode() {
-  if (TApp::instance()->getCurrentTool()->getTool()->getName() == T_Skeleton)
-    CommandManager::instance()
-        ->getAction("A_ToolOption_SkeletonMode")
-        ->trigger();
-  else
-    CommandManager::instance()->getAction(T_Skeleton)->trigger();
-}
-
-void ToolOptionsShortcutInvoker::ToggleSkeletonBuildSkeleton() {
-  CommandManager::instance()->getAction(T_Skeleton)->trigger();
-  CommandManager::instance()
-      ->getAction("A_ToolOption_SkeletonMode:Build Skeleton")
-      ->trigger();
-}
-
-void ToolOptionsShortcutInvoker::ToggleSkeletonAnimate() {
-  CommandManager::instance()->getAction(T_Skeleton)->trigger();
-  CommandManager::instance()
-      ->getAction("A_ToolOption_SkeletonMode:Animate")
-      ->trigger();
-}
-
-void ToolOptionsShortcutInvoker::ToggleSkeletonInverseKinematics() {
-  CommandManager::instance()->getAction(T_Skeleton)->trigger();
-  CommandManager::instance()
-      ->getAction("A_ToolOption_SkeletonMode:Inverse Kinematics")
-      ->trigger();
-}
-
-//-----------------------------------------------------------------------------
-/*-- Plastic tool + mode switching shortcuts --*/
-void ToolOptionsShortcutInvoker::TogglePlasticNextMode() {
-  if (TApp::instance()->getCurrentTool()->getTool()->getName() == T_Plastic)
-    CommandManager::instance()
-        ->getAction("A_ToolOption_SkeletonMode")
-        ->trigger();
-  else
-    CommandManager::instance()->getAction(T_Plastic)->trigger();
-}
-
-void ToolOptionsShortcutInvoker::TogglePlasticEditMesh() {
-  CommandManager::instance()->getAction(T_Plastic)->trigger();
-  CommandManager::instance()
-      ->getAction("A_ToolOption_SkeletonMode:Edit Mesh")
-      ->trigger();
-}
-
-void ToolOptionsShortcutInvoker::TogglePlasticPaintRigid() {
-  CommandManager::instance()->getAction(T_Plastic)->trigger();
-  CommandManager::instance()
-      ->getAction("A_ToolOption_SkeletonMode:Paint Rigid")
-      ->trigger();
-}
-
-void ToolOptionsShortcutInvoker::TogglePlasticBuildSkeleton() {
-  CommandManager::instance()->getAction(T_Plastic)->trigger();
-  CommandManager::instance()
-      ->getAction("A_ToolOption_SkeletonMode:Build Skeleton")
-      ->trigger();
-}
-
-void ToolOptionsShortcutInvoker::TogglePlasticAnimate() {
-  CommandManager::instance()->getAction(T_Plastic)->trigger();
-  CommandManager::instance()
-      ->getAction("A_ToolOption_SkeletonMode:Animate")
       ->trigger();
 }

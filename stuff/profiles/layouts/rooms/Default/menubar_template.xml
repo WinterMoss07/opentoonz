@@ -122,7 +122,6 @@
         <command>MI_ReplaceLevel</command>
         <command>MI_RevertToCleanedUp</command>
         <command>MI_RevertToLastSaved</command>
-        <command>MI_Tracking</command>
         <separator/>
         <menu title="Adjust">
             <command>MI_BrightnessAndContrast</command>

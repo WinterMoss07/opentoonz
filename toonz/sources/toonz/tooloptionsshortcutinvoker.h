@@ -247,18 +247,6 @@ protected slots:
   void toggleRGBPickerFreehand();
   void toggleRGBPickerPolyline();
 
-  /*-- Skeleton tool + mode switching shortcuts --*/
-  void ToggleSkeletonNextMode();
-  void ToggleSkeletonBuildSkeleton();
-  void ToggleSkeletonAnimate();
-  void ToggleSkeletonInverseKinematics();
-
-  /*-- Plastic tool + mode switching shortcuts --*/
-  void TogglePlasticNextMode();
-  void TogglePlasticEditMesh();
-  void TogglePlasticPaintRigid();
-  void TogglePlasticBuildSkeleton();
-  void TogglePlasticAnimate();
 };
 
 #endif
