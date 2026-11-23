@@ -192,7 +192,7 @@ TInputHandler::inputPaintTracks(const TTrackList &tracks) {
       if (t.pointsAdded > 0) {
         TTimerTicks ticks = t.ticks();
         double timeOffset = t.rootTimeOffset + t.current().time;
-        if (!track || (ticks - minTicks)*TToolTimer::frequency + timeOffset - minTimeOffset < 0.0) {
+        if (!track || (ticks - minTicks)*TToolTimer::step + timeOffset - minTimeOffset < 0.0) {
           track = *i;
           minTicks = ticks;
           minTimeOffset = timeOffset;
@@ -496,7 +496,6 @@ TInputManager::trackEvent(
   ticks = fixTicks(ticks);
   TTrackP track = getTrack(deviceId, touchId, ticks, hasPressure, hasTilt);
   if (!track->finished()) {
-    ticks = fixTicks(ticks);
     double time = (double)(ticks - track->ticks())*TToolTimer::step - track->rootTimeOffset;
     addTrackPoint(
       track,
