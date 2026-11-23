@@ -604,7 +604,7 @@ static void makeOutline(const TStroke *stroke, int startQuad, int endQuad,
 
     // cout<<"quad# "<<i<<":" <<*tq<<std::endl;
     makeOutline(/*cout, */ ob, *tq, error2);
-    if (tq != stroke->getChunk(i)) delete tq;
+    if (i != endQuad && tq != stroke->getChunk(i)) delete tq;
   }
 
   arrayUp.clear();
@@ -624,6 +624,8 @@ static void makeOutline(const TStroke *stroke, int startQuad, int endQuad,
 
     copy(/*cout,*/ arrayUp, arrayDown, ob);
   }
+
+  if (startQuad <= endQuad && tq != stroke->getChunk(endQuad)) delete tq;
 }
 
 //-----------------------------------------------------------------------------
