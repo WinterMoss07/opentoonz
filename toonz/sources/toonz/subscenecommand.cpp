@@ -69,7 +69,55 @@ public:
       : m_groupIds(groupIds)
       , m_groupNames(groupNames)
       , m_editingGroup(editingGroup) {}
+
+  //! Puts a stage object or an fx in the groups of the exploded sub-xsheet
+  //! node
+  template <class T>
+  void apply(T *obj) const {
+    for (int i = 0; i < m_groupIds.size(); i++) {
+      obj->setGroupId(m_groupIds[i]);
+      obj->setGroupName(m_groupNames[i]);
+    }
+    for (int i = 0; i < m_groupIds.size() && m_editingGroup >= 0; i++)
+      obj->editGroup();
+  }
 };
+
+//-----------------------------------------------------------------------------
+
+//! Copies an inner object's params to the outer object. Its motion path is
+//! cloned in the outer tree once, even when several objects share it.
+void assignOuterParams(
+    TStageObject *outerObj, TStageObject *innerObj, TStageObjectTree *outerTree,
+    QMap<TStageObjectSpline *, TStageObjectSpline *> &splines) {
+  TStageObjectParams *params = innerObj->getParams();
+  if (params->m_spline) {
+    if (splines.contains(params->m_spline))
+      params->m_spline = splines[params->m_spline];
+    else {
+      TStageObjectSpline *spline = params->m_spline->clone();
+      splines[params->m_spline]  = spline;
+      outerTree->assignUniqueSplineId(spline);
+      outerTree->insertSpline(spline);
+      params->m_spline = spline;
+    }
+  }
+  outerObj->assignParams(params);
+  delete params;
+}
+
+//-----------------------------------------------------------------------------
+
+//! Keeps, from the group stack of the sub-xsheet node, the groups from the
+//! one being edited upward.
+void trimToEditingGroup(QStack<int> &groupIds, QStack<std::wstring> &names,
+                        int editingGroup) {
+  while (!groupIds.empty() && editingGroup >= 0 &&
+         groupIds[0] != editingGroup) {
+    groupIds.remove(0);
+    names.remove(0);
+  }
+}
 
 //-----------------------------------------------------------------------------
 
@@ -436,17 +484,7 @@ void bringFxOut(TFx *fx, QMap<TFx *, QPair<TFx *, int>> &fxs, FxDag *outerDag,
 
   // Put in the right Fx group if needed
   attr->removeFromAllGroup();
-  if (!fxGroupData.m_groupIds.empty()) {
-    int i;
-    for (i = 0; i < fxGroupData.m_groupIds.size(); i++) {
-      attr->setGroupId(fxGroupData.m_groupIds[i]);
-      attr->setGroupName(fxGroupData.m_groupNames[i]);
-    }
-    for (i = 0;
-         i < fxGroupData.m_groupIds.size() && fxGroupData.m_editingGroup >= 0;
-         i++)
-      attr->editGroup();
-  }
+  fxGroupData.apply(attr);
 
   int columnIndex = -1;
   bool firstIndex = true;
@@ -560,64 +598,37 @@ TFx *explodeFxSubTree(TFx *innerFx, QMap<TFx *, QPair<TFx *, int>> &fxs,
 
 //-----------------------------------------------------------------------------
 
-// brings in xsh obj and all objects contained in the subtree with root in obj
+// brings in xsh the pegbars of the subtree with root in obj
 void bringObjectOut(TStageObject *obj, TXsheet *xsh,
                     QMap<TStageObjectId, TStageObjectId> &ids,
                     QMap<TStageObjectSpline *, TStageObjectSpline *> &splines,
                     QList<TStageObject *> &pegObjects, int &pegbarIndex,
                     const GroupData &objGroupData, int groupId) {
   if (!obj->hasChildren()) return;
-  std::list<TStageObject *> children = obj->getChildren();
-  std::list<TStageObject *>::iterator it;
-  for (it = children.begin(); it != children.end(); it++) {
-    TStageObjectId id = (*it)->getId();
-    if (id.isColumn()) continue;
-    assert(id.isPegbar());
-    pegbarIndex++;
-    TStageObjectId outerId = TStageObjectId::PegbarId(pegbarIndex);
+  TStageObjectTree *outerTree = xsh->getStageObjectTree();
+  for (TStageObject *child : obj->getChildren()) {
+    TStageObjectId id = child->getId();
+    // columns are brought out separately, cameras map to the outer ones
+    if (!id.isPegbar()) continue;
     // find the first available pegbar id
-    while (xsh->getStageObjectTree()->getStageObject(outerId, false)) {
-      pegbarIndex++;
-      outerId = TStageObjectId::PegbarId(pegbarIndex);
-    }
-    TStageObject *outerObj =
-        xsh->getStageObjectTree()->getStageObject(outerId, true);
-    outerObj->setDagNodePos((*it)->getDagNodePos());
+    TStageObjectId outerId;
+    do
+      outerId = TStageObjectId::PegbarId(++pegbarIndex);
+    while (outerTree->getStageObject(outerId, false));
+    TStageObject *outerObj = outerTree->getStageObject(outerId, true);
+    outerObj->setDagNodePos(child->getDagNodePos());
     ids[id] = outerId;
     pegObjects.append(outerObj);
     outerObj->addRef();  // undo make release!!!
-    TStageObjectParams *params = (*it)->getParams();
-    if (params->m_spline) {
-      if (splines.contains(params->m_spline))
-        params->m_spline = splines[params->m_spline];
-      else {
-        TStageObjectSpline *spline = params->m_spline->clone();
-        splines[params->m_spline]  = spline;
-        xsh->getStageObjectTree()->assignUniqueSplineId(spline);
-        xsh->getStageObjectTree()->insertSpline(spline);
-        params->m_spline = spline;
-      }
-    }
-    outerObj->assignParams(params);
-    delete params;
+    assignOuterParams(outerObj, child, outerTree, splines);
     outerObj->setParent(ids[obj->getId()]);
     outerObj->removeFromAllGroup();
     if (groupId != -1) {
       outerObj->setGroupId(groupId);
       outerObj->setGroupName(L"Group " + std::to_wstring(groupId));
     }
-    if (!objGroupData.m_groupIds.empty()) {
-      int i;
-      for (i = 0; i < objGroupData.m_groupIds.size(); i++) {
-        outerObj->setGroupId(objGroupData.m_groupIds[i]);
-        outerObj->setGroupName(objGroupData.m_groupNames[i]);
-      }
-      for (i = 0; i < objGroupData.m_groupIds.size() &&
-                  objGroupData.m_editingGroup >= 0;
-           i++)
-        outerObj->editGroup();
-    }
-    bringObjectOut(*it, xsh, ids, splines, pegObjects, pegbarIndex,
+    objGroupData.apply(outerObj);
+    bringObjectOut(child, xsh, ids, splines, pegObjects, pegbarIndex,
                    objGroupData, groupId);
   }
 }
@@ -654,20 +665,7 @@ std::set<int> explodeStageObjects(
     pegObjects.append(obj);
     obj->addRef();  // undo make release!!!!
     /*- SubのTableの情報を、今作ったPegbarにコピーする -*/
-    TStageObjectParams *params = table->getParams();
-    if (params->m_spline) {
-      if (splines.contains(params->m_spline))
-        params->m_spline = splines[params->m_spline];
-      else {
-        TStageObjectSpline *spline = params->m_spline->clone();
-        splines[params->m_spline]  = spline;
-        outerTree->assignUniqueSplineId(spline);
-        outerTree->insertSpline(spline);
-        params->m_spline = spline;
-      }
-    }
-    obj->assignParams(params);
-    delete params;
+    assignOuterParams(obj, table, outerTree, splines);
     // a pegbar cannot be a child of column
     if (parentId.isColumn())
       obj->setParent(TStageObjectId::TableId);
@@ -679,20 +677,24 @@ std::set<int> explodeStageObjects(
     groupId = outerTree->getNewGroupId();
     obj->setGroupId(groupId);
     obj->setGroupName(L"Group " + std::to_wstring(groupId));
-    if (!objGroupData.m_groupIds.empty()) {
-      int i;
-      for (i = 0; i < objGroupData.m_groupIds.size(); i++) {
-        obj->setGroupId(objGroupData.m_groupIds[i]);
-        obj->setGroupName(objGroupData.m_groupNames[i]);
-      }
-      for (i = 0; i < objGroupData.m_groupIds.size() &&
-                  objGroupData.m_editingGroup >= 0;
-           i++)
-        obj->editGroup();
-    }
+    objGroupData.apply(obj);
     // add all pegbar
     bringObjectOut(table, xsh, ids, splines, pegObjects, pegbarIndex,
                    objGroupData, groupId);
+
+    // Collapsing with the parenting copies the parent xsheet's cameras into
+    // the sub-xsheet with the same ids: map them back, with the pegbars
+    // parented to them. A camera missing outside maps to the table.
+    for (int c = 0; c < innerTree->getStageObjectCount(); ++c) {
+      TStageObject *innerCam = innerTree->getStageObject(c);
+      TStageObjectId camId   = innerCam->getId();
+      if (!camId.isCamera()) continue;
+      ids[camId] = outerTree->getStageObject(camId, false)
+                       ? camId
+                       : TStageObjectId::TableId;
+      bringObjectOut(innerCam, xsh, ids, splines, pegObjects, pegbarIndex,
+                     objGroupData, groupId);
+    }
   }
 
   // add columns;
@@ -729,22 +731,9 @@ std::set<int> explodeStageObjects(
     TStageObjectId outerId     = TStageObjectId::ColumnId(index);
     TStageObject *innerCol     = innerTree->getStageObject(innerId, false);
     TStageObject *outerCol     = outerTree->getStageObject(outerId, false);
-    TStageObjectParams *params = innerCol->getParams();
-    if (params->m_spline) {
-      if (splines.contains(params->m_spline))
-        params->m_spline = splines[params->m_spline];
-      else {
-        TStageObjectSpline *spline = params->m_spline->clone();
-        splines[params->m_spline]  = spline;
-        outerTree->assignUniqueSplineId(spline);
-        outerTree->insertSpline(spline);
-        params->m_spline = spline;
-      }
-    }
-    outerCol->assignParams(params);
-    outerCol->setDagNodePos(innerCol->getDagNodePos());
-    delete params;
     assert(outerCol && innerCol);
+    assignOuterParams(outerCol, innerCol, outerTree, splines);
+    outerCol->setDagNodePos(innerCol->getDagNodePos());
     ids[innerId] = outerId;
     outerCol->removeFromAllGroup();
     if (groupId != -1) {
@@ -755,32 +744,10 @@ std::set<int> explodeStageObjects(
     if (onlyColumn) outerCol->setParent(tmpParentId);
 
     // Put in the right StageObject group if needed
-    if (!objGroupData.m_groupIds.empty()) {
-      int j;
-      for (j = 0; j < objGroupData.m_groupIds.size(); j++) {
-        outerCol->setGroupId(objGroupData.m_groupIds[j]);
-        outerCol->setGroupName(objGroupData.m_groupNames[j]);
-      }
-      for (j = 0; j < objGroupData.m_groupIds.size() &&
-                  objGroupData.m_editingGroup >= 0;
-           j++)
-        outerCol->editGroup();
-    }
+    objGroupData.apply(outerCol);
 
     // Put in the right Fx group if needed
-    if (outerFx && !fxGroupData.m_groupIds.empty()) {
-      int j;
-      for (j = 0; j < fxGroupData.m_groupIds.size(); j++) {
-        outerColumn->getFx()->getAttributes()->setGroupId(
-            fxGroupData.m_groupIds[j]);
-        outerColumn->getFx()->getAttributes()->setGroupName(
-            fxGroupData.m_groupNames[j]);
-      }
-      for (j = 0;
-           j < fxGroupData.m_groupIds.size() && fxGroupData.m_editingGroup >= 0;
-           j++)
-        outerColumn->getFx()->getAttributes()->editGroup();
-    }
+    if (outerFx) fxGroupData.apply(outerFx->getAttributes());
     indexes.insert(index);
     index++;
   }
@@ -789,7 +756,9 @@ std::set<int> explodeStageObjects(
   for (i = 0; i < subXsh->getColumnCount() && !onlyColumn; i++) {
     TStageObjectId innerId = TStageObjectId::ColumnId(i);
     TStageObject *innerCol = innerTree->getStageObject(innerId, false);
-    xsh->setStageObjectParent(ids[innerId], ids[innerCol->getParent()]);
+    xsh->setStageObjectParent(
+        ids[innerId],
+        ids.value(innerCol->getParent(), ids[TStageObjectId::TableId]));
   }
 
   TPointD middlePoint;
@@ -797,7 +766,7 @@ std::set<int> explodeStageObjects(
   QMap<TStageObjectId, TStageObjectId>::iterator it;
   for (it = ids.begin(); it != ids.end(); it++) {
     TStageObject *innerObj = innerTree->getStageObject(it.key(), false);
-    if (!innerObj) continue;
+    if (!innerObj || it.key().isCamera()) continue;
 
     const TPointD &pos = innerObj->getDagNodePos();
     if (pos == TConst::nowhere) continue;
@@ -805,16 +774,15 @@ std::set<int> explodeStageObjects(
     middlePoint = middlePoint + pos;
     ++objCount;
   }
-  middlePoint = TPointD(middlePoint.x / objCount, middlePoint.y / objCount);
+  if (objCount) middlePoint = middlePoint * (1.0 / objCount);
 
   // faccio in modo che tutti i nodi estratti siano centrati in middlePoint
   // Li metto poi in un gruppo
   TPointD offset = middlePoint - subPos;
   for (it = ids.begin(); it != ids.end(); it++) {
     TStageObject *outerObj = outerTree->getStageObject(it.value(), false);
-    if (!outerObj) continue;
-    /*outerObj->setGroupId(groupId);
-outerObj->setGroupName(L"Group "+toWideString(groupId));*/
+    // cameras are the parent xsheet's own: leave them where they are
+    if (!outerObj || it.key().isCamera()) continue;
     TPointD outerPos = outerObj->getDagNodePos();
     if (outerPos != TConst::nowhere) outerObj->setDagNodePos(outerPos - offset);
   }
@@ -1186,6 +1154,67 @@ void closeSubXsheet(int dlevel) {
 
 //=============================================================================
 
+//! Motion paths used by the given columns
+QList<TStageObjectSpline *> getColumnSplines(TXsheet *xsh,
+                                             const std::set<int> &indices) {
+  QList<TStageObjectSpline *> splines;
+  for (int index : indices) {
+    TStageObjectSpline *spline =
+        xsh->getStageObject(TStageObjectId::ColumnId(index))->getSpline();
+    if (spline && !splines.contains(spline)) splines.append(spline);
+  }
+  return splines;
+}
+
+//-----------------------------------------------------------------------------
+
+//! Removes from xsh's tree the paths that no stage object uses anymore and
+//! returns them, still referenced. Collapsing moves a column's path into the
+//! sub-xsheet: without this the path stays in the parent xsheet, attached to
+//! nothing, and exploding adds another copy.
+QList<TStageObjectSpline *> takeUnusedSplines(
+    TXsheet *xsh, const QList<TStageObjectSpline *> &splines) {
+  TStageObjectTree *tree = xsh->getStageObjectTree();
+  QList<TStageObjectSpline *> taken;
+  for (TStageObjectSpline *spline : splines) {
+    if (!tree->containsSpline(spline)) continue;
+    bool used = false;
+    for (int i = 0; i < tree->getStageObjectCount() && !used; ++i)
+      used = tree->getStageObject(i)->getSpline() == spline;
+    if (used) continue;
+    spline->addRef();
+    tree->removeSpline(spline);
+    taken.append(spline);
+  }
+  return taken;
+}
+
+//-----------------------------------------------------------------------------
+
+bool hasPegbarsToBringInsideChildXsheet(TXsheet *xsh,
+                                        const std::set<int> &indices);
+
+//! Asks whether the pegbars the columns are attached to go in the sub-xsheet.
+//! Returns false if canceled.
+bool askCollapseParenting(TXsheet *xsh, const std::set<int> &indices,
+                          bool &onlyColumns) {
+  onlyColumns = true;
+  if (!hasPegbarsToBringInsideChildXsheet(xsh, indices)) return true;
+  QString question(QObject::tr("Collapsing columns: what you want to do?"));
+  QList<QString> list;
+  list.append(
+      QObject::tr("Maintain parenting relationships in the sub-xsheet as well."));
+  list.append(
+      QObject::tr("Include the selected columns in the sub-xsheet without "
+                  "parenting info."));
+  int ret = DVGui::RadioButtonMsgBox(DVGui::WARNING, question, list);
+  if (ret == 0) return false;
+  onlyColumns = (ret == 2);
+  return true;
+}
+
+//-----------------------------------------------------------------------------
+
 // returns true if there is at least one pegbar to be brought inside subxsheet
 // on collase in order to see if the confirmation dialog is needed
 bool hasPegbarsToBringInsideChildXsheet(TXsheet *xsh,
@@ -1285,6 +1314,28 @@ void removeFx(TXsheet *xsh, TFx *fx) {
 
 //-----------------------------------------------------------------------------
 
+//! Gives the sub-xsheet's cameras the resolution and size of the parent's
+//! cameras with the same ids, and the same current camera.
+void copyCameraSettings(TXsheet *xsh, TXsheet *childXsh) {
+  TStageObjectTree *parentTree = xsh->getStageObjectTree();
+  TStageObjectTree *childTree  = childXsh->getStageObjectTree();
+
+  // camera ids can have gaps (deleted cameras)
+  for (int i = 0; i < parentTree->getStageObjectCount(); ++i) {
+    TStageObject *parentCamera = parentTree->getStageObject(i);
+    if (!parentCamera->getId().isCamera() || !parentCamera->getCamera())
+      continue;
+    TCamera *childCamera =
+        childTree->getStageObject(parentCamera->getId())->getCamera();
+    if (!childCamera) continue;
+    childCamera->setRes(parentCamera->getCamera()->getRes());
+    childCamera->setSize(parentCamera->getCamera()->getSize());
+  }
+  childTree->setCurrentCameraId(parentTree->getCurrentCameraId());
+}
+
+//-----------------------------------------------------------------------------
+
 void collapseColumns(std::set<int> indices, bool columnsOnly) {
   // return if there is no selected columns
   if (indices.empty()) return;
@@ -1350,38 +1401,7 @@ void collapseColumns(std::set<int> indices, bool columnsOnly) {
       ->setParent(TStageObjectId::TableId);
   xsh->updateFrameCount();
 
-  // copy camera info
-  // xsh -> childXsh
-  TStageObjectTree *parentTree = xsh->getStageObjectTree();
-  TStageObjectTree *childTree  = childXsh->getStageObjectTree();
-
-  int tmpCamId = 0;
-  for (int cam = 0; cam < parentTree->getCameraCount();) {
-    TStageObject *parentCamera =
-        parentTree->getStageObject(TStageObjectId::CameraId(tmpCamId), false);
-    // skip the deleted camera
-    if (!parentCamera) {
-      tmpCamId++;
-      continue;
-    }
-
-    // if the camera exists
-    if (parentCamera->getCamera()) {
-      // obtain the correspondent camera in subxsheet. create it if it does not
-      // exist
-      TCamera *childCamera =
-          childTree->getStageObject(TStageObjectId::CameraId(tmpCamId))
-              ->getCamera();
-      if (parentCamera && childCamera) {
-        childCamera->setRes(parentCamera->getCamera()->getRes());
-        childCamera->setSize(parentCamera->getCamera()->getSize());
-      }
-    }
-    tmpCamId++;
-    cam++;
-  }
-  // sync the current camera
-  childTree->setCurrentCameraId(parentTree->getCurrentCameraId());
+  copyCameraSettings(xsh, childXsh);
 
   app->getCurrentXsheet()->notifyXsheetChanged();
   app->getCurrentScene()->setDirtyFlag(true);
@@ -1455,6 +1475,7 @@ void collapseColumns(std::set<int> indices,
         ->setParent(TStageObjectId::TableId);
 
   xsh->updateFrameCount();
+  copyCameraSettings(xsh, childXsh);
 
   app->getCurrentXsheet()->notifyXsheetChanged();
   app->getCurrentScene()->setDirtyFlag(true);
@@ -1539,6 +1560,7 @@ void collapseColumns(std::set<int> indices, const std::set<TFx *> &fxs,
   }
 
   xsh->updateFrameCount();
+  copyCameraSettings(xsh, childXsh);
   app->getCurrentXsheet()->notifyXsheetChanged();
   app->getCurrentScene()->setDirtyFlag(true);
   app->getCurrentObject()->notifyObjectIdSwitched();
@@ -1597,11 +1619,15 @@ protected:
   QMap<TStageObjectId, QList<TStageObjectId>> m_children;
   // id->parentId
   QMap<TStageObjectId, TStageObjectId> m_parents;
+  // paths moved into the sub-xsheet
+  QList<TStageObjectSpline *> m_movedSplines;
 
   void doUndo() const {
     TApp *app    = TApp::instance();
     TXsheet *xsh = app->getCurrentXsheet()->getXsheet();
     xsh->removeColumn(m_columnIndex);
+    for (TStageObjectSpline *spline : m_movedSplines)
+      xsh->getStageObjectTree()->insertSpline(spline);
     std::set<int> indices = m_indices;
     std::list<int> restoredSplineIds;
     m_data->restoreObjects(indices, restoredSplineIds, xsh, 0);
@@ -1636,6 +1662,8 @@ protected:
     indices.insert(m_columnIndex);
     std::list<int> restoredSplineIds;
     m_newData->restoreObjects(indices, restoredSplineIds, xsh, 0);
+    for (TStageObjectSpline *spline : m_movedSplines)
+      xsh->getStageObjectTree()->removeSpline(spline);
     TColumnSelection *selection = dynamic_cast<TColumnSelection *>(
         app->getCurrentSelection()->getSelection());
     if (selection) {
@@ -1661,6 +1689,12 @@ public:
   ~CollapseUndo() {
     delete m_data;
     delete m_newData;
+    for (TStageObjectSpline *spline : m_movedSplines) spline->release();
+  }
+
+  //! Takes ownership of the references to the paths moved by the collapse
+  void setMovedSplines(const QList<TStageObjectSpline *> &splines) {
+    m_movedSplines = splines;
   }
 
   void undo() const override {
@@ -2076,6 +2110,8 @@ class ExplodeChildUndoWithoutRemovingColumn final : public TUndo {
   StageObjectsData *m_newData;
   QMap<TFx *, QList<TFxPort *>> m_newColumnOutputConnections;
   QList<TStageObject *> m_pegObjects;
+  // objId->parentObjId of the pegbars brought out
+  QMap<TStageObjectId, TStageObjectId> m_parentIds;
   QMap<TStageObjectSpline *, TStageObjectSpline *> m_splines;
   std::set<TFx *> m_oldInternalFxs;
   std::set<TOutputFx *> m_oldOutFxs;
@@ -2118,6 +2154,10 @@ public:
         outputConnections.append(columnFx->getOutputConnection(i));
       m_newColumnOutputConnections[columnFx] = outputConnections;
     }
+    for (TStageObject *pegObj : m_pegObjects)
+      m_parentIds[pegObj->getId()] = pegObj->getParent();
+    // The paths brought out are owned by the undo while it is undone
+    for (TStageObjectSpline *spline : m_splines) spline->addRef();
     std::set<TOutputFx *>::iterator it2;
     for (it2 = m_oldOutFxs.begin(); it2 != m_oldOutFxs.end(); it2++)
       (*it2)->addRef();
@@ -2139,6 +2179,7 @@ public:
       (*it2)->release();
     for (it2 = m_newOutFxs.begin(); it2 != m_newOutFxs.end(); it2++)
       (*it2)->release();
+    for (TStageObjectSpline *spline : m_splines) spline->release();
   }
 
   void undo() const override {
@@ -2154,6 +2195,8 @@ public:
     int i;
     for (i = m_pegObjects.size() - 1; i >= 0; i--)
       xsh->getStageObjectTree()->removeStageObject(m_pegObjects[i]->getId());
+    for (TStageObjectSpline *spline : m_splines)
+      xsh->getStageObjectTree()->removeSpline(spline);
     std::set<int> indexes;
     indexes.insert(m_index);
     int to    = m_to;
@@ -2202,8 +2245,13 @@ public:
     int i;
     for (i = m_pegObjects.size() - 1; i >= 0; i--)
       xsh->getStageObjectTree()->insertStageObject(m_pegObjects[i]);
+    for (TStageObjectSpline *spline : m_splines)
+      xsh->getStageObjectTree()->insertSpline(spline);
     std::list<int> restoredSplineIds;
     m_newData->restoreObjects(indexes, restoredSplineIds, xsh, 0);
+    for (TStageObject *pegObj : m_pegObjects)
+      xsh->setStageObjectParent(pegObj->getId(),
+                                m_parentIds[pegObj->getId()]);
     setColumnOutputConnections(m_newColumnOutputConnections);
     std::set<TOutputFx *>::const_iterator it;
     for (it = m_newOutFxs.begin(); it != m_newOutFxs.end(); it++) {
@@ -2275,23 +2323,9 @@ public:
 void SubsceneCmd::collapse(std::set<int> &indices) {
   if (indices.empty()) return;
 
-  TXsheet *xsh     = TApp::instance()->getCurrentXsheet()->getXsheet();
-  bool onlyColumns = true;
-  if (hasPegbarsToBringInsideChildXsheet(xsh, indices)) {
-    // User must decide if pegbars must be collapsed too
-    QString question(QObject::tr("Collapsing columns: what you want to do?"));
-
-    QList<QString> list;
-    list.append(QObject::tr(
-        "Maintain parenting relationships in the sub-xsheet as well."));
-    list.append(
-        QObject::tr("Include the selected columns in the sub-xsheet without "
-                    "parenting info."));
-
-    int ret = DVGui::RadioButtonMsgBox(DVGui::WARNING, question, list);
-    if (ret == 0) return;
-    onlyColumns = (ret == 2);
-  }
+  TXsheet *xsh = TApp::instance()->getCurrentXsheet()->getXsheet();
+  bool onlyColumns;
+  if (!askCollapseParenting(xsh, indices, onlyColumns)) return;
   if (!ColumnCmd::checkExpressionReferences(indices, onlyColumns, true)) return;
 
   std::set<int> oldIndices = indices;
@@ -2312,6 +2346,8 @@ void SubsceneCmd::collapse(std::set<int> &indices) {
   QMap<TStageObjectId, TStageObjectId> parents;
   getParents(indices, parents);
 
+  QList<TStageObjectSpline *> splines = getColumnSplines(xsh, indices);
+
   // Perform the collapse
   collapseColumns(indices, onlyColumns);
   setColumnOutputConnections(columnOutputConnections);
@@ -2328,6 +2364,7 @@ void SubsceneCmd::collapse(std::set<int> &indices) {
   CollapseUndo *undo =
       new CollapseUndo(oldIndices, index, oldData, newData,
                        columnOutputConnections, children, parents);
+  undo->setMovedSplines(takeUnusedSplines(xsh, splines));
   TUndoManager::manager()->add(undo);
 
   changeSaveSubXsheetAsCommand();
@@ -2361,6 +2398,8 @@ void SubsceneCmd::collapse(const QList<TStageObjectId> &objects) {
   QMap<TStageObjectId, TStageObjectId> parents;
   getParents(indices, parents);
 
+  QList<TStageObjectSpline *> splines = getColumnSplines(xsh, indices);
+
   collapseColumns(indices, objects);
   setColumnOutputConnections(columnOutputConnections);
 
@@ -2374,6 +2413,7 @@ void SubsceneCmd::collapse(const QList<TStageObjectId> &objects) {
   CollapseUndo *undo =
       new CollapseUndo(oldIndices, index, oldData, newData,
                        columnOutputConnections, children, parents);
+  undo->setMovedSplines(takeUnusedSplines(xsh, splines));
   TUndoManager::manager()->add(undo);
 
   changeSaveSubXsheetAsCommand();
@@ -2388,21 +2428,9 @@ void SubsceneCmd::collapse(const QList<TFxP> &fxs) {
   std::set<TFx *> internalFx;
   getColumnIndexesAndInternalFxs(fxs, indices, internalFx);
 
-  TXsheet *xsh     = TApp::instance()->getCurrentXsheet()->getXsheet();
-  bool onlyColumns = true;
-  if (hasPegbarsToBringInsideChildXsheet(xsh, indices)) {
-    // User must decide if pegbars must be collapsed too
-    QString question(QObject::tr("Collapsing columns: what you want to do?"));
-    QList<QString> list;
-    list.append(QObject::tr(
-        "Maintain parenting relationships in the sub-xsheet as well."));
-    list.append(
-        QObject::tr("Include the selected columns in the sub-xsheet without "
-                    "parenting info."));
-    int ret = DVGui::RadioButtonMsgBox(DVGui::WARNING, question, list);
-    if (ret == 0) return;
-    onlyColumns = (ret == 2);
-  }
+  TXsheet *xsh = TApp::instance()->getCurrentXsheet()->getXsheet();
+  bool onlyColumns;
+  if (!askCollapseParenting(xsh, indices, onlyColumns)) return;
 
   if (!ColumnCmd::checkExpressionReferences(indices, internalFx, onlyColumns,
                                             true))
@@ -2428,6 +2456,8 @@ void SubsceneCmd::collapse(const QList<TFxP> &fxs) {
   QMap<TFx *, FxConnections> fxConnections;
   getFxConnections(fxConnections, internalFx, xsh);
 
+  QList<TStageObjectSpline *> splines = getColumnSplines(xsh, indices);
+
   collapseColumns(indices, internalFx, onlyColumns);
 
   indices.clear();
@@ -2440,6 +2470,7 @@ void SubsceneCmd::collapse(const QList<TFxP> &fxs) {
   CollapseFxUndo *undo = new CollapseFxUndo(oldIndices, index, oldData, newData,
                                             columnOutputConnections, children,
                                             parents, internalFx, fxConnections);
+  undo->setMovedSplines(takeUnusedSplines(xsh, splines));
   TUndoManager::manager()->add(undo);
 
   changeSaveSubXsheetAsCommand();
@@ -2495,15 +2526,9 @@ void SubsceneCmd::explode(int index) {
   QStack<std::wstring> objGroupNames;
   int objEditingGroup = obj->getEditingGroupId();
   if (obj->isGrouped()) {
-    int i         = 0;
     objGroupIds   = obj->getGroupIdStack();
     objGroupNames = obj->getGroupNameStack();
-    while (objGroupIds.empty() && objEditingGroup >= 0 &&
-           objGroupIds[i] != objEditingGroup) {
-      objGroupIds.remove(i);
-      objGroupNames.remove(i);
-      i++;
-    }
+    trimToEditingGroup(objGroupIds, objGroupNames, objEditingGroup);
   }
 
   GroupData objGroupData(objGroupIds, objGroupNames, objEditingGroup);
@@ -2519,15 +2544,9 @@ void SubsceneCmd::explode(int index) {
   QStack<std::wstring> fxGroupNames;
   int fxEditingGroup = attr->getEditingGroupId();
   if (attr->isGrouped()) {
-    int i        = 0;
     fxGroupIds   = attr->getGroupIdStack();
     fxGroupNames = attr->getGroupNameStack();
-    while (!fxGroupIds.empty() && fxEditingGroup >= 0 &&
-           fxGroupIds[i] != fxEditingGroup) {
-      fxGroupIds.remove(i);
-      fxGroupNames.remove(i);
-      i++;
-    }
+    trimToEditingGroup(fxGroupIds, fxGroupNames, fxEditingGroup);
   }
 
   GroupData fxGroupData(fxGroupIds, fxGroupNames, fxEditingGroup);
