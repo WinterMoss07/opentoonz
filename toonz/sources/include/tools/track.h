@@ -488,9 +488,7 @@ public:
     return TTrackPoint(
       interpolationSpline(p0.position      , p1.position      , t0.position , t1.position , l),
       interpolationLinear(p0.pressure      , p1.pressure      , l),
-    //interpolationSpline(p0.pressure      , p1.pressure      , t0.pressure , t1.pressure , l),
       interpolationLinear(p0.tilt          , p1.tilt          , l),
-    //interpolationSpline(p0.tilt          , p1.tilt          , t0.tilt     , t1.tilt     , l),
       interpolationLinear(p0.originalIndex , p1.originalIndex , l),
       interpolationLinear(p0.time          , p1.time          , l),
       interpolationLinear(p0.length        , p1.length        , l),
