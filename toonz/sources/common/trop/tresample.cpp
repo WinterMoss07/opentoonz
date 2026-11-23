@@ -3247,7 +3247,7 @@ void do_resample(TRasterCM32P rout, const TRasterCM32P &rin,
       in_tcm  = bufin_tcm + u + v * wrapin;
       bool u0 = MINOREQ(u, mu);
       bool v0 = MINOREQ(v, mv);
-      bool u1 = MINOREQ(u + 1, mv);
+      bool u1 = MINOREQ(u + 1, mu);
       bool v1 = MINOREQ(v + 1, mv);
       tcm[0]  = (u0 && v0) ? in_tcm[0] : transp;
       tcm[1]  = (u1 && v0) ? in_tcm[1] : transp;
@@ -3398,7 +3398,7 @@ void do_resample(TRasterCM32P rout, const TRasterCM32P &rin,
       in_tcm  = bufin_tcm + u + v * wrapin;
       bool u0 = MINOREQ(u, mu);
       bool v0 = MINOREQ(v, mv);
-      bool u1 = MINOREQ(u + 1, mv);
+      bool u1 = MINOREQ(u + 1, mu);
       bool v1 = MINOREQ(v + 1, mv);
 
       tcm[0] = (u0 && v0) ? in_tcm[0] : transp;
