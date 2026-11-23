@@ -64,17 +64,17 @@ TTrack::TTrack(
   m_pointsFixed()
   { }
 
-TTrack::TTrack(const TTrack &original, double timeOffset):
+TTrack::TTrack(const TTrack *original, double timeOffset):
   id(++m_lastId),
-  deviceId(original.deviceId),
-  touchId(original.touchId),
-  keyHistory(original.keyHistory),
-  buttonHistory(original.buttonHistory),
-  hasPressure(original.hasPressure),
-  hasTilt(original.hasTilt),
-  original(&original),
+  deviceId(original->deviceId),
+  touchId(original->touchId),
+  keyHistory(original->keyHistory),
+  buttonHistory(original->buttonHistory),
+  hasPressure(original->hasPressure),
+  hasTilt(original->hasTilt),
+  original(original),
   timeOffset(timeOffset),
-  rootTimeOffset(original.rootTimeOffset + timeOffset),
+  rootTimeOffset(original->rootTimeOffset + timeOffset),
   pointsRemoved(),
   pointsAdded(),
   fixedPointsAdded(),
@@ -131,8 +131,10 @@ TTrack::push_back(const TTrackPoint &point, bool fixed) {
 void
 TTrack::pop_back(int count) {
   if (count > size()) count = size();
-  if (count <= 0) return;
   assert(size() - count >= m_pointsFixed);
+  // fixed points are already painted and must never be removed
+  if (count > previewSize()) count = previewSize();
+  if (count <= 0) return;
   m_points.resize(size() - count);
   if (pointsAdded > count)
     { pointsAdded -= count; return; }

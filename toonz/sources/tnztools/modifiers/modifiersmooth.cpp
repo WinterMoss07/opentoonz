@@ -24,7 +24,7 @@ TModifierSmooth::modifyTrack(
   if (!track.handler && radius) {
     Handler *handler = new Handler(radius);
     track.handler = handler;
-    handler->track = new TTrack(track);
+    handler->track = new TTrack(&track);
   }
 
   Handler *handler = dynamic_cast<Handler*>(track.handler.getPointer());

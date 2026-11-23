@@ -75,7 +75,7 @@ TModifierAssistants::modifyTrack(
   if (!track.handler) {
     Handler *handler = new Handler();
     track.handler = handler;
-    handler->track = new TTrack(track);
+    handler->track = new TTrack(&track);
     new Interpolator(*handler->track, magnetism);
   }
   

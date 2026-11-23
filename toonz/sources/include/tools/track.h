@@ -273,7 +273,10 @@ public:
     double timeOffset = 0
   );
 
-  explicit TTrack(const TTrack &original, double timeOffset = 0);
+  explicit TTrack(const TTrack *original, double timeOffset = 0);
+
+  TTrack(const TTrack &) = delete;
+  TTrack &operator=(const TTrack &) = delete;
 
   const TTrackInterpolatorP& getInterpolator() const
     { return interpolator; }

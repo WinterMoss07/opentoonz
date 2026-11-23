@@ -158,7 +158,7 @@ void TModifierJitter::modifyTrack(const TTrack &track,
   if (!track.handler && fabs(period) > TConsts::epsilon) {
     Handler *handler = new Handler();
     track.handler = handler;
-    handler->track = new TTrack(track);
+    handler->track = new TTrack(&track);
     new Interpolator(*handler->track, period, amplitude, keepFirstPoint, keepLastPoint);
   }
   

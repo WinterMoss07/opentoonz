@@ -26,11 +26,11 @@ void TModifierClone::modifyTrack(const TTrack &track,
     Handler *handler = new Handler();
     track.handler = handler;
     if (keepOriginals) {
-      handler->original = new TTrack(track);
+      handler->original = new TTrack(&track);
       new TTrackIntrOrig(*handler->original);
     }
     for(TTrackTransformList::const_iterator i = transforms.begin(); i != transforms.end(); ++i) {
-      handler->tracks.push_back(new TTrack(track));
+      handler->tracks.push_back(new TTrack(&track));
       TTrack &subTrack = *handler->tracks.back();
       new Interpolator(subTrack, *i);
     }

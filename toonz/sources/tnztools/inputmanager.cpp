@@ -35,7 +35,7 @@ TInputModifier::modifyTrack(
   if (!track.handler) {
     TSubTrackHandler *handler = new TSubTrackHandler();
     track.handler = handler;
-    handler->track = new TTrack(track);
+    handler->track = new TTrack(&track);
     new TTrackIntrOrig(*handler->track);
   }
 
@@ -495,16 +495,29 @@ TInputManager::trackEvent(
 {
   ticks = fixTicks(ticks);
   TTrackP track = getTrack(deviceId, touchId, ticks, hasPressure, hasTilt);
-  if (!track->finished()) {
-    double time = (double)(ticks - track->ticks())*TToolTimer::step - track->rootTimeOffset;
-    addTrackPoint(
-      track,
-      position,
-      pressure,
-      tilt,
-      time,
-      final );
+  if (track->finished()) {
+    // finished tracks are cleared once all their sub-tracks are fixed,
+    // a finished track still here would block all input of this device
+    if (final) return;
+    for(TTrackList::const_iterator i = m_tracks.front().begin(); i != m_tracks.front().end(); ++i)
+      if (!(*i)->finished())
+        return;
+    if (m_started) {
+      if (m_handler) m_handler->inputSetBusy(false);
+      m_started = false;
+    }
+    for(int i = 0; i < (int)m_tracks.size(); ++i)
+      m_tracks[i].clear();
+    track = getTrack(deviceId, touchId, ticks, hasPressure, hasTilt);
   }
+  double time = (double)(ticks - track->ticks())*TToolTimer::step - track->rootTimeOffset;
+  addTrackPoint(
+    track,
+    position,
+    pressure,
+    tilt,
+    time,
+    final );
 }
 
 

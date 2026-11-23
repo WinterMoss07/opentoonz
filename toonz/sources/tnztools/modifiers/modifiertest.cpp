@@ -67,7 +67,7 @@ void TModifierTest::modifyTrack(const TTrack &track,
     Handler *handler = new Handler(this->radius);
     track.handler = handler;
     for (int i = 0; i < count; ++i) {
-      handler->tracks.push_back(new TTrack(track));
+      handler->tracks.push_back(new TTrack(&track));
       TTrack &subTrack = *handler->tracks.back();
       new Interpolator(subTrack, i*2*M_PI/(double)count, radius, 0.25);
     }
