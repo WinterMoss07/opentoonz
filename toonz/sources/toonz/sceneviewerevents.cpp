@@ -259,9 +259,10 @@ void SceneViewer::onButtonPressed(FlipConsole::EGadget button) {
 void SceneViewer::tabletEvent(QTabletEvent *e) {
   if (m_freezedStatus != NO_FREEZED) return;
 
-  m_tabletEvent = true;
-  m_pressure    = e->pressure();
-  m_tabletMove  = false;
+  double prevPressure = m_pressure;
+  m_tabletEvent       = true;
+  m_pressure          = e->pressure();
+  m_tabletMove        = false;
   // Management of the Eraser pointer
   ToolHandle *toolHandle = TApp::instance()->getCurrentTool();
   if (e->pointerType() == QTabletEvent::Eraser) {
@@ -375,7 +376,7 @@ void SceneViewer::tabletEvent(QTabletEvent *e) {
     // Raster Selection Tool. So I re-introduced the delay timer to make
     // necessary interval for it. Deformation will be processed at interval of
     // 20msec. (See RasterSelectionTool::leftButtonDrag())
-    if (curPos != m_lastMousePos) {
+    if (curPos != m_lastMousePos || m_pressure != prevPressure) {
       TMouseEvent mouseEvent;
       initToonzEvent(mouseEvent, e, height(), m_pressure, getDevPixRatio(),
                      m_isBusyOnTabletMove);
@@ -387,7 +388,8 @@ void SceneViewer::tabletEvent(QTabletEvent *e) {
     // It seems that the tabletEvent is called more often than mouseMoveEvent.
     // So I fire the interval timer in order to limit the following process
     // to be called in 50fps in maximum.
-    if (curPos != m_lastMousePos && !m_isBusyOnTabletMove) {
+    if ((curPos != m_lastMousePos || m_pressure != prevPressure) &&
+        !m_isBusyOnTabletMove) {
       m_isBusyOnTabletMove = true;
       TMouseEvent mouseEvent;
       initToonzEvent(mouseEvent, e, height(), m_pressure, getDevPixRatio());
@@ -942,6 +944,9 @@ void SceneViewer::mouseReleaseEvent(QMouseEvent *event) {
 void SceneViewer::onRelease(const TMouseEvent &event) {
   // evita i release ripetuti
   if (!m_buttonClicked) return;
+  // ignore the release of a button which is not the active one, so that the
+  // active button is still released properly later
+  if (m_mouseButton != Qt::NoButton && m_mouseButton != event.button()) return;
   m_buttonClicked = false;
 
   m_dragging  = false;
