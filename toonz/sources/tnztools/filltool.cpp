@@ -31,7 +31,6 @@
 #include "toonz/stagevisitor.h"
 #include "tstroke.h"
 #include "drawutil.h"
-#include "tsystem.h"
 #include "tinbetween.h"
 #include "tregion.h"
 #include "tgl.h"
@@ -1109,13 +1108,11 @@ void doRefFill(const TImageP &img, const TRaster32P &refImg, const TPointD &pos,
     if (params.m_fillType == ALL || params.m_fillType == LINES) {
       if (params.m_segment)
         inkSegment(ras, params.m_p, params.m_styleId, 2.51, true, &tileSaver);
-      else if (!params.m_segment)
+      else
         inkFill(ras, params.m_p, params.m_styleId, 2, &tileSaver);
     }
 
     if (tileSaver.getTileSet()->getTileCount() != 0) {
-      static int count = 0;
-      TSystem::outputDebug("FILL" + std::to_string(count++) + "\n");
       if (offs != TPoint())
         for (int i = 0; i < tileSet->getTileCount(); i++) {
           TTileSet::Tile *t = tileSet->editTile(i);
@@ -1201,21 +1198,27 @@ class SequencePainter {
 public:
   virtual void process(TImageP img /*, TImageLocation &imgloc*/, double t,
                        TXshSimpleLevel *sl, const TFrameId &fid) = 0;
-  void processSequence(const SlFidsPairs &SlFidsPairs);
+  //! times: position of each drawing in the range (see
+  //! FillTool::m_slFidsTimes); evenly spaced when empty
+  void processSequence(const SlFidsPairs &slFidsPairs,
+                       const std::vector<double> &times = {});
   virtual ~SequencePainter() {}
   void setSelectionUndo(FillToolSelectionUndo *undo) { m_selectionUndo = undo; }
 };
 
 //-----------------------------------------------------------------------------
 
-void SequencePainter::processSequence(const SlFidsPairs &slFidsPairs) {
+void SequencePainter::processSequence(const SlFidsPairs &slFidsPairs,
+                                      const std::vector<double> &times) {
   TUndoManager::manager()->beginBlock();
   if (m_selectionUndo) TUndoManager::manager()->add(m_selectionUndo);
   int m = slFidsPairs.size();
   int i = 0;
+  bool useTimes = times.size() == slFidsPairs.size();
   for (auto &[sl, fid] : slFidsPairs) {
     TImageP img = sl->getFrame(fid, true);
-    double t    = m > 1 ? (double)i / (double)(m - 1) : 0.5;
+    // A single drawing is filled where it was clicked last
+    double t = useTimes ? times[i] : m > 1 ? (double)i / (double)(m - 1) : 1.0;
     process(img, t, sl, fid);
     TTool::Application *app = TTool::getApplication();
     if (app) {
@@ -1357,24 +1360,6 @@ public:
   }
 };
 
-//=============================================================================
-/*
-                                        if(e.isShiftPressed())
-            {
-                                                m_firstPoint = pos;
-                                                m_firstFrameId =
-TApplication::instance()->getCurrentFrameId();
-                                                }
-                                        else
-                                          {
-                                                m_firstFrameSelected = false;
-                                                TApplication::instance()->setCurrentFrame(m_veryFirstFrameId);
-                                                }
-                                        TNotifier::instance()->notify(TLevelChange());
-          TNotifier::instance()->notify(TStageChange());
-          }
-}
-*/
 
 //=============================================================================
 // AreaFillTool
@@ -1552,6 +1537,7 @@ void AreaFillTool::leftButtonDoubleClick(const TPointD &pos,
   FillTool *fillTool      = (FillTool *)m_parent;
   auto refImgTable        = fillTool->getRefImgTable();
   auto slFidsPairs        = fillTool->getSlFidsPairs();
+  auto slFidsTimes        = fillTool->getSlFidsTimes();
   TTool::Application *app = TTool::getApplication();
   if (!app) return;
 
@@ -1585,7 +1571,7 @@ void AreaFillTool::leftButtonDoubleClick(const TPointD &pos,
       filler.setSelectionUndo(new FillToolSelectionUndo(
           m_currCell.second, m_currCell.first, slFidsPairs[0].first,
           slFidsPairs[0].second));
-      filler.processSequence(slFidsPairs);
+      filler.processSequence(slFidsPairs, slFidsTimes);
 
       m_parent->invalidate(m_selectingRect.enlarge(2));
       if (e.isShiftPressed()) {
@@ -1654,6 +1640,7 @@ void AreaFillTool::leftButtonUp(const TPointD &pos, const TMouseEvent &e) {
   bool get                = !m_frameRange || m_firstFrameSelected;
   auto refImgTable        = get ? fillTool->getRefImgTable() : RefImgTable();
   auto slFidsPairs        = get ? fillTool->getSlFidsPairs() : SlFidsPairs();
+  auto slFidsTimes = get ? fillTool->getSlFidsTimes() : std::vector<double>();
   TTool::Application *app = TTool::getApplication();
   if (!app) return;
 
@@ -1676,7 +1663,7 @@ void AreaFillTool::leftButtonUp(const TPointD &pos, const TMouseEvent &e) {
         filler.setSelectionUndo(new FillToolSelectionUndo(
             m_currCell.second, m_currCell.first, slFidsPairs[0].first,
             slFidsPairs[0].second));
-        filler.processSequence(slFidsPairs);
+        filler.processSequence(slFidsPairs, slFidsTimes);
         m_parent->invalidate(m_selectingRect.enlarge(2));
         if (e.isShiftPressed()) {
           m_firstRect    = m_selectingRect;
@@ -1734,14 +1721,14 @@ void AreaFillTool::leftButtonUp(const TPointD &pos, const TMouseEvent &e) {
     if (m_frameRange)  // stroke multi
     {
       stroke->addRef();
-      if (m_firstFrameSelected) {
+      if (m_firstFrameSelected && !slFidsPairs.empty()) {
         MultiAreaFiller filler(refImgTable, m_firstStroke, stroke,
                                m_onlyUnfilled, m_colorType, styleIndex,
                                m_autopaintLines, m_paintAllAPs);
         filler.setSelectionUndo(new FillToolSelectionUndo(
             m_currCell.second, m_currCell.first, slFidsPairs[0].first,
             slFidsPairs[0].second));
-        filler.processSequence(slFidsPairs);
+        filler.processSequence(slFidsPairs, slFidsTimes);
         m_parent->invalidate(m_selectingRect.enlarge(2));
         if (e.isShiftPressed()) {
           m_firstStroke  = stroke;
@@ -2067,32 +2054,41 @@ void FillTool::buildFillInfo(const FillParameters &params) {
     m_level        = xl ? xl->getSimpleLevel() : 0;
     m_beginCell    = {getColumnIndex(), getFrame()};
     m_firstFrameId = getCurrentFid();
-    m_firstPoint   = m_mousePos;
+    m_firstPoint   = m_clickPoint;
     invalidate();
     if (m_frameRange.getValue()) return;
   }
 
   m_slFidsPairs.clear();
+  m_slFidsTimes.clear();
 
   // Multi
   if (m_frameRange.getValue()) {
     if (app->getCurrentFrame()->isEditingScene()) {
+      // Each drawing is placed by the row it first appears on, so held
+      // drawings don't shift the interpolated click position.
       int endRow = getFrame();
       auto xsh   = app->getCurrentXsheet()->getXsheet();
       TXshCell cell, oldCell;
       CellPos firstPos = m_beginCell;
       int step         = firstPos.row <= endRow ? +1 : -1;
+      int rowSpan      = std::abs(endRow - firstPos.row);
       for (int row = firstPos.row; row != endRow + step; row += step) {
         cell = xsh->getCell(row, firstPos.col);
         if (!cell.isEmpty() && cell != oldCell) {
           if (std::find(
                   m_slFidsPairs.begin(), m_slFidsPairs.end(),
                   std::make_pair(cell.getSimpleLevel(), cell.getFrameId())) ==
-              m_slFidsPairs.end())
+              m_slFidsPairs.end()) {
             m_slFidsPairs.push_back({cell.getSimpleLevel(), cell.getFrameId()});
+            m_slFidsTimes.push_back(
+                rowSpan ? (double)std::abs(row - firstPos.row) / rowSpan : 1.0);
+          }
           oldCell = cell;
         }
       }
+      // A single drawing is filled where it was clicked last
+      if (m_slFidsTimes.size() == 1) m_slFidsTimes[0] = 1.0;
     } else {
       TXshSimpleLevel *sl = app->getCurrentLevel()->getSimpleLevel();
       int e               = sl->fid2index(getCurrentFid());
@@ -2279,7 +2275,7 @@ void FillTool::leftButtonDown(const TPointD &pos, const TMouseEvent &e) {
     filler.setSelectionUndo(new FillToolSelectionUndo(
         m_beginCell.row, m_beginCell.col, m_slFidsPairs[0].first,
         m_slFidsPairs[0].second));
-    filler.processSequence(m_slFidsPairs);
+    filler.processSequence(m_slFidsPairs, m_slFidsTimes);
 
     if (e.isShiftPressed()) {
       m_firstPoint   = pos;
@@ -2352,8 +2348,6 @@ void FillTool::leftButtonDrag(const TPointD &pos, const TMouseEvent &e) {
       doRefFill(img, m_refImgTable[imgId], pos, params, e.isShiftPressed(),
                 m_level.getPointer(), getCurrentFid(),
                 m_autopaintLines.getValue());
-      TSystem::outputDebug("ok. pix=" + std::to_string(pix.getTone()) + "," +
-                           std::to_string(pix.getPaint()) + "\n");
     }
   }
 }

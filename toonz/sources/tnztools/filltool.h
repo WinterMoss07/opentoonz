@@ -123,6 +123,9 @@ class FillTool final : public QObject, public TTool {
   TBoolProperty m_extendFill;
 
   SlFidsPairs m_slFidsPairs;
+  //! Position of each drawing of m_slFidsPairs in the frame range, from 0
+  //! (first click) to 1 (last click), used to interpolate the fill position
+  std::vector<double> m_slFidsTimes;
   RefImgTable m_refImgTable;  // imageId
 
   bool m_isAltPressed = false;
@@ -168,6 +171,7 @@ public:
   void computeRefImgsIfNeeded(const FillParameters &params);
 
   const SlFidsPairs &getSlFidsPairs() const { return m_slFidsPairs; }
+  const std::vector<double> &getSlFidsTimes() const { return m_slFidsTimes; }
   const RefImgTable &getRefImgTable() const { return m_refImgTable; }
 
 public slots:
