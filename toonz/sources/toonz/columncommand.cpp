@@ -37,6 +37,7 @@
 #include "toonz/tcamera.h"
 #include "toonz/tstageobjectspline.h"
 #include "toonz/fxcommand.h"
+#include "toonz/columnfxlinks.h"
 #include "toonz/preferences.h"
 #include "toonz/tstageobjectid.h"
 
@@ -383,7 +384,7 @@ void deleteColumnsWithoutUndo(std::set<int> *indices,
 
 void resetColumns(
     const QMimeData *mimeData, std::set<int> *indices,
-    const QMap<TFxPort *, TFx *> &columnFxLinks,
+    const ColumnFxLinks &columnFxLinks,
     const QMap<TStageObjectId, TStageObjectId> &columnObjParents,
     const QMap<TStageObjectId, QList<TStageObjectId>> &columnObjChildren) {
   const StageObjectsData *data =
@@ -393,9 +394,7 @@ void resetColumns(
   TXsheet *xsh = app->getCurrentXsheet()->getXsheet();
   std::list<int> restoredSplineIds;
   data->restoreObjects(*indices, restoredSplineIds, xsh, 0);
-  QMap<TFxPort *, TFx *>::const_iterator it;
-  for (it = columnFxLinks.begin(); it != columnFxLinks.end(); it++)
-    it.key()->setFx(it.value());
+  columnFxLinks.restore(xsh);
 
   // Devo rimettere le stesse connessioni tra gli stage object
   QMap<TStageObjectId, TStageObjectId>::const_iterator it2;
@@ -461,7 +460,7 @@ TXshChildLevel *cloneChildLevel(TXshChildLevel *cl) {
 class PasteColumnsUndo : public TUndo {
   std::set<int> m_indices;
   StageObjectsData *m_data;
-  QMap<TFxPort *, TFx *> m_columnLinks;
+  ColumnFxLinks m_columnLinks;
 
 public:
   PasteColumnsUndo(std::set<int> indices) : m_indices(indices) {
@@ -470,30 +469,18 @@ public:
     TXsheet *xsh = app->getCurrentXsheet()->getXsheet();
     m_data->storeColumns(indices, xsh, 0);
     m_data->storeColumnFxs(indices, xsh, 0);
-    std::set<int>::iterator it;
-    for (it = m_indices.begin(); it != m_indices.end(); it++) {
-      TXshColumn *column = xsh->getColumn(*it);
-      if (!column || !column->getFx()) continue;
-      TFx *fx = column->getFx();
-      int i;
-      for (i = 0; i < fx->getOutputConnectionCount(); i++)
-        m_columnLinks[fx->getOutputConnection(i)] = fx;
-    }
+    m_columnLinks.store(xsh, m_indices);
   }
 
   ~PasteColumnsUndo() { delete m_data; }
 
   void undo() const override {
-    std::set<int> indices;
-    std::set<int>::const_iterator indicesIt = m_indices.begin();
-    while (indicesIt != m_indices.end()) indices.insert(*indicesIt++);
+    std::set<int> indices = m_indices;
     deleteColumnsWithoutUndo(&indices);
   }
 
   void redo() const override {
-    std::set<int> indices;
-    std::set<int>::const_iterator indicesIt = m_indices.begin();
-    while (indicesIt != m_indices.end()) indices.insert(*indicesIt++);
+    std::set<int> indices = m_indices;
     resetColumns(m_data, &indices, m_columnLinks,
                  QMap<TStageObjectId, TStageObjectId>(),
                  QMap<TStageObjectId, QList<TStageObjectId>>());
@@ -522,7 +509,7 @@ public:
 class DeleteColumnsUndo final : public TUndo {
   std::set<int> m_indices;
 
-  QMap<TFxPort *, TFx *> m_columnFxLinks;
+  ColumnFxLinks m_columnFxLinks;
   QMap<TStageObjectId, QList<TStageObjectId>> m_columnObjChildren;
   QMap<TStageObjectId, TStageObjectId> m_columnObjParents;
 
@@ -539,25 +526,12 @@ public:
 
     m_data->storeColumns(m_indices, xsh, 0);
     m_data->storeColumnFxs(m_indices, xsh, 0);
+    m_columnFxLinks.store(xsh, m_indices);
 
     std::set<int>::iterator it;
     for (it = m_indices.begin(); it != m_indices.end(); ++it) {
       TXshColumn *column = xsh->getColumn(*it);
       if (!column) continue;
-
-      // Store output links
-      if (TFx *fx = column->getFx()) {
-        for (int i = 0; i < fx->getOutputConnectionCount(); ++i) {
-          // Only links whose output-connected fx is in the xsheet (ie not
-          // temporary)
-          // are stored. Temporaries may be erased without an undo
-          // notification...
-
-          TFx *outFx = fx->getOutputConnection(i)->getOwnerFx();
-          if (xsh->getFxDag()->getInternalFxs()->containsFx(outFx))
-            m_columnFxLinks[fx->getOutputConnection(i)] = fx;
-        }
-      }
 
       // Store TStageObject children
       int pegbarsCount     = xsh->getStageObjectTree()->getStageObjectCount();
@@ -567,10 +541,8 @@ public:
         TStageObject *other = xsh->getStageObjectTree()->getStageObject(i);
         if (other == pegbar) continue;
 
-        if (other->getParent() == id) {
-          // other->setParent(pegbar->getParent());
+        if (other->getParent() == id)
           m_columnObjChildren[id].append(other->getId());
-        }
       }
 
       // Mi salvo il parent
@@ -649,7 +621,7 @@ void doUnifyColumnVisibilityToggles_Recursive(const TXsheet *xsh,
       if (!doneList.contains(subSheet)) {
         doneList.append(subSheet);
         parentXshStack.append(QString::fromStdWString(childLevel->getName()));
-        doUnifyColumnVisibilityToggles_Recursive(xsh, modifiedColumnNames,
+        doUnifyColumnVisibilityToggles_Recursive(subSheet, modifiedColumnNames,
                                                  doneList, parentXshStack);
         parentXshStack.pop_back();
       }

@@ -82,6 +82,7 @@ set(HEADERS
     ../include/toonz/dpiscale.h
     ../include/toonz/fill.h
     ../include/toonz/fxcommand.h
+    ../include/toonz/columnfxlinks.h
     ../include/toonz/fxdag.h
     ../include/toonz/glrasterpainter.h
     ../include/toonz/hook.h
@@ -316,6 +317,7 @@ set(SOURCES
     txshlevelhandle.cpp
     doubleparamcmd.cpp
     fxcommand.cpp
+    columnfxlinks.cpp
     palettecmd.cpp
     palettecontroller.cpp
     studiopalettecmd.cpp

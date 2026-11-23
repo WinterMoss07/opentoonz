@@ -2080,6 +2080,9 @@ protected:
   std::vector<TFx *> m_nonTerminalInputs;
 
   mutable std::unique_ptr<TStageObjectParams> m_columnData;
+  //! Stage objects parented to the deleted column: removing the column
+  //! reparents them
+  std::vector<TStageObjectId> m_columnChildren;
 
   TXsheetHandle *m_xshHandle;
   TFxHandle *m_fxHandle;
@@ -2176,6 +2179,14 @@ void DeleteFxOrColumnUndo::initialize() {
     if (!m_column->inColumnsSet()) {
       m_fx = TFxP(), m_colIdx = -1;  // Bail out as inconsistent op
       return;                        //
+    }
+
+    TStageObjectId colId   = TStageObjectId::ColumnId(m_colIdx);
+    TStageObjectTree *tree = xsh->getStageObjectTree();
+    for (int i = 0; i < tree->getStageObjectCount(); ++i) {
+      TStageObject *obj = tree->getStageObject(i);
+      if (obj->getId() != colId && obj->getParent() == colId)
+        m_columnChildren.push_back(obj->getId());
     }
   } else if (TOutputFx *outputFx = dynamic_cast<TOutputFx *>(ofx)) {
     if (xsh->getFxDag()->getOutputFxCount() <= 1) {
@@ -2276,6 +2287,12 @@ void DeleteFxOrColumnUndo::undo() const {
 
       sObj->assignParams(m_this->m_columnData.get(), false);
       m_this->m_columnData.reset();
+
+      TStageObjectId colId = TStageObjectId::ColumnId(m_this->m_colIdx);
+      for (const TStageObjectId &child : m_this->m_columnChildren)
+        if (TStageObject *obj =
+                xsh->getStageObjectTree()->getStageObject(child, false))
+          obj->setParent(colId);
     }
 
   } locals = {this};

@@ -2,6 +2,7 @@
 
 // TnzLib includes
 #include "toonz/tstageobjectcmd.h"
+#include "toonz/columnfxlinks.h"
 #include "toonz/txsheethandle.h"
 #include "toonz/tobjecthandle.h"
 #include "toonz/tcolumnhandle.h"
@@ -472,51 +473,37 @@ public:
 class RemoveColumnsUndo final : public TUndo {
   std::vector<TFx *> m_deletedFx;
   std::vector<TFx *> m_terminalFx;
-  QMap<TStageObjectId, QList<TFxPort *>> m_columnFxConnections;
-  QList<TFx *> m_notTerminalColumns;
+  QList<TStageObjectId> m_columnIds;
+  ColumnFxLinks m_columnFxLinks;
   TXsheetHandle *m_xshHandle;
 
 public:
-  RemoveColumnsUndo(
-      const std::vector<TFx *> &deletedFx, const std::vector<TFx *> &terminalFx,
-      const QMap<TStageObjectId, QList<TFxPort *>> columnFxConnections,
-      const QList<TFx *> &notTerminalColumns, TXsheetHandle *xshHandle)
+  RemoveColumnsUndo(const std::vector<TFx *> &deletedFx,
+                    const std::vector<TFx *> &terminalFx,
+                    const QList<TStageObjectId> &columnIds,
+                    const ColumnFxLinks &columnFxLinks,
+                    TXsheetHandle *xshHandle)
       : TUndo()
       , m_deletedFx(deletedFx)
       , m_terminalFx(terminalFx)
-      , m_columnFxConnections(columnFxConnections)
-      , m_notTerminalColumns(notTerminalColumns)
+      , m_columnIds(columnIds)
+      , m_columnFxLinks(columnFxLinks)
       , m_xshHandle(xshHandle) {
-    int i;
-    for (i = 0; i < (int)m_deletedFx.size(); i++) m_deletedFx[i]->addRef();
+    for (TFx *fx : m_deletedFx) fx->addRef();
   }
 
   ~RemoveColumnsUndo() {
-    int i;
-    for (i = 0; i < (int)m_deletedFx.size(); i++) m_deletedFx[i]->release();
+    for (TFx *fx : m_deletedFx) fx->release();
   }
 
   void undo() const override {
     TXsheet *xsh        = m_xshHandle->getXsheet();
     TFxSet *terminalFxs = xsh->getFxDag()->getTerminalFxs();
     TFxSet *internalFxs = xsh->getFxDag()->getInternalFxs();
-    int i;
-    for (i = 0; i < (int)m_deletedFx.size(); i++)
-      internalFxs->addFx(m_deletedFx[i]);
-    for (i = 0; i < (int)m_terminalFx.size(); i++)
-      terminalFxs->addFx(m_terminalFx[i]);
-    QMap<TStageObjectId, QList<TFxPort *>>::const_iterator it;
-    for (it = m_columnFxConnections.begin(); it != m_columnFxConnections.end();
-         it++) {
-      TStageObjectId id      = it.key();
-      QList<TFxPort *> ports = it.value();
-      TXshColumnP column     = xsh->getColumn(id.getIndex());
-      assert(column);
-      int j;
-      for (j = 0; j < ports.size(); j++) ports[j]->setFx(column->getFx());
-    }
-    for (i = 0; i < m_notTerminalColumns.size(); i++)
-      terminalFxs->removeFx(m_notTerminalColumns[i]);
+    for (TFx *fx : m_deletedFx) internalFxs->addFx(fx);
+    for (TFx *fx : m_terminalFx) terminalFxs->addFx(fx);
+    // the columns are already back (their removal undos come later)
+    m_columnFxLinks.restore(xsh);
 
     m_xshHandle->notifyXsheetChanged();
     xsh->notifyFxAdded(m_deletedFx);
@@ -526,31 +513,20 @@ public:
     TXsheet *xsh        = m_xshHandle->getXsheet();
     TFxSet *terminalFxs = xsh->getFxDag()->getTerminalFxs();
     TFxSet *internalFxs = xsh->getFxDag()->getInternalFxs();
-    int i;
-    for (i = 0; i < (int)m_deletedFx.size(); i++)
-      internalFxs->removeFx(m_deletedFx[i]);
-    for (i = 0; i < (int)m_terminalFx.size(); i++)
-      terminalFxs->removeFx(m_terminalFx[i]);
+    for (TFx *fx : m_deletedFx) internalFxs->removeFx(fx);
+    for (TFx *fx : m_terminalFx) terminalFxs->removeFx(fx);
     m_xshHandle->notifyXsheetChanged();
   }
 
   int getSize() const override {
-    return sizeof *this + m_deletedFx.size() * sizeof(TFx) +
-           m_terminalFx.size() * sizeof(TFx) +
-           m_columnFxConnections.size() *
-               (sizeof(TStageObjectId) + 10 * sizeof(TFxPort)) +
-           m_notTerminalColumns.size() * sizeof(TFx) + sizeof(TXsheetHandle);
+    return sizeof *this + (m_deletedFx.size() + m_terminalFx.size()) * sizeof(TFx);
   }
 
   QString getHistoryString() override {
     QString str = QObject::tr("Remove Column  ");
-    QMap<TStageObjectId, QList<TFxPort *>>::const_iterator it;
-    for (it = m_columnFxConnections.begin(); it != m_columnFxConnections.end();
-         it++) {
-      TStageObjectId id = it.key();
-      if (it != m_columnFxConnections.begin())
-        str += QString::fromStdString(", ");
-      str += QString::fromStdString(id.toString());
+    for (int i = 0; i < m_columnIds.size(); ++i) {
+      if (i) str += QString::fromStdString(", ");
+      str += QString::fromStdString(m_columnIds[i].toString());
     }
     return str;
   }
@@ -836,9 +812,9 @@ void removeColumns(const QVector<int> &columnIndexes, TXsheetHandle *xshHandle,
                   bool doUndo = true) {
   TXsheet *xsh = xshHandle->getXsheet();
   int i;
-  QMap<TStageObjectId, QList<TFxPort *>> columnFxConnection;
+  QList<TStageObjectId> columnIds;
+  std::set<int> indices;
   std::set<TFx *> leafesFx;
-  QList<TFx *> notTerminalColumns;
   for (i = columnIndexes.size() - 1; i >= 0; i--) {
     TStageObjectId id  = TStageObjectId::ColumnId(columnIndexes[i]);
     TXshColumnP column = xsh->getColumn(id.getIndex());
@@ -847,13 +823,12 @@ void removeColumns(const QVector<int> &columnIndexes, TXsheetHandle *xshHandle,
     TFx *columnFx = column->getFx();
     if (!columnFx) continue;
 
-    int j;
-    for (j = 0; j < columnFx->getOutputConnectionCount(); j++)
-      columnFxConnection[id].append(columnFx->getOutputConnection(j));
+    columnIds.append(id);
+    indices.insert(id.getIndex());
     leafesFx.insert(columnFx);
-    if (!xsh->getFxDag()->getTerminalFxs()->containsFx(columnFx))
-      notTerminalColumns.append(columnFx);
   }
+  ColumnFxLinks columnFxLinks;
+  columnFxLinks.store(xsh, indices);
 
   std::vector<TFx *> fxsToKill;
   std::vector<TFx *> terminalFxsToKill;
@@ -869,8 +844,8 @@ void removeColumns(const QVector<int> &columnIndexes, TXsheetHandle *xshHandle,
 
   if (doUndo) {
     RemoveColumnsUndo *undo =
-        new RemoveColumnsUndo(fxsToKill, terminalFxsToKill, columnFxConnection,
-                              notTerminalColumns, xshHandle);
+        new RemoveColumnsUndo(fxsToKill, terminalFxsToKill, columnIds,
+                              columnFxLinks, xshHandle);
     TUndoManager::manager()->add(undo);
   }
 
