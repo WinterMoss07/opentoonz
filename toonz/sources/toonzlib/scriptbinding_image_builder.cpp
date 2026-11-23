@@ -104,11 +104,15 @@ QScriptValue ImageBuilder::ctor(QScriptContext *context,
     imageBuilder           = new ImageBuilder();
     imageBuilder->m_width  = width;
     imageBuilder->m_height = height;
-    if (type == "Raster")
-      imageBuilder->m_img = new TRasterImage(TRaster32P(width, height));
-    else if (type == "ToonzRaster") {
-      imageBuilder->m_img = new TToonzImage(TRasterCM32P(width, height),
-                                            TRect(0, 0, width, height));
+    // New rasters are not initialized: start from a blank image
+    if (type == "Raster") {
+      TRaster32P ras(width, height);
+      ras->clear();
+      imageBuilder->m_img = new TRasterImage(ras);
+    } else if (type == "ToonzRaster") {
+      TRasterCM32P ras(width, height);
+      ras->clear();
+      imageBuilder->m_img = new TToonzImage(ras, TRect());
     }
   } else {
     if (context->argumentCount() != 0)
