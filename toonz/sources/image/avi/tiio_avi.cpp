@@ -384,7 +384,8 @@ void TLevelWriterAvi::save(const TImageP &img, int frameIndex) {
     psi.dwQuality      = ICQUALITY_DEFAULT;
     psi.rcFrame.right  = lx;
     psi.rcFrame.bottom = ly;
-    ::strcpy(psi.szName, m_path.getName().c_str());
+    ::strncpy(psi.szName, m_path.getName().c_str(), sizeof(psi.szName) - 1);
+    psi.szName[sizeof(psi.szName) - 1] = '\0';
     int rc;
 
     if (FAILED(AVIFileCreateStream(m_aviFile, &(m_videoStream), &(psi))))
