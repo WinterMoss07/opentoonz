@@ -1,19 +1,13 @@
 
 
 #include "tscanner.h"
-#include "tscannertwain.h"
 #include "texception.h"
-#include "tscannerepson.h"
 #include "tstream.h"
 #include "tconvert.h"
 #include "tfilepath.h"
 #include "tfilepath_io.h"
 #include "tenv.h"
 #include "tsystem.h"
-
-extern "C" {
-#include "../common/twain/ttwain_util.h"
-}
 
 //===================================================================
 //
@@ -62,8 +56,7 @@ TScannerParameters::TScannerParameters()
     , m_prodFamily()
     , m_productName()
     , m_version()
-    , m_reverseOrder(false)
-    , m_validatedByCurrentScanner(false) {
+    , m_reverseOrder(false) {
   m_threshold.m_value  = 127;
   m_brightness.m_value = 127;
 }
@@ -185,19 +178,6 @@ void TScannerParameters::setScanType(ScanType scanType) {
 
 //-----------------------------------------------------------------------------
 
-void TScannerParameters::adaptToCurrentScanner() {
-  try {
-    if (TScanner::instance()->isDeviceSelected()) {
-      TScanner::instance()->updateParameters(*this);
-      m_validatedByCurrentScanner = true;
-    }
-  } catch (TException &) {
-    // TMessage::error("%1", e.getMessage());
-  }
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void TScannerParameters::saveData(TOStream &os) const {
   std::map<std::string, std::string> attr;
   attr["fmt"] = m_paperFormat;
@@ -293,160 +273,6 @@ void TScannerParameters::loadData(TIStream &is) {
       if (paperFormat != "") setPaperFormat(paperFormat);
     }
   }
-  m_validatedByCurrentScanner = false;
-}
-
-//===================================================================
-//
-// TScanner
-//
-//-------------------------------------------------------------------
-
-namespace {
-TScanner *instanceTwain = 0;
-TScanner *instanceEpson = 0;
-}
-
-//-------------------------------------------------------------------
-
-bool TScanner::m_isTwain = true;
-
-//-------------------------------------------------------------------
-
-namespace {
-class Cleaner {
-public:
-  bool m_activated;
-  Cleaner() : m_activated(false) {}
-  ~Cleaner() {
-    TScanner *scannerToDestroy        = 0;
-    if (m_activated) scannerToDestroy = TScanner::instance();
-    delete scannerToDestroy;
-  }
-};
-Cleaner MyCleaner;
-};
-
-//-------------------------------------------------------------------
-
-// #define DUMMYSCAN
-#ifdef DUMMYSCAN
-class TScannerDummy final : public TScanner {
-public:
-  TScannerDummy() {}
-  ~TScannerDummy() {}
-  void selectDevice() {}
-  bool isDeviceAvailable() { return true; }
-  void updateParameters(TScannerParameters &parameters) {
-    parameters.setSupportedTypes(false, true, true);
-    parameters.setMaxPaperSize(1000., 1000.);
-    parameters.enablePaperFeeder(true);
-    parameters.m_brightness.update(TScanParam(0, 255, 128, 1));
-    parameters.m_contrast.update(TScanParam(0, 255, 128, 1));
-    parameters.m_threshold.update(TScanParam(0, 255, 128, 1));
-    parameters.m_dpi.update(TScanParam(60, 1200, 100, 1));
-
-    setName("DummyScanner");
-  }
-  bool isTwain() const { return true; }
-  void acquire(const TScannerParameters &param, int paperCount) { return; }
-  bool isAreaSupported() { return true; }
-};
-#endif
-
-//-----------------------------------------------------------------------------
-
-TScanner *TScanner::instance() {
-  MyCleaner.m_activated = true;
-#ifdef DUMMYSCAN
-  static TScannerDummy dummy = TScannerDummy();
-  return &dummy;
-#else
-  if (m_isTwain) {
-    if (instanceEpson) {
-      TScannerEpson *se = (TScannerEpson *)instanceEpson;
-      se->closeIO();
-      // delete m_instanceEpson; //e' singletone, perche' buttarlo? (vinz)
-      // m_instanceEpson=0;
-    }
-    if (!instanceTwain) instanceTwain = new TScannerTwain();
-  } else if (!m_isTwain) {
-    if (instanceTwain) {
-      // delete m_instanceTwain;  //e' singletone, perche' buttarlo? (vinz)
-      // m_instanceTwain=0;
-      TTWAIN_CloseAll(0);
-    }
-    if (!instanceEpson) instanceEpson = new TScannerEpson();
-  }
-
-  return (m_isTwain ? instanceTwain : instanceEpson);
-#endif
-}
-
-//-----------------------------------------------------------------------------
-TScanner::TScanner() : m_paperLeft(0) {}
-
-//-----------------------------------------------------------------------------
-
-TScanner::~TScanner() {
-  if (instanceEpson) {
-    TScannerEpson *se = (TScannerEpson *)instanceEpson;
-    se->closeIO();
-  }
-}
-
-//-----------------------------------------------------------------------------
-
-void TScanner::addListener(TScannerListener *lst) { m_listeners.insert(lst); }
-
-//-----------------------------------------------------------------------------
-
-void TScanner::removeListener(TScannerListener *lst) { m_listeners.erase(lst); }
-
-//-----------------------------------------------------------------------------
-
-void TScanner::notifyImageDone(const TRasterImageP &img) {
-  std::set<TScannerListener *>::iterator it = m_listeners.begin();
-  for (; it != m_listeners.end(); ++it) {
-    (*it)->onImage(img);
-  }
-}
-
-//-----------------------------------------------------------------------------
-
-void TScanner::notifyNextPaper() {
-  std::set<TScannerListener *>::iterator it = m_listeners.begin();
-  for (; it != m_listeners.end(); ++it) {
-    (*it)->onNextPaper();
-  }
-}
-
-//-----------------------------------------------------------------------------
-
-void TScanner::notifyAutomaticallyNextPaper() {
-  std::set<TScannerListener *>::iterator it = m_listeners.begin();
-  for (; it != m_listeners.end(); ++it) {
-    (*it)->onAutomaticallyNextPaper();
-  }
-}
-
-//-----------------------------------------------------------------------------
-
-void TScanner::notifyError() {
-  std::set<TScannerListener *>::iterator it = m_listeners.begin();
-  for (; it != m_listeners.end(); ++it) {
-    (*it)->onError();
-  }
-}
-
-//-----------------------------------------------------------------------------
-/*! If one listener is set to cancel return true. */
-bool TScanner::isScanningCanceled() {
-  std::set<TScannerListener *>::iterator it = m_listeners.begin();
-  for (; it != m_listeners.end(); ++it) {
-    if ((*it)->isCanceled()) return true;
-  }
-  return false;
 }
 
 //===================================================================

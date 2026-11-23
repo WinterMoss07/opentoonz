@@ -398,14 +398,6 @@ QMenuBar *StackedMenuBar::createCleanupMenuBar() {
   filesMenu->addSeparator();
   addMenuItem(filesMenu, MI_Quit);
 
-  //----Scan Menu
-  QMenu *scanMenu = addMenu(tr("Scan"), cleanupMenuBar);
-  addMenuItem(scanMenu, MI_DefineScanner);
-  addMenuItem(scanMenu, MI_ScanSettings);
-  addMenuItem(scanMenu, MI_Scan);
-  addMenuItem(scanMenu, MI_SetScanCropbox);
-  addMenuItem(scanMenu, MI_ResetScanCropbox);
-
   //----Settings Menu
   QMenu *settingsMenu = addMenu(tr("Settings"), cleanupMenuBar);
   addMenuItem(settingsMenu, MI_CleanupSettings);
@@ -1182,12 +1174,6 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
 
   // Menu' SCAN CLEANUP
   QMenu *scanCleanupMenu = addMenu(tr("Scan && Cleanup"), fullMenuBar);
-  addMenuItem(scanCleanupMenu, MI_DefineScanner);
-  addMenuItem(scanCleanupMenu, MI_ScanSettings);
-  addMenuItem(scanCleanupMenu, MI_Scan);
-  addMenuItem(scanCleanupMenu, MI_SetScanCropbox);
-  addMenuItem(scanCleanupMenu, MI_ResetScanCropbox);
-  scanCleanupMenu->addSeparator();
   addMenuItem(scanCleanupMenu, MI_CleanupSettings);
   addMenuItem(scanCleanupMenu, MI_CleanupPreview);
   addMenuItem(scanCleanupMenu, MI_CameraTest);
@@ -1195,10 +1181,6 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
   scanCleanupMenu->addSeparator();
 #if defined(WITH_STOPMOTION)
   addMenuItem(scanCleanupMenu, MI_PencilTest);
-#endif
-#ifdef LINETEST
-  scanCleanupMenu->addSeparator();
-  addMenuItem(scanCleanupMenu, MI_Autocenter);
 #endif
 
   // Menu' LEVEL

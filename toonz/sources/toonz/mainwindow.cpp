@@ -2063,21 +2063,6 @@ void MainWindow::defineActions() {
 
   // Menu - Scan & Cleanup
 
-  createMenuScanCleanupAction(
-      MI_DefineScanner, QT_TR_NOOP("&Define Scanner..."), "", "scanner_define");
-  createMenuScanCleanupAction(MI_ScanSettings, QT_TR_NOOP("&Scan Settings..."),
-                              "", "scanner_settings");
-  createMenuScanCleanupAction(MI_Scan, QT_TR_NOOP("&Scan"), "", "scanner");
-  createMenuScanCleanupAction(MI_Autocenter, QT_TR_NOOP("&Autocenter..."), "",
-                              "autocenter");
-  menuAct = createToggle(MI_SetScanCropbox, QT_TR_NOOP("&Set Cropbox"), "", 0,
-                         MenuScanCleanupCommandType, "set_cropbox");
-  SetScanCropboxCheck::instance()->setToggle(menuAct);
-  QString scannerType = QSettings().value("CurrentScannerType").toString();
-  if (scannerType == "TWAIN") menuAct->setDisabled(true);
-  menuAct = createMenuScanCleanupAction(
-      MI_ResetScanCropbox, QT_TR_NOOP("&Reset Cropbox"), "", "reset_cropbox");
-  if (scannerType == "TWAIN") menuAct->setDisabled(true);
   createMenuScanCleanupAction(MI_CleanupSettings,
                               QT_TR_NOOP("&Cleanup Settings..."), "",
                               "cleanup_settings");

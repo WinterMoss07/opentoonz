@@ -19,15 +19,6 @@
     <separator/>
     <command>MI_Quit</command>
   </menu>
-  <menu title="Scan">
-    <command>MI_DefineScanner</command>
-    <command>MI_ScanSettings</command>
-    <command>MI_Scan</command>
-    <command>MI_SetScanCropbox</command>
-    <command>MI_ResetScanCropbox</command>
-    <separator/>
-    <command>MI_PencilTest</command>
-  </menu>
   <menu title="Settings">
     <command>MI_CleanupSettings</command>
     <separator/>

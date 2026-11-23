@@ -80,7 +80,6 @@ set(MOC_HEADERS
     reslist.h
     ruler.h
     savepresetpopup.h
-    scanpopup.h
     scenebrowser.h
     scenesettingspopup.h
     sceneviewer.h
@@ -177,7 +176,6 @@ set(HEADERS
     kis_tablet_support_win8.h
     menubarcommandids.h
     moviegenerator.h
-    scanlist.h
     sceneviewerevents.h
     selectionutils.h
     subcameramanager.h
@@ -218,7 +216,6 @@ set(SOURCES
     previewer.cpp
     previewfxmanager.cpp
     ruler.cpp
-    scanlist.cpp
     tapp.cpp
     toolbar.cpp
     castviewer.cpp
@@ -278,7 +275,6 @@ set(SOURCES
     renumberpopup.cpp
     runscriptcommand.cpp
     savepresetpopup.cpp
-    scanpopup.cpp
     scenebrowser.cpp
     scenebrowserversioncontrol.cpp
     sceneviewercontextmenu.cpp

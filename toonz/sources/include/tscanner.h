@@ -72,10 +72,6 @@ private:
                          // alle dimensioni della carta
                          // per rispettare la maxPaperSize
 
-  bool m_validatedByCurrentScanner;
-  // vale false se bisogna ancora chiamare adaptToCurrentScanner()
-  // l'idea e' di chiamare questo metodo il meno possibile
-
 public:
   TScanParam m_brightness;
   TScanParam m_contrast;
@@ -133,80 +129,9 @@ public:
   void setScanType(ScanType scanType);
   ScanType getScanType() const { return m_scanType; }
 
-  // se e' stato definito uno scanner aggiorna lo stato (enabled/disabled,
-  // range, etc.)
-  // dei parametri rispetto a quest'ultimo
-  void adaptToCurrentScanner();
-  void adaptToCurrentScannerIfNeeded() {
-    if (!m_validatedByCurrentScanner) adaptToCurrentScanner();
-  }
-
   void assign(const TScannerParameters *params);
   void saveData(TOStream &os) const;
   void loadData(TIStream &is);
-};
-
-//----------------------------------------
-
-class TScannerListener {
-public:
-  virtual void onImage(const TRasterImageP &) = 0;
-  virtual void onError()                      = 0;
-  virtual void onNextPaper()                  = 0;
-  virtual void onAutomaticallyNextPaper()     = 0;
-  virtual bool isCanceled()                   = 0;
-  virtual ~TScannerListener() {}
-};
-
-//----------------------------------------
-
-class DVAPI TScanner {
-  std::set<TScannerListener *> m_listeners;
-
-protected:
-  TScanParam m_brightness, m_contrast, m_threshold, m_dpi;
-  int m_paperLeft;
-  QString m_scannerName;
-
-public:
-  TScanner();
-  virtual ~TScanner();
-
-  static bool m_isTwain;  // brutto, brutto :(
-  static TScanner *instance();
-
-  virtual void selectDevice()      = 0;
-  virtual bool isDeviceAvailable() = 0;
-  virtual bool isDeviceSelected() { return false; }
-
-  virtual void updateParameters(TScannerParameters &parameters) = 0;
-  // aggiorna i parametri 'parameters' in funzione del tipo di scanner
-  // selezionato
-  // se possibile non modifica i valori correnti, ma cambia solo quello che non
-  // e' piu' adatto
-  // abilita/disabilita i parametri "opzionali".
-  // n.b. i parametri opzionali che vengono disabilitati mantengono il loro
-  // valore
-  // (cosi' se fai save default settings dopo aver cambiato scanner non ti perdi
-  // i vecchi settaggi)
-
-  virtual void acquire(const TScannerParameters &param, int paperCount) = 0;
-
-  void addListener(TScannerListener *);
-  void removeListener(TScannerListener *);
-
-  void notifyImageDone(const TRasterImageP &image);
-  void notifyNextPaper();
-  void notifyAutomaticallyNextPaper();
-  void notifyError();
-  bool isScanningCanceled();
-
-  int getPaperLeftCount() const { return m_paperLeft; }
-  void setPaperLeftCount(int count) { m_paperLeft = count; }
-  void decrementPaperLeftCount() { --m_paperLeft; }
-
-  QString getName() const { return m_scannerName; }
-  void setName(const QString &name) { m_scannerName = name; }
 };
 
 //---------------------------------------------------------
