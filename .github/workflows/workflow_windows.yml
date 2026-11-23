@@ -108,7 +108,7 @@ jobs:
           mkdir build
           cd build
 
-          cmake ..\sources -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DCMAKE_POLICY_DEFAULT_CMP0141=NEW -DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded -DQT_PATH="%QT_PATH%" -DBOOST_ROOT="%BOOST_ROOT%" -DOpenCV_DIR="%OpenCV_DIR%" -DWITH_WINTAB=Y
+          cmake ..\sources -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DCMAKE_POLICY_DEFAULT_CMP0141=NEW -DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded -DQT_PATH="%QT_PATH%" -DBOOST_ROOT="%BOOST_ROOT%" -DOpenCV_DIR="%OpenCV_DIR%" -DWITH_WINTAB=Y -DWITH_TRANSLATION=OFF
         shell: cmd
 
       # Build Opentoonz using Ninja
@@ -142,7 +142,7 @@ jobs:
           copy /Y "C:\tools\opencv\build\x64\vc16\bin\opencv_world4130.dll" Opentoonz
           
           REM Deploy Qt dependencies
-          "%QT_PATH%\bin\windeployqt.exe" Opentoonz\Opentoonz.exe --opengl
+          "%QT_PATH%\bin\windeployqt.exe" Opentoonz\Opentoonz.exe --opengl --no-translations
           
           del /Q Opentoonz\*.pdb  REM Remove .pdb files
           del /Q Opentoonz\vc_redist.x64.exe REM Remove vc_redist.x64.exe file
