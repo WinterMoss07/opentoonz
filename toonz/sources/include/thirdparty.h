@@ -46,19 +46,6 @@ DVAPI bool readFFmpegAudio(QProcess &process, QByteArray &rawData);
 
 //-----------------------------------------------------------------------------
 
-DVAPI bool findRhubarb(QString dir);
-DVAPI bool checkRhubarb();
-DVAPI QString autodetectRhubarb();
-
-DVAPI QString getRhubarbDir();
-DVAPI void setRhubarbDir(const QString &dir);
-DVAPI int getRhubarbTimeout();
-DVAPI void setRhubarbTimeout(int secs);
-
-DVAPI void runRhubarb(QProcess &process, const QStringList &arguments);
-
-//-----------------------------------------------------------------------------
-
 // return  0 = No error
 // return -1 = error code
 // return -2 = timed out

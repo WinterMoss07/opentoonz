@@ -24,12 +24,6 @@ void initialize() {
     QString path = ThirdParty::autodetectFFmpeg();
     if (!path.isEmpty()) ThirdParty::setFFmpegDir(path);
   }
-
-  // Auto detect Rhubarb
-  if (!ThirdParty::checkRhubarb()) {
-    QString path = ThirdParty::autodetectRhubarb();
-    if (!path.isEmpty()) ThirdParty::setRhubarbDir(path);
-  }
 }
 
 //=============================================================================
@@ -240,93 +234,6 @@ bool readFFmpegAudio(QProcess &process, QByteArray &rawData) {
   process.close();
 
   return success;
-}
-
-//=============================================================================
-// Rhubarb interface
-//-----------------------------------------------------------------------------
-
-#ifdef _WIN32
-#define RHUBARB_EXE "/rhubarb.exe"
-#else
-#define RHUBARB_EXE "/rhubarb"
-#endif
-
-//-----------------------------------------------------------------------------
-
-bool findRhubarb(QString dir) {
-  // Rhubarb executable
-
-  // Relative path
-  if (dir.isEmpty() || dir.at(0) == ".") {
-    dir = QCoreApplication::applicationDirPath() + "/" + dir;
-  }
-
-  // Check if executable exist
-  return TSystem::doesExistFileOrLevel(TFilePath(dir + RHUBARB_EXE));
-}
-
-//-----------------------------------------------------------------------------
-
-bool checkRhubarb() {
-  // Path in preferences
-  return findRhubarb(Preferences::instance()->getRhubarbPath());
-}
-
-//-----------------------------------------------------------------------------
-
-QString autodetectRhubarb() {
-  QString dir = Preferences::instance()->getRhubarbPath();
-  if (findRhubarb(dir)) return dir;
-
-  if (findRhubarb(".")) return ".";
-  if (findRhubarb("./rhubarb")) return "./rhubarb";
-  if (findRhubarb("./rhubarb/bin")) return "./rhubarb/bin";
-  if (findRhubarb("./Rhubarb-Lip-Sync")) return "./Rhubarb-Lip-Sync";
-
-#ifndef _WIN32
-  if (findRhubarb("/usr/local/bin")) return "/usr/local/bin";
-  if (findRhubarb("/usr/bin")) return "/usr/bin";
-  if (findRhubarb("/bin")) return "/bin";
-#endif
-
-  return "";
-}
-
-//-----------------------------------------------------------------------------
-
-void runRhubarb(QProcess &process, const QStringList &arguments) {
-  QString dir = Preferences::instance()->getRhubarbPath();
-  if (dir.at(0) == '.')  // Relative path
-    dir = QCoreApplication::applicationDirPath() + "/" + dir;
-
-  process.start(dir + RHUBARB_EXE, arguments);
-}
-
-//-----------------------------------------------------------------------------
-
-QString getRhubarbDir() {
-  return Preferences::instance()->getStringValue(rhubarbPath);
-}
-
-//-----------------------------------------------------------------------------
-
-void setRhubarbDir(const QString &dir) {
-  QString path = Preferences::instance()->getRhubarbPath();
-  if (path != dir) Preferences::instance()->setValue(rhubarbPath, dir);
-}
-
-//-----------------------------------------------------------------------------
-
-int getRhubarbTimeout() {
-  return Preferences::instance()->getIntValue(rhubarbTimeout);
-}
-
-//-----------------------------------------------------------------------------
-
-void setRhubarbTimeout(int secs) {
-  int timeout = Preferences ::instance()->getIntValue(rhubarbTimeout);
-  if (secs != timeout) Preferences::instance()->setValue(rhubarbTimeout, secs);
 }
 
 //-----------------------------------------------------------------------------

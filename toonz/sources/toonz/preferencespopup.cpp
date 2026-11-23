@@ -1278,8 +1278,6 @@ QString PreferencesPopup::getUIString(PreferencesItemId id) {
        tr("Allow Multi-Thread in FFMPEG Rendering (UNSTABLE)")},
       {quickTimeBackend,
        tr("Use QuickTime to decode/code .mov and .3gp (If Installed)")},
-      {rhubarbPath, tr("Rhubarb Path:")},
-      {rhubarbTimeout, tr("Rhubarb Timeout:")},
 
       // Drawing
       {DefRasterFormat, tr("Default Raster / Scan Level Format:")},
@@ -1589,7 +1587,7 @@ PreferencesPopup::PreferencesPopup()
   categories << tr("General") << tr("Interface") << tr("Preview/Render")
              << tr("Load/Import") << tr("Saving") << tr("Decoder/Encoder")
              << tr("Drawing") << tr("Tools") << tr("Xsheet") << tr("Onion Skin")
-             << tr("Animation") << tr("Auto Lip-Sync") << tr("Colors")
+             << tr("Animation") << tr("Colors")
              << tr("Vector Visualize") << tr("Version Control")
              << tr("Touch/Tablet Settings");
 #ifdef _WIN32
@@ -1612,7 +1610,6 @@ PreferencesPopup::PreferencesPopup()
   stackedWidget->addWidget(createXsheetPage());
   stackedWidget->addWidget(createOnionSkinPage());
   stackedWidget->addWidget(createAnimationPage());
-  stackedWidget->addWidget(createAutoLipSyncPage());
   stackedWidget->addWidget(createColorsPage());
   stackedWidget->addWidget(createVisualizationPage());
   stackedWidget->addWidget(createVersionControlPage());
@@ -1995,37 +1992,6 @@ QWidget* PreferencesPopup::createCodecPage() {
       lay);
   insertUI(ffmpegMultiThread, lay);
   insertUI(quickTimeBackend, lay);
-
-  lay->setRowStretch(lay->rowCount(), 1);
-  insertFootNote(lay);
-  widget->setLayout(lay);
-  return widget;
-}
-
-//-----------------------------------------------------------------------------
-
-QWidget* PreferencesPopup::createAutoLipSyncPage() {
-  auto putLabel = [&](const QString& labelStr, QGridLayout* lay) {
-    lay->addWidget(new QLabel(labelStr, this), lay->rowCount(), 0, 1, 3,
-                   Qt::AlignLeft | Qt::AlignVCenter);
-  };
-
-  QWidget* widget  = new QWidget(this);
-  QGridLayout* lay = new QGridLayout();
-  setupLayout(lay);
-
-  putLabel(tr("OpenToonz can use Rhubarb for auto lip-syncing.\n") +
-               tr("Rhubarb is not bundled with OpenToonz.\n") +
-               tr("Please provide the path where Rhubarb is located on your "
-                  "computer."),
-           lay);
-
-  insertUI(rhubarbPath, lay);
-
-  putLabel(tr("Number of seconds to wait for Rhubarb to complete processing "
-              "the audio:"),
-           lay);
-  insertUI(rhubarbTimeout, lay);
 
   lay->setRowStretch(lay->rowCount(), 1);
   insertFootNote(lay);

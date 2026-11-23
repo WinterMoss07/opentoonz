@@ -2254,12 +2254,6 @@ void MainWindow::defineActions() {
   createMenuXsheetAction(MI_RemoveEmptyColumns,
                          QT_TR_NOOP("Remove Empty Columns"), "",
                          "remove_empty_columns");
-  createMenuXsheetAction(MI_LipSyncPopup,
-                         QT_TR_NOOP("&Apply Lip Sync Data to Column"), "Alt+L",
-                         "dialogue");
-  createMenuXsheetAction(MI_AutoLipSyncPopup,
-                         QT_TR_NOOP("&Apply Auto Lip Sync to Column"),
-                         "Ctrl+Alt+L", "dialogue");
 
   createMenuXsheetAction(MI_ToggleTaggedFrame,
                          QT_TR_NOOP("Toggle Navigation Tag"), "",

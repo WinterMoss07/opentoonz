@@ -179,7 +179,6 @@
         <command>MI_InsertGlobalKeyframe</command>
         <command>MI_RemoveGlobalKeyframe</command>
         <separator/>
-        <command>MI_LipSyncPopup</command>
         <separator/>
         <command>MI_RemoveEmptyColumns</command>
     </menu>

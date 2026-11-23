@@ -4027,12 +4027,6 @@ void CellArea::createCellMenu(QMenu &menu, bool isCellSelected, TXshCell cell,
 
     QMenu *lipSyncMenu = new QMenu(tr("Lip Sync"), this);
     {
-      if (sl ||
-          (TApp::instance()->getCurrentLevel()->getLevel() &&
-           TApp::instance()->getCurrentLevel()->getLevel()->getChildLevel())) {
-        lipSyncMenu->addAction(cmdManager->getAction(MI_LipSyncPopup));
-        lipSyncMenu->addAction(cmdManager->getAction(MI_AutoLipSyncPopup));
-      }
       if (!soundCellsSelected)
         lipSyncMenu->addAction(cmdManager->getAction(MI_ImportMagpieFile));
     }

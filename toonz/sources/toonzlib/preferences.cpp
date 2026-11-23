@@ -513,9 +513,6 @@ void Preferences::definePreferenceItems() {
   define(fastRenderPath, "fastRenderPath", QMetaType::QString, "desktop");
   define(ffmpegMultiThread, "ffmpegMultiThread", QMetaType::Bool, false);
   define(quickTimeBackend, "quickTimeBackend", QMetaType::Bool, false);
-  define(rhubarbPath, "rhubarbPath", QMetaType::QString, "");
-  define(rhubarbTimeout, "rhubarbTimeout", QMetaType::Int, 600, 0,
-         std::numeric_limits<int>::max());
 
   // Drawing
   define(DefRasterFormat, "DefRasterFormat", QMetaType::QString, "tif");

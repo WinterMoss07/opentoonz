@@ -56,8 +56,6 @@ set(MOC_HEADERS
     levelcreatepopup.h
     levelsettingspopup.h
     linesfadepopup.h
-    lipsyncpopup.h
-    autolipsyncpopup.h
     loadfolderpopup.h
     locatorpopup.h
     magpiefileimportpopup.h
@@ -273,8 +271,6 @@ set(SOURCES
     layerheaderpanel.cpp
     levelcreatepopup.cpp
     levelsettingspopup.cpp
-    lipsyncpopup.cpp
-    autolipsyncpopup.cpp
     magpiefileimportpopup.cpp
     outputsettingspopup.cpp
     overwritepopup.cpp

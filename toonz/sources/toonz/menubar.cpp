@@ -1288,7 +1288,6 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
   addMenuItem(xsheetMenu, MI_InsertGlobalKeyframe);
   addMenuItem(xsheetMenu, MI_RemoveGlobalKeyframe);
   xsheetMenu->addSeparator();
-  addMenuItem(xsheetMenu, MI_LipSyncPopup);
   xsheetMenu->addSeparator();
   addMenuItem(xsheetMenu, MI_RemoveEmptyColumns);
 
