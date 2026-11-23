@@ -27,6 +27,8 @@ jobs:
     runs-on: windows-2022
     env:
       # QT related variable
+      SCCACHE_GHA_ENABLED: "true"
+
       QT_PATH: ${{ github.workspace }}\thirdparty\qt\5.15.2_wintab\msvc2019_64  # Path to custom Qt
 
       # Visual Studio related variables
@@ -84,9 +86,13 @@ jobs:
           7z x -y thirdparty-libs.zip
         shell: cmd    
 
-      # Add msbuild to PATH for build process
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v2
+      # MSVC environment for Ninja, v142 toolset (MSVC 14.29)
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+          toolset: 14.29
+
+      - uses: mozilla-actions/sccache-action@v0.0.9
 
       # CMake configuration step
       - name: CMake configuration
@@ -102,15 +108,16 @@ jobs:
           mkdir build
           cd build
 
-          cmake ..\sources -G "%MSVCVERSION%" -T v142 -Ax64 -DQT_PATH="%QT_PATH%" -DBOOST_ROOT="%BOOST_ROOT%" -DOpenCV_DIR="%OpenCV_DIR%" -DWITH_WINTAB=Y
+          cmake ..\sources -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DCMAKE_POLICY_DEFAULT_CMP0141=NEW -DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded -DQT_PATH="%QT_PATH%" -DBOOST_ROOT="%BOOST_ROOT%" -DOpenCV_DIR="%OpenCV_DIR%" -DWITH_WINTAB=Y
         shell: cmd
 
-      # Build Opentoonz using MSBuild
+      # Build Opentoonz using Ninja
       - name: Build Opentoonz
         run: |
           @echo on
+          cl 2>&1 | findstr /C:"Version"
           cd toonz\build
-          msbuild /p:Configuration=RelWithDebInfo /m /verbosity:minimal ALL_BUILD.vcxproj
+          ninja || exit /b 1
         shell: cmd
 
       # Create the package
@@ -121,7 +128,8 @@ jobs:
           
           REM Create Opentoonz directory and copy files from RelWithDebInfo
           mkdir Opentoonz
-          copy /Y RelWithDebInfo\*.* Opentoonz\
+          copy /Y *.exe Opentoonz\
+          copy /Y *.dll Opentoonz\
           REM Copy required DLLs for proper functionality
           copy /Y ..\..\thirdparty\glut\3.7.6\lib\glut64.dll Opentoonz
           copy /Y ..\..\thirdparty\glew\glew-1.9.0\bin\64bit\glew32.dll Opentoonz
@@ -157,3 +165,8 @@ jobs:
         with:
           name: Opentoonz-${{ runner.os }}-${{ github.sha }}
           path: artifact
+
+      - name: sccache stats
+        if: always()
+        run: sccache --show-stats
+        shell: cmd

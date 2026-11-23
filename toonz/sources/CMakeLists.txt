@@ -625,7 +625,9 @@ endif()
 if(BUILD_ENV_MSVC)
     # place Toonz.exe and dlls in the same directory
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+    if(CMAKE_GENERATOR MATCHES "Visual Studio")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+    endif()
     # use secure functions by defaualt
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_COUNT=1")
@@ -677,6 +679,9 @@ if(WITH_TRANSLATION)
     # translate_update_** projects for lupdate (update .ts files)
     # -------------------------------------------------------------------------
     function(add_translation module)
+        if(NOT CMAKE_GENERATOR MATCHES "Visual Studio")
+            return()
+        endif()
         set(translation)
         foreach(lang ${LANG_CODES})
             set(name "${CMAKE_SOURCE_DIR}/translations/${lang}/${module}.ts")
@@ -719,7 +724,6 @@ if(WITH_TRANSLATION)
                     TARGET "${module}" POST_BUILD 
                     COMMAND ${Qt5_LRELEASE_EXECUTABLE} "${ts_file}" -qm "${qm_tmp_file}"
                     COMMAND ${CMAKE_COMMAND} -E rename ${qm_tmp_file} ${qm_file}
-                    DEPENDS "${ts_file}"
                     BYPRODUCTS "${qm_file}"
                     COMMENT "lrelease ${lang_disp_name}/${ts_name}.qm"
                     VERBATIM
