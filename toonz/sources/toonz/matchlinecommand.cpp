@@ -507,8 +507,7 @@ public:
       it++;
       mergeCmapped(destColumn, index - count,
                    it == indices.end() ? newLevelPath.getQString()
-                                       : tmpPath.getQString(),
-                   false);
+                                       : tmpPath.getQString());
       ColumnCmd::deleteColumn(index - count);
       progress.setValue(++count);
       QCoreApplication::instance()->processEvents();

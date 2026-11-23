@@ -3,6 +3,7 @@
 // TnzCore includes
 #include "tfilepath.h"
 #include "tgeometry.h"
+#include "trastercm.h"
 
 // TnzQt includes
 #include "toonzqt/dvdialog.h"
@@ -12,6 +13,7 @@
 
 // STD includes
 #include <set>
+#include <vector>
 
 //==================================================
 
@@ -21,6 +23,7 @@ class QRadioButton;
 class TPaletteHandle;
 class TXshSimpleLevel;
 class TXsheet;
+class TXshCell;
 
 //==================================================
 
@@ -95,12 +98,36 @@ public:
 
 //==========================================================================
 
+//! A drawing and the drawing laid on it, with their placements (stage
+//! placement times dpi scale). Used by Apply Match Lines and Merge Tlv.
+struct MergeCmappedPair {
+  const TXshCell *m_cell;
+  TAffine m_imgAff;
+  const TXshCell *m_mcell;
+  TAffine m_matchAff;
+
+  MergeCmappedPair(const TXshCell &cell, const TAffine &imgAff,
+                   const TXshCell &mcell, const TAffine &matchAff)
+      : m_cell(&cell)
+      , m_imgAff(imgAff)
+      , m_mcell(&mcell)
+      , m_matchAff(matchAff) {}
+};
+
+//! Brings matchRas into the space of ras. On return matchRas is resampled if
+//! needed and target is the part of ras it covers, of the same size; rect is
+//! that part in ras coordinates. Returns false when they don't overlap.
+bool placeMatchRaster(const TRasterCM32P &ras, TRasterCM32P &matchRas,
+                      const TAffine &imgAff, const TAffine &matchAff,
+                      TRasterCM32P &target, TRect &rect);
+
+//==========================================================================
+
 void deleteMatchlines(TXshSimpleLevel *sl, const std::set<TFrameId> &fids);
 void deleteInk(TXshSimpleLevel *sl, const std::set<TFrameId> &fids);
 void mergeColumns(int dstColumn, int srcColumn, bool isRedo, bool groupLevels);
 void mergeColumns(const std::set<int> &columns, bool groupLevels);
 void doMatchlines(int column, int mColumn, int index, int inkPrevalence,
                   int MatchlineSessionId = 0);
-void mergeCmapped(int dstColumn, int srcColumn, const QString &fullpath,
-                  bool isRedo);
+void mergeCmapped(int dstColumn, int srcColumn, const QString &fullpath);
 std::vector<int> string2Indexes(const QString &values);

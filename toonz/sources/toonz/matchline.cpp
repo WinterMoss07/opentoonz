@@ -58,22 +58,58 @@ TEnv::IntVar MatchlineStyleIndex("MatchlineStyleIndex", -1);
 TEnv::IntVar MatchlinePrevalence("MatchlinePrevalence", 0);
 TEnv::IntVar MatchlineInkUsagePolicy("MatchlineInkUsagePolicy", -1);
 
+//-----------------------------------------------------------------------------
+
+bool placeMatchRaster(const TRasterCM32P &ras, TRasterCM32P &matchRas,
+                      const TAffine &imgAff, const TAffine &matchAff,
+                      TRasterCM32P &target, TRect &rect) {
+  TAffine aff = imgAff.inv() * matchAff;
+  int mlx     = matchRas->getLx();
+  int mly     = matchRas->getLy();
+  int rlx     = ras->getLx();
+  int rly     = ras->getLy();
+
+  TRectD in  = convert(matchRas->getBounds()) - matchRas->getCenterD();
+  TRectD out = aff * in;
+
+  TPoint offs((rlx - mlx) / 2 + tround(out.getP00().x - in.getP00().x),
+              (rly - mly) / 2 + tround(out.getP00().y - in.getP00().y));
+
+  int lxout = tround(out.getLx()) + 1 + ((offs.x < 0) ? offs.x : 0);
+  int lyout = tround(out.getLy()) + 1 + ((offs.y < 0) ? offs.y : 0);
+
+  if (lxout <= 0 || lyout <= 0 || offs.x >= rlx || offs.y >= rly)
+    return false;
+
+  aff = aff.place((double)(in.getLx() / 2.0), (double)(in.getLy() / 2.0),
+                  (out.getLx()) / 2.0 + ((offs.x < 0) ? offs.x : 0),
+                  (out.getLy()) / 2.0 + ((offs.y < 0) ? offs.y : 0));
+
+  if (offs.x < 0) offs.x = 0;
+  if (offs.y < 0) offs.y = 0;
+
+  if (lxout + offs.x > rlx) lxout = rlx - offs.x;
+  if (lyout + offs.y > rly) lyout = rly - offs.y;
+
+  if (!aff.isIdentity(1e-4)) {
+    TRasterCM32P aux(lxout, lyout);
+    TRop::resample(aux, matchRas, aff);
+    matchRas = aux;
+  }
+
+  // Both rasters must have the same size: the match raster may be larger
+  // than the part of ras left from the offset.
+  rect   = matchRas->getBounds() + offs;
+  target = ras->extract(rect);
+  if (!target) return false;
+  if (target->getSize() != matchRas->getSize()) {
+    TRect matchRect = rect - offs;
+    matchRas        = matchRas->extract(matchRect);
+  }
+  return true;
+}
+
 namespace {
-
-class MergeCmappedPair {
-public:
-  const TXshCell *m_cell;
-  TAffine m_imgAff;
-  const TXshCell *m_mcell;
-  TAffine m_matchAff;
-
-  MergeCmappedPair(const TXshCell &cell, const TAffine &imgAff,
-                   const TXshCell &mcell, const TAffine &matchAff)
-      : m_cell(&cell)
-      , m_imgAff(imgAff)
-      , m_mcell(&mcell)
-      , m_matchAff(matchAff){};
-};
 
 void doMatchlines(const std::vector<MergeCmappedPair> &matchingLevels,
                   int inkIndex, int inkPrevalence) {
@@ -89,69 +125,30 @@ void doMatchlines(const std::vector<MergeCmappedPair> &matchingLevels,
   std::map<int, int> usedInks;
 
   int i = 0;
-  for (i = 0; i < (int)matchingLevels.size(); i++) {
-    TToonzImageP img = (TToonzImageP)matchingLevels[i].m_cell->getImage(true);
-    TToonzImageP match =
-        (TToonzImageP)matchingLevels[i].m_mcell->getImage(false);
+  for (const MergeCmappedPair &pair : matchingLevels) {
+    TToonzImageP img   = (TToonzImageP)pair.m_cell->getImage(true);
+    TToonzImageP match = (TToonzImageP)pair.m_mcell->getImage(false);
     if (!img || !match)
       throw TRopException("Can do matchlines only on cmapped raster images!");
-    // img->lock();
-    TRasterCM32P ras      = img->getRaster();    // img->getCMapped(false);
-    TRasterCM32P matchRas = match->getRaster();  // match->getCMapped(true);
+    TRasterCM32P ras      = img->getRaster();
+    TRasterCM32P matchRas = match->getRaster();
     if (!ras || !matchRas)
       throw TRopException("Can do matchlines only on cmapped images!");
 
-    TAffine aff =
-        matchingLevels[i].m_imgAff.inv() * matchingLevels[i].m_matchAff;
-    int mlx = matchRas->getLx();
-    int mly = matchRas->getLy();
-    int rlx = ras->getLx();
-    int rly = ras->getLy();
-
-    TRectD in = convert(matchRas->getBounds()) - matchRas->getCenterD();
-
-    TRectD out = aff * in;
-
-    TPoint offs((rlx - mlx) / 2 + tround(out.getP00().x - in.getP00().x),
-                (rly - mly) / 2 + tround(out.getP00().y - in.getP00().y));
-
-    int lxout = tround(out.getLx()) + 1 + ((offs.x < 0) ? offs.x : 0);
-    int lyout = tround(out.getLy()) + 1 + ((offs.y < 0) ? offs.y : 0);
-
-    if (lxout <= 0 || lyout <= 0 || offs.x >= rlx || offs.y >= rly) {
-      // tmsg_error("no intersections between matchline and level");
+    TRasterCM32P target;
+    TRect rect;
+    if (!placeMatchRaster(ras, matchRas, pair.m_imgAff, pair.m_matchAff,
+                          target, rect))
       continue;
-    }
 
-    aff = aff.place((double)(in.getLx() / 2.0), (double)(in.getLy() / 2.0),
-                    (out.getLx()) / 2.0 + ((offs.x < 0) ? offs.x : 0),
-                    (out.getLy()) / 2.0 + ((offs.y < 0) ? offs.y : 0));
-
-    if (offs.x < 0) offs.x = 0;
-    if (offs.y < 0) offs.y = 0;
-
-    if (lxout + offs.x > rlx || lyout + offs.y > rly) {
-      lxout = (lxout + offs.x > rlx) ? (rlx - offs.x) : lxout;
-      lyout = (lyout + offs.y > rly) ? (rly - offs.y) : lyout;
-    }
-
-    if (!aff.isIdentity(1e-4)) {
-      TRasterCM32P aux(lxout, lyout);
-      TRop::resample(aux, matchRas, aff);
-      matchRas = aux;
-    }
     ras->lock();
     matchRas->lock();
-    TRect raux = matchRas->getBounds() + offs;
-    TRasterP r = ras->extract(raux);
-
-    TRop::applyMatchLines(r, matchRas, palette, matchPalette, inkIndex,
+    TRop::applyMatchLines(target, matchRas, palette, matchPalette, inkIndex,
                           inkPrevalence, usedInks);
-
     ras->unlock();
     matchRas->unlock();
 
-    img->setSavebox(img->getSavebox() + (matchRas->getBounds() + offs));
+    img->setSavebox(img->getSavebox() + rect);
   }
 
   if (inkIndex == -2) {
@@ -620,11 +617,9 @@ public:
     m_level->getPalette()->assign(m_palette);
 
     std::vector<TFrameId> fids;
-    for (; it != m_images.end(); ++it)  //, ++mit)
-    {
-      QString id = "MatchlinesUndo" + QString::number(m_mergeCmappedSessionId) +
-                   "-" + QString::number(it->first.getNumber());
-      TImageP img = TImageCache::instance()->get(id, false)->cloneImage();
+    for (; it != m_images.end(); ++it) {
+      TImageP img =
+          TImageCache::instance()->get(it->second, false)->cloneImage();
 
       img->setPalette(m_level->getPalette());
 
@@ -651,13 +646,8 @@ public:
   int getSize() const override { return sizeof(*this); }
 
   ~MatchlineUndo() {
-    std::map<TFrameId, QString>::const_iterator it = m_images.begin();
-    for (; it != m_images.end(); ++it)  //, ++mit)
-    {
-      QString id = "MatchlineUndo" + QString::number(m_mergeCmappedSessionId) +
-                   "-" + QString::number(it->first.getNumber());
-      TImageCache::instance()->remove(id);
-    }
+    for (const auto &image : m_images)
+      TImageCache::instance()->remove(image.second);
     delete m_palette;
   }
 
@@ -693,9 +683,6 @@ void doMatchlines(int column, int mColumn, int index, int inkPrevalence,
 
   if (mColumn != -1) xsh->getCells(start, mColumn, cell.size(), &(mCell[0]));
 
-  TXshColumn *col  = xsh->getColumn(column);
-  TXshColumn *mcol = xsh->getColumn(mColumn);
-
   std::vector<MergeCmappedPair> matchingLevels;
 
   std::map<TFrameId, TFrameId> table;
@@ -703,7 +690,12 @@ void doMatchlines(int column, int mColumn, int index, int inkPrevalence,
   TXshSimpleLevel *level = 0, *mLevel = 0;
   TXshLevelP xl;
 
+  // Undo images, cached until the command is canceled or the undo is gone
   std::map<TFrameId, QString> images;
+  auto releaseImages = [&images]() {
+    for (const auto &image : images)
+      TImageCache::instance()->remove(image.second);
+  };
 
   QProgressBar *getImageProgressBar = new QProgressBar(0);
   getImageProgressBar->setAttribute(Qt::WA_DeleteOnClose);
@@ -732,15 +724,7 @@ void doMatchlines(int column, int mColumn, int index, int inkPrevalence,
       DVGui::warning(
           QObject::tr("It is not possible to apply match lines to a column "
                       "containing more than one level."));
-      /*-- 前に遡ってキャッシュを消去 --*/
-      i--;
-      for (; i >= 0; i--) {
-        TFrameId fid = cell[i].m_frameId;
-        QString id = "MatchlinesUndo" + QString::number(MergeCmappedSessionId) +
-                     "-" + QString::number(fid.getNumber());
-        if (TImageCache::instance()->isCached(id.toStdString()))
-          TImageCache::instance()->remove(id);
-      }
+      releaseImages();
       return;
     }
 
@@ -751,15 +735,7 @@ void doMatchlines(int column, int mColumn, int index, int inkPrevalence,
       DVGui::warning(
           QObject::tr("It is not possible to use a match lines column "
                       "containing more than one level."));
-      /*-- 前に遡ってキャッシュを消去 --*/
-      i--;
-      for (; i >= 0; i--) {
-        TFrameId fid = cell[i].m_frameId;
-        QString id = "MatchlinedUndo" + QString::number(MergeCmappedSessionId) +
-                     "-" + QString::number(fid.getNumber());
-        if (TImageCache::instance()->isCached(id.toStdString()))
-          TImageCache::instance()->remove(id);
-      }
+      releaseImages();
       return;
     }
     TImageP img   = cell[i].getImage(true);
@@ -779,21 +755,14 @@ void doMatchlines(int column, int mColumn, int index, int inkPrevalence,
         getImageProgressBar->close();
         DVGui::warning(QObject::tr(
             "Match lines can be applied to Toonz raster levels only."));
-        /*-- 前に遡ってキャッシュを消去 --*/
-        i--;
-        for (; i >= 0; i--) {
-          TFrameId fid = cell[i].m_frameId;
-          QString id   = "MatchlinedUndo" +
-                       QString::number(MergeCmappedSessionId) + "-" +
-                       QString::number(fid.getNumber());
-          if (TImageCache::instance()->isCached(id.toStdString()))
-            TImageCache::instance()->remove(id);
-        }
+        releaseImages();
         return;
       }
       /*- Matchline前の画像をUndoに格納 -*/
-      QString id = "MatchlinesUndo" + QString::number(MergeCmappedSessionId) +
-                   "-" + QString::number(fid.getNumber());
+      // The full frame id: 1 and 1a must not share a cache entry
+      QString id = QString("MatchlinesUndo%1-%2")
+                       .arg(MergeCmappedSessionId)
+                       .arg(QString::fromStdString(fid.expand()));
       TImageCache::instance()->add(id, timg->clone(), false);
       images[fid] = id;
       TAffine imgAff, matchAff;
@@ -809,6 +778,7 @@ void doMatchlines(int column, int mColumn, int index, int inkPrevalence,
   getImageProgressBar->close();
 
   if (matchingLevels.empty()) {
+    releaseImages();
     DVGui::warning(
         QObject::tr("Match lines can be applied to Toonz raster levels only."));
     return;
@@ -818,6 +788,7 @@ void doMatchlines(int column, int mColumn, int index, int inkPrevalence,
   {
     TPalette *plt = level->getPalette();
     if (!plt) {
+      releaseImages();
       DVGui::warning(
           QObject::tr("The level you are using has not a valid palette."));
       return;
@@ -829,21 +800,7 @@ void doMatchlines(int column, int mColumn, int index, int inkPrevalence,
     index          = styleCount;
     while (index >= styleCount) {
       if (md->exec(plt) != QDialog::Accepted) {
-        /*- キャッシュを消す -*/
-        for (int i = 0; i < (int)cell.size(); i++) {
-          TFrameId fid  = cell[i].m_frameId;
-          TFrameId mFid = mCell[i].m_frameId;
-          QString id    = "MatchlinedUndo" +
-                       QString::number(MergeCmappedSessionId) + "-" +
-                       QString::number(fid.getNumber());
-          QString mid = "MatchlinerUndo" +
-                        QString::number(MergeCmappedSessionId) + "-" +
-                        QString::number(mFid.getNumber());
-          if (TImageCache::instance()->isCached(id.toStdString()))
-            TImageCache::instance()->remove(id);
-          if (TImageCache::instance()->isCached(mid.toStdString()))
-            TImageCache::instance()->remove(mid);
-        }
+        releaseImages();
         return;
       }
 
@@ -885,24 +842,6 @@ void doMatchlines(int column, int mColumn, int index, int inkPrevalence,
 }
 
 namespace {
-
-const TXshCell *findCell(int column, const TFrameId &fid) {
-  TXsheet *xsh = TApp::instance()->getCurrentXsheet()->getXsheet();
-  int i;
-  for (i = 0; i < xsh->getColumn(column)->getMaxFrame(); i++)
-    if (xsh->getCell(i, column).getFrameId() == fid)
-      return &(xsh->getCell(i, column));
-  return 0;
-}
-
-bool contains(const std::vector<TFrameId> &v, const TFrameId &val) {
-  int i;
-  for (i = 0; i < (int)v.size(); i++)
-    if (v[i] == val) return true;
-  return false;
-}
-
-//-----------------------------------------------------------------------------
 
 QString indexes2string(const std::set<TFrameId> fids) {
   if (fids.empty()) return "";

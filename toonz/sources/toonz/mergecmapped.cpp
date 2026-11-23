@@ -1,270 +1,166 @@
+// Toonz includes
 #include "tapp.h"
-#include "tpalette.h"
-#include "toonz/txsheet.h"
+#include "matchline.h"
+
+// TnzTools includes
+#include "tools/toolutils.h"
+
+// TnzQt includes
+#include "toonzqt/icongenerator.h"
+
+// TnzLib includes
 #include "toonz/toonzscene.h"
 #include "toonz/levelset.h"
-#include "toonz/txshsimplelevel.h"
-#include "toonz/txshlevelcolumn.h"
+#include "toonz/txsheet.h"
 #include "toonz/txshcell.h"
-// #include "tw/action.h"
-#include "tropcm.h"
-#include "ttoonzimage.h"
-#include "matchline.h"
+#include "toonz/txshsimplelevel.h"
+#include "toonz/levelproperties.h"
 #include "toonz/scenefx.h"
 #include "toonz/dpiscale.h"
 #include "toonz/txsheethandle.h"
+#include "toonz/tscenehandle.h"
 #include "toonz/palettecontroller.h"
 #include "toonz/tpalettehandle.h"
-#include "toonz/txshlevelhandle.h"
-#include "toonz/txshleveltypes.h"
-#include "toonz/tscenehandle.h"
-#include "toonz/tframehandle.h"
-#include "toonz/preferences.h"
-#include "toonzqt/icongenerator.h"
-#include <map>
-#include <QRadioButton>
-#include <QPushButton>
-#include <QApplication>
-#include "tundo.h"
-#include "tools/toolutils.h"
-#include "timagecache.h"
-#include "tcolorstyles.h"
-#include "toonz/levelproperties.h"
-#include "toonz/childstack.h"
 #include "toonz/toonzimageutils.h"
+
+// TnzCore includes
+#include "tpalette.h"
 #include "tpaletteutil.h"
+#include "ttoonzimage.h"
+#include "tropcm.h"
+#include "tundo.h"
 
-#include <algorithm>
+// Qt includes
+#include <QApplication>
 
-using namespace DVGui;
+// STD includes
+#include <map>
+#include <set>
+
 
 namespace {
-
-class MergeCmappedPair {
-public:
-  const TXshCell *m_cell;
-  TAffine m_imgAff;
-  const TXshCell *m_mcell;
-  TAffine m_matchAff;
-
-  MergeCmappedPair(const TXshCell &cell, const TAffine &imgAff,
-                   const TXshCell &mcell, const TAffine &matchAff)
-      : m_cell(&cell)
-      , m_imgAff(imgAff)
-      , m_mcell(&mcell)
-      , m_matchAff(matchAff){};
-};
 
 void mergeCmapped(const std::vector<MergeCmappedPair> &matchingLevels) {
   if (matchingLevels.empty()) return;
 
   TPalette *palette = matchingLevels[0].m_cell->getImage(false)->getPalette();
-  TPalette *matchPalette =
-      matchingLevels[0].m_mcell->getImage(false)->getPalette();
+
+  // Add the styles used by the match drawings to the palette once per source
+  // palette, so every drawing of a match level gets the same target styles.
+  std::map<TPalette *, std::set<int>> usedStyles;
+  for (const MergeCmappedPair &pair : matchingLevels) {
+    TToonzImageP match = (TToonzImageP)pair.m_mcell->getImage(false);
+    if (!match) throw TRopException("Can merge only cmapped raster images!");
+    ToonzImageUtils::getUsedStyles(usedStyles[match->getPalette()], match);
+  }
+  std::map<TPalette *, std::map<int, int>> indexTables;
+  for (const auto &styles : usedStyles)
+    mergePalette(palette, indexTables[styles.first], styles.first,
+                 styles.second);
 
   // upInkId -> downInkId
   std::map<int, int> usedColors;
 
-  int i = 0;
-  for (i = 0; i < (int)matchingLevels.size(); i++) {
-    TToonzImageP img = (TToonzImageP)matchingLevels[i].m_cell->getImage(true);
-    TToonzImageP match =
-        (TToonzImageP)matchingLevels[i].m_mcell->getImage(false);
-    if (!img || !match)
+  for (const MergeCmappedPair &pair : matchingLevels) {
+    TToonzImageP img = (TToonzImageP)pair.m_cell->getImage(true);
+    // Work on a copy: the match level itself must not be modified
+    TToonzImageP source = (TToonzImageP)pair.m_mcell->getImage(false);
+    if (!img || !source)
       throw TRopException("Can merge only cmapped raster images!");
+    TToonzImageP match = (TToonzImageP)source->cloneImage();
 
-    std::set<int> usedStyles;
-    ToonzImageUtils::getUsedStyles(usedStyles, match);
-    std::map<int, int> indexTable;
-    mergePalette(palette, indexTable, matchPalette, usedStyles);
-    ToonzImageUtils::scrambleStyles(match, indexTable);
+    ToonzImageUtils::scrambleStyles(match, indexTables[source->getPalette()]);
     match->setPalette(palette);
-    matchPalette = palette;
 
-    // img->lock();
-    TRasterCM32P ras      = img->getRaster();    // img->getCMapped(false);
-    TRasterCM32P matchRas = match->getRaster();  // match->getCMapped(true);
+    TRasterCM32P ras      = img->getRaster();
+    TRasterCM32P matchRas = match->getRaster();
     if (!ras || !matchRas)
       throw TRopException("Can merge only cmapped images!");
 
-    TAffine aff =
-        matchingLevels[i].m_imgAff.inv() * matchingLevels[i].m_matchAff;
-    int mlx = matchRas->getLx();
-    int mly = matchRas->getLy();
-    int rlx = ras->getLx();
-    int rly = ras->getLy();
-
-    TRectD in = convert(matchRas->getBounds()) - matchRas->getCenterD();
-
-    TRectD out = aff * in;
-
-    TPoint offs((rlx - mlx) / 2 + tround(out.getP00().x - in.getP00().x),
-                (rly - mly) / 2 + tround(out.getP00().y - in.getP00().y));
-
-    int lxout = tround(out.getLx()) + 1 + ((offs.x < 0) ? offs.x : 0);
-    int lyout = tround(out.getLy()) + 1 + ((offs.y < 0) ? offs.y : 0);
-
-    if (lxout <= 0 || lyout <= 0 || offs.x >= rlx || offs.y >= rly) {
-      // tmsg_error("no intersections between matchline and level");
+    TRasterCM32P target;
+    TRect rect;
+    if (!placeMatchRaster(ras, matchRas, pair.m_imgAff, pair.m_matchAff,
+                          target, rect))
       continue;
-    }
 
-    aff = aff.place((double)(in.getLx() / 2.0), (double)(in.getLy() / 2.0),
-                    (out.getLx()) / 2.0 + ((offs.x < 0) ? offs.x : 0),
-                    (out.getLy()) / 2.0 + ((offs.y < 0) ? offs.y : 0));
-
-    if (offs.x < 0) offs.x = 0;
-    if (offs.y < 0) offs.y = 0;
-
-    if (lxout + offs.x > rlx || lyout + offs.y > rly) {
-      // PRINTF("TAGLIO L'IMMAGINE\n");
-      lxout = (lxout + offs.x > rlx) ? (rlx - offs.x) : lxout;
-      lyout = (lyout + offs.y > rly) ? (rly - offs.y) : lyout;
-    }
-
-    if (!aff.isIdentity(1e-4)) {
-      TRasterCM32P aux(lxout, lyout);
-      TRop::resample(aux, matchRas, aff);
-      matchRas = aux;
-    }
     ras->lock();
     matchRas->lock();
-    TRect raux = matchRas->getBounds() + offs;
-    TRasterP r = ras->extract(raux);
-    TRop::overlayCmapped(r, matchRas, palette, matchPalette, usedColors);
+    TRop::overlayCmapped(target, matchRas, palette, palette, usedColors);
     ras->unlock();
     matchRas->unlock();
 
-    img->setSavebox(img->getSavebox() + (matchRas->getBounds() + offs));
+    img->setSavebox(img->getSavebox() + rect);
   }
-  /*
-    std::map<int, int>::iterator it = usedColors.begin();
-    for (; it != usedColors.end(); ++it)
-      if (it->first != it->second) break;
-
-    if (it == usedColors.end())  // this means that the merged palette does not
-                                 // differ from source palette.(all usedColors
-                                 // are not new color )
-      return;
-
-    std::wstring pageName = L"merged palettes";
-
-    for (i = 0; i < palette->getPageCount(); i++)
-      if (palette->getPage(i)->getName() == pageName) {
-        page = palette->getPage(i);
-        break;
-      }
-    if (i == palette->getPageCount()) page = palette->addPage(pageName);
-
-    it        = usedColors.begin();
-    int count = 0;
-    for (; it != usedColors.end(); ++it) {
-      if (it->first == it->second) continue;
-      while (palette->getStyleCount() <= it->second)
-        palette->addStyle(TPixel32::Red);
-      palette->setStyle(it->second, matchPalette->getStyle(it->first)->clone());
-      page->addStyle(it->second);
-    }
-    if (usedColors.size() > 0) palette->setDirtyFlag(true);
-  */
 }
 
-/*------------------------------------------------------------------------*/
 }  // namespace
-//-----------------------------------------------------------------------------
 
-static bool removeLevel(TXshLevel *level) {
-  TApp *app         = TApp::instance();
-  ToonzScene *scene = app->getCurrentScene()->getScene();
-  // if(scene->getChildStack()->getTopXsheet()->isLevelUsed(level))
-  //	DVGui::error(QObject::tr("It is not possible to delete the used level
-  //%1.").arg(QString::fromStdWString(level->getName())));//"E_CantDeleteUsedLevel_%1"
-  // else
-  {
-    // TUndoManager *um = TUndoManager::manager();
-    // um->add(new DeleteLevelUndo(level));
-    scene->getLevelSet()->removeLevel(level, false);
-    TApp::instance()->getCurrentXsheet()->notifyXsheetChanged();
-    TApp::instance()->getCurrentScene()->notifyCastChange();
-  }
-  return true;
-}
+//-----------------------------------------------------------------------------
+//! Undo of a merge: restores the merged column's cells, swaps the merged level
+//! and the original one in the cast, and restores the shared palette.
+//! The original level's images are never modified by a merge.
 
 class MergeCmappedUndo final : public TUndo {
-  TXshLevel *m_xl;
-  int m_mergeCmappedSessionId;
-  std::map<TFrameId, QString> m_images;
-  TXshSimpleLevel *m_level;
-  TPalette *m_palette;
-  int m_column, m_mColumn;
-  std::wstring m_fullpath;
+  int m_column, m_row0;
+  std::vector<TXshCell> m_oldCells, m_newCells;
+  TXshLevelP m_oldLevel, m_newLevel;
+  TPaletteP m_palette;  //!< Palette shared by both levels
+  TPaletteP m_paletteBefore, m_paletteAfter;
 
-public:
-  MergeCmappedUndo(TXshLevel *xl, int mergeCmappedSessionId, int column,
-                   TXshSimpleLevel *level,
-                   const std::map<TFrameId, QString> &images, int mColumn,
-                   TPalette *palette)
-      : TUndo()
-      , m_xl(xl)
-      , m_mergeCmappedSessionId(mergeCmappedSessionId)
-      , m_palette(palette->clone())
-      , m_level(level)
-      , m_column(column)
-      , m_mColumn(mColumn)
-      , m_images(images)
+  void apply(const std::vector<TXshCell> &cells, TXshLevel *removed,
+             TXshLevel *inserted, const TPalette *palette) const {
+    TApp *app    = TApp::instance();
+    TXsheet *xsh = app->getCurrentXsheet()->getXsheet();
+    xsh->setCells(m_row0, m_column, (int)cells.size(), &cells[0]);
 
-  {
-    m_fullpath = m_xl->getPath().getWideString();
+    TLevelSet *levelSet = app->getCurrentScene()->getScene()->getLevelSet();
+    levelSet->removeLevel(removed, true);
+    levelSet->insertLevel(inserted);
+
+    m_palette->assign(palette);
+    m_palette->setDirtyFlag(true);
+
+    app->getPaletteController()->getCurrentLevelPalette()->notifyPaletteChanged();
+    app->getCurrentScene()->notifyCastChange();
+    app->getCurrentXsheet()->notifyXsheetChanged();
   }
 
+public:
+  MergeCmappedUndo(int column, int row0, const std::vector<TXshCell> &oldCells,
+                   const std::vector<TXshCell> &newCells, TXshLevel *oldLevel,
+                   TXshLevel *newLevel, TPalette *palette,
+                   TPalette *paletteBefore)
+      : m_column(column)
+      , m_row0(row0)
+      , m_oldCells(oldCells)
+      , m_newCells(newCells)
+      , m_oldLevel(oldLevel)
+      , m_newLevel(newLevel)
+      , m_palette(palette)
+      , m_paletteBefore(paletteBefore)
+      , m_paletteAfter(palette->clone()) {}
+
   void undo() const override {
-    std::map<TFrameId, QString>::const_iterator it = m_images.begin();
-    TPalette *palette                              = m_palette->clone();
-    m_level->setPalette(palette);
-    std::vector<TFrameId> fids;
-    for (; it != m_images.end(); ++it)  //, ++mit)
-    {
-      QString id = "MergeCmappedUndo" +
-                   QString::number(m_mergeCmappedSessionId) + "-" +
-                   QString::number(it->first.getNumber());
-      TImageP img = TImageCache::instance()->get(id, false)->cloneImage();
-      img->setPalette(palette);
-      m_level->setFrame(it->first, img);
-      fids.push_back(it->first);
-    }
-
-    removeLevel(m_xl);
-
-    TApp::instance()
-        ->getPaletteController()
-        ->getCurrentLevelPalette()
-        ->setPalette(palette);
-    m_level->setDirtyFlag(true);
-    TApp::instance()->getCurrentXsheet()->notifyXsheetChanged();
+    apply(m_oldCells, m_newLevel.getPointer(), m_oldLevel.getPointer(),
+          m_paletteBefore.getPointer());
   }
 
   void redo() const override {
-    mergeCmapped(m_column, m_mColumn, QString::fromStdWString(m_fullpath),
-                 true);
+    apply(m_newCells, m_oldLevel.getPointer(), m_newLevel.getPointer(),
+          m_paletteAfter.getPointer());
   }
 
-  int getSize() const override { return sizeof(*this); }
+  int getSize() const override {
+    return sizeof(*this) +
+           (int)(m_oldCells.size() + m_newCells.size()) * sizeof(TXshCell);
+  }
 
-  ~MergeCmappedUndo() {
-    std::map<TFrameId, QString>::const_iterator it = m_images.begin();
-    for (; it != m_images.end(); ++it)  //, ++mit)
-    {
-      QString id = "MergeCmappedUndo" + QString::number((uintptr_t)this) + "-" +
-                   QString::number(it->first.getNumber());
-      TImageCache::instance()->remove(id);
-    }
-    delete m_palette;
+  QString getHistoryString() override {
+    return QObject::tr("Merge Tlv Levels  : Column%1").arg(m_column + 1);
   }
 };
 
 //-----------------------------------------------------------------------------
-
-static int LastMatchlineIndex = -1;
 
 class MergedPair {
 public:
@@ -288,50 +184,48 @@ public:
 
 //--------------------------------------------------------------------
 
-void mergeCmapped(int column, int mColumn, const QString &fullpath,
-                  bool isRedo) {
-  static int MergeCmappedSessionId = 0;
-  MergeCmappedSessionId++;
-
-  TXsheet *xsh = TApp::instance()->getCurrentXsheet()->getXsheet();
+void mergeCmapped(int column, int mColumn, const QString &fullpath) {
+  TApp *app    = TApp::instance();
+  TXsheet *xsh = app->getCurrentXsheet()->getXsheet();
   int start, end;
   int mStart, mEnd;
   xsh->getCellRange(column, start, end);
   xsh->getCellRange(mColumn, mStart, mEnd);
 
   if (start > end) return;
-  std::vector<TXshCell> cell(std::max(end, mEnd) - std::min(start, mStart) + 1);
+  int row0 = (mStart <= mEnd) ? std::min(start, mStart) : start;
+  int row1 = (mStart <= mEnd) ? std::max(end, mEnd) : end;
+
+  std::vector<TXshCell> cell(row1 - row0 + 1);
   std::vector<TXshCell> mCell(cell.size());
-
-  xsh->getCells(std::min(start, mStart), column, cell.size(), &(cell[0]));
-
-  if (mColumn != -1)
-    xsh->getCells(std::min(start, mStart), mColumn, cell.size(), &(mCell[0]));
-
-  TXshColumn *col  = xsh->getColumn(column);
-  TXshColumn *mcol = xsh->getColumn(mColumn);
-
-  std::vector<MergeCmappedPair> matchingLevels;
-
-  std::map<MergedPair, TFrameId> computedMergedMap;
+  xsh->getCells(row0, column, cell.size(), &cell[0]);
+  xsh->getCells(row0, mColumn, cell.size(), &mCell[0]);
+  const std::vector<TXshCell> oldCells = cell;
 
   TXshSimpleLevel *level = 0, *mLevel = 0;
-  TXshLevel *xl;
-
-  std::map<TFrameId, QString> images;
+  TXshLevel *xl          = 0;
   double dpix = 0, dpiy = 0;
   for (int i = 0; i < (int)cell.size(); i++) {
-    if (!cell[i].isEmpty() && dpix == 0)
-      ((TToonzImageP)(cell[i].getImage(false)))->getDpi(dpix, dpiy);
-
-    if (!level) {
+    if (!level && !cell[i].isEmpty()) {
       level = cell[i].getSimpleLevel();
       xl    = cell[i].m_level.getPointer();
     }
     if (!mLevel) mLevel = mCell[i].getSimpleLevel();
+    if (dpix == 0 && !cell[i].isEmpty())
+      if (TToonzImageP ti = (TToonzImageP)cell[i].getImage(false))
+        ti->getDpi(dpix, dpiy);
   }
 
   if (!level || !mLevel) return;
+  if (dpix == 0 && dpiy == 0) {
+    TPointD dpi = level->getProperties()->getDpi();
+    dpix = dpi.x, dpiy = dpi.y;
+  }
+
+  // The merge adds the match levels' styles to this palette, which the new
+  // level shares with the original one.
+  TPalette *palette       = level->getPalette();
+  TPaletteP paletteBefore = palette->clone();
 
   TFilePath fp(fullpath.toStdString());
 
@@ -339,191 +233,79 @@ void mergeCmapped(int column, int mColumn, const QString &fullpath,
       level->getType(), fp.getWideName(), level->getResolution());
   TXshSimpleLevel *newLevel = txl->getSimpleLevel();
   newLevel->setPath(fp);
-  newLevel->setPalette(level->getPalette());
+  newLevel->setPalette(palette);
   newLevel->clonePropertiesFrom(level);
-  //  newLevel->setPath(fp);
 
-  TApp::instance()->getCurrentScene()->notifySceneChanged();
-  TApp::instance()->getCurrentScene()->notifyCastChange();
-  TApp::instance()->getCurrentXsheet()->notifyXsheetChanged();
-
+  std::vector<MergeCmappedPair> matchingLevels;
+  std::map<MergedPair, TFrameId> computedMergedMap;
   int count = 0;
+
   for (int i = 0; i < (int)cell.size(); i++) {
     if (cell[i].isEmpty() && mCell[i].isEmpty()) continue;
 
+    int row = row0 + i;
     TAffine imgAff, matchAff;
+    getColumnPlacement(imgAff, xsh, row, column, false);
+    getColumnPlacement(matchAff, xsh, row, mColumn, false);
 
-    getColumnPlacement(imgAff, xsh, std::min(start, mStart) + i, column, false);
-    getColumnPlacement(matchAff, xsh, std::min(start, mStart) + i, mColumn,
-                       false);
-
-    // std::map<TFrameId, TFrameId>::iterator it;
     MergedPair mp(cell[i].isEmpty() ? TFrameId() : cell[i].getFrameId(),
                   mCell[i].isEmpty() ? TFrameId() : mCell[i].getFrameId(),
                   imgAff.inv() * matchAff);
 
-    std::map<MergedPair, TFrameId>::iterator computedMergedIt =
-        computedMergedMap.find(mp);
-
+    auto computedMergedIt = computedMergedMap.find(mp);
     if (computedMergedIt != computedMergedMap.end()) {
-      TXshCell newCell(newLevel, computedMergedIt->second);
-      xsh->setCell(i, column, newCell);
-      cell[i] = newCell;
+      cell[i] = TXshCell(newLevel, computedMergedIt->second);
+      xsh->setCell(row, column, cell[i]);
       continue;
     }
 
-    TFrameId newFid(++count);  // level->getLastFid().getNumber()+1);
-    TDimension dim = level->getResolution();
     TToonzImageP newImage;
     if (cell[i].isEmpty()) {
-      newImage =
-          TToonzImageP(TRasterCM32P(dim), TRect(0, 0, dim.lx - 1, dim.ly - 1));
+      // Blank drawing to merge the match drawing into. A default pixel is
+      // "no ink, no paint": an unfilled raster would be all ink #0.
+      TRasterCM32P ras(level->getResolution());
+      ras->fill(TPixelCM32());
+      newImage = TToonzImageP(ras, TRect());
       newImage->setDpi(dpix, dpiy);
-    } else
-      newImage = (TToonzImageP)(cell[i].getImage(false)->cloneImage());
+    } else {
+      TImageP srcImage = cell[i].getImage(false);
+      if (!srcImage) continue;
+      newImage = (TToonzImageP)srcImage->cloneImage();
+    }
+    if (!newImage) continue;
+    newImage->setPalette(palette);
 
-    newImage->setPalette(level->getPalette());
-
+    TFrameId newFid(++count);
     newLevel->setFrame(newFid, newImage);
-    TXshCell newCell(newLevel, newFid);
-    xsh->setCell(i, column, newCell);
-    computedMergedMap[mp] = newCell.getFrameId();
+    cell[i]         = TXshCell(newLevel, newFid);
+    xsh->setCell(row, column, cell[i]);
+    computedMergedMap[mp] = newFid;
 
-    cell[i] = newCell;
+    if (mCell[i].isEmpty() || !mCell[i].getImage(false)) continue;
 
-    TImageP img   = cell[i].getImage(true);
-    TImageP match = mCell[i].getImage(true);
-    TFrameId fid  = cell[i].m_frameId;
-    TFrameId mFid = mCell[i].m_frameId;
-
-    if (!img || !match) continue;
-
-    TToonzImageP timg   = (TToonzImageP)img;
-    TToonzImageP tmatch = (TToonzImageP)match;
-
-    QString id = "MergeCmappedUndo" + QString::number(MergeCmappedSessionId) +
-                 "-" + QString::number(fid.getNumber());
-    TImageCache::instance()->add(id, timg->clone());
-    images[fid] = id;
-
-    TAffine dpiAff  = getDpiAffine(level, fid);
-    TAffine mdpiAff = getDpiAffine(mLevel, mFid);
+    TAffine dpiAff  = getDpiAffine(newLevel, newFid);
+    TAffine mdpiAff = getDpiAffine(mLevel, mCell[i].getFrameId());
     matchingLevels.push_back(MergeCmappedPair(cell[i], imgAff * dpiAff,
                                               mCell[i], matchAff * mdpiAff));
   }
 
-  if (!isRedo) {
-    TPalette *plt = level->getPalette();
-
-    TPaletteHandle *pltHandle = new TPaletteHandle();
-    pltHandle->setPalette(plt);
-    int styleCount = plt->getStyleCount();
-
-    TUndoManager::manager()->add(new MergeCmappedUndo(
-        txl, MergeCmappedSessionId, column, level, images, mColumn, plt));
-  }
-
-  removeLevel(xl);
   QApplication::setOverrideCursor(Qt::WaitCursor);
   mergeCmapped(matchingLevels);
   QApplication::restoreOverrideCursor();
 
-  for (int i = 0; i < (int)cell.size(); i++)  // the saveboxes must be updated
-  {
-    if (cell[i].isEmpty() || mCell[i].isEmpty()) continue;
-
-    if (!cell[i].getImage(false) || !mCell[i].getImage(false)) continue;
-
-    TXshSimpleLevel *sl = cell[i].getSimpleLevel();
-    const TFrameId &fid = cell[i].m_frameId;
-
-    ToolUtils::updateSaveBox(sl, fid);
-    IconGenerator::instance()->invalidate(sl, fid);
-    sl->setDirtyFlag(true);
+  for (const MergeCmappedPair &pair : matchingLevels) {
+    const TFrameId &fid = pair.m_cell->getFrameId();
+    ToolUtils::updateSaveBox(newLevel, fid);
+    IconGenerator::instance()->invalidate(newLevel, fid);
   }
+
+  // The undo keeps the original level alive once it leaves the cast
+  TUndoManager::manager()->add(new MergeCmappedUndo(
+      column, row0, oldCells, cell, xl, txl, palette, paletteBefore.getPointer()));
+  app->getCurrentScene()->getScene()->getLevelSet()->removeLevel(xl, true);
 
   newLevel->setDirtyFlag(true);
-  TApp::instance()->getCurrentXsheet()->notifyXsheetChanged();
+  app->getCurrentScene()->notifySceneChanged();
+  app->getCurrentScene()->notifyCastChange();
+  app->getCurrentXsheet()->notifyXsheetChanged();
 }
-
-namespace {
-
-const TXshCell *findCell(int column, const TFrameId &fid) {
-  TXsheet *xsh = TApp::instance()->getCurrentXsheet()->getXsheet();
-  int i;
-  for (i = 0; i < xsh->getColumn(column)->getMaxFrame(); i++)
-    if (xsh->getCell(i, column).getFrameId() == fid)
-      return &(xsh->getCell(i, column));
-  return 0;
-}
-
-bool contains(const std::vector<TFrameId> &v, const TFrameId &val) {
-  int i;
-  for (i = 0; i < (int)v.size(); i++)
-    if (v[i] == val) return true;
-  return false;
-}
-
-//-----------------------------------------------------------------------------
-
-QString indexes2string(const std::set<TFrameId> fids) {
-  if (fids.empty()) return "";
-
-  QString str;
-
-  std::set<TFrameId>::const_iterator it = fids.begin();
-
-  str = QString::number(it->getNumber());
-
-  while (it != fids.end()) {
-    std::set<TFrameId>::const_iterator it1 = it;
-    it1++;
-
-    int lastVal = it->getNumber();
-    while (it1 != fids.end() && it1->getNumber() == lastVal + 1) {
-      lastVal = it1->getNumber();
-      it1++;
-    }
-
-    if (lastVal != it->getNumber()) str += "-" + QString::number(lastVal);
-    if (it1 == fids.end()) return str;
-
-    str += ", " + QString::number(it1->getNumber());
-
-    it = it1;
-  }
-
-  return str;
-}
-
-//-----------------------------------------------------------------------------
-
-std::vector<int> string2Indexes(const QString &values) {
-  std::vector<int> ret;
-  int i, j;
-  bool ok;
-  QStringList vals = values.split(',', Qt::SkipEmptyParts);
-  for (i = 0; i < vals.size(); i++) {
-    if (vals.at(i).contains('-')) {
-      QStringList vals1 = vals.at(i).split('-', Qt::SkipEmptyParts);
-      if (vals1.size() != 2) return std::vector<int>();
-      int from = vals1.at(0).toInt(&ok);
-      if (!ok) return std::vector<int>();
-      int to = vals1.at(1).toInt(&ok);
-      if (!ok) return std::vector<int>();
-
-      for (j = std::min(from, to); j <= std::max(from, to); j++)
-        ret.push_back(j);
-    } else {
-      int val = vals.at(i).toInt(&ok);
-      if (!ok) return std::vector<int>();
-      ret.push_back(val);
-    }
-  }
-  std::sort(ret.begin(), ret.end());
-  return ret;
-}
-
-}  // namespace
-
-//-----------------------------------------------------------------------------
