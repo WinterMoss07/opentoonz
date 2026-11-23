@@ -142,7 +142,7 @@ jobs:
           copy /Y "C:\tools\opencv\build\x64\vc16\bin\opencv_world4130.dll" Opentoonz
           
           REM Deploy Qt dependencies
-          "%QT_PATH%\bin\windeployqt.exe" Opentoonz\Opentoonz.exe --opengl --no-translations
+          "%QT_PATH%\bin\windeployqt.exe" --opengl --no-translations Opentoonz\Opentoonz.exe Opentoonz\tcomposer.exe Opentoonz\tcleanup.exe Opentoonz\tnzcore.dll Opentoonz\tnzbase.dll Opentoonz\tnzext.dll Opentoonz\toonzlib.dll Opentoonz\tfarm.dll Opentoonz\tnzstdfx.dll Opentoonz\sound.dll Opentoonz\colorfx.dll Opentoonz\image.dll Opentoonz\toonzqt.dll Opentoonz\tnztools.dll || exit /b 1
           
           del /Q Opentoonz\*.pdb  REM Remove .pdb files
           del /Q Opentoonz\vc_redist.x64.exe REM Remove vc_redist.x64.exe file
