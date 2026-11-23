@@ -455,7 +455,6 @@ QMenuBar *StackedMenuBar::createCleanupMenuBar() {
   windowsMenu->addSeparator();
   QMenu *otherWindowsMenu = windowsMenu->addMenu(tr("Other Windows"));
   {
-    addMenuItem(otherWindowsMenu, MI_OpenBatchServers);
     addMenuItem(otherWindowsMenu, MI_OpenTasks);
     addMenuItem(otherWindowsMenu, MI_OpenColorModel);
     addMenuItem(otherWindowsMenu, MI_OpenFileViewer);
@@ -618,7 +617,6 @@ QMenuBar *StackedMenuBar::createPltEditMenuBar() {
   windowsMenu->addSeparator();
   QMenu *otherWindowsMenu = windowsMenu->addMenu(tr("Other Windows"));
   {
-    addMenuItem(otherWindowsMenu, MI_OpenBatchServers);
     addMenuItem(otherWindowsMenu, MI_OpenColorModel);
     addMenuItem(otherWindowsMenu, MI_OpenFunctionEditor);
     addMenuItem(otherWindowsMenu, MI_OpenFileBrowser2);
@@ -788,7 +786,6 @@ QMenuBar *StackedMenuBar::createInknPaintMenuBar() {
   windowsMenu->addSeparator();
   QMenu *otherWindowsMenu = windowsMenu->addMenu(tr("Other Windows"));
   {
-    addMenuItem(otherWindowsMenu, MI_OpenBatchServers);
     addMenuItem(otherWindowsMenu, MI_OpenFileViewer);
     addMenuItem(otherWindowsMenu, MI_OpenFunctionEditor);
     addMenuItem(otherWindowsMenu, MI_OpenFileBrowser2);
@@ -968,7 +965,6 @@ QMenuBar *StackedMenuBar::createXsheetMenuBar() {
   windowsMenu->addSeparator();
   QMenu *otherWindowsMenu = windowsMenu->addMenu(tr("Other Windows"));
   {
-    addMenuItem(otherWindowsMenu, MI_OpenBatchServers);
     addMenuItem(otherWindowsMenu, MI_OpenColorModel);
     addMenuItem(otherWindowsMenu, MI_OpenPalette);
     addMenuItem(otherWindowsMenu, MI_OpenFileBrowser2);
@@ -1025,7 +1021,6 @@ QMenuBar *StackedMenuBar::createBatchesMenuBar() {
   QMenu *windowsMenu = addMenu(tr("Windows"), batchesMenuBar);
   addMenuItem(windowsMenu, MI_OpenFileBrowser);
   addMenuItem(windowsMenu, MI_OpenPreproductionBoard);
-  addMenuItem(windowsMenu, MI_OpenBatchServers);
   addMenuItem(windowsMenu, MI_OpenTasks);
 
   //---Customize Menu
@@ -1447,7 +1442,6 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
   windowsMenu->addSeparator();
   addMenuItem(windowsMenu, MI_OpenCleanupSettings);
   addMenuItem(windowsMenu, MI_OpenTasks);
-  addMenuItem(windowsMenu, MI_OpenBatchServers);
   addMenuItem(windowsMenu, MI_OpenTMessage);
   addMenuItem(windowsMenu, MI_OpenHistoryPanel);
   addMenuItem(windowsMenu, MI_AudioRecording);

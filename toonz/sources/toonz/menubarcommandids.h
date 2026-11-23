@@ -114,7 +114,6 @@
 #define MI_OpenMessage "MI_OpenMessage"
 #define MI_OpenTest "MI_OpenTest"
 #define MI_OpenTasks "MI_OpenTasks"
-#define MI_OpenBatchServers "MI_OpenBatchServers"
 #define MI_OpenTMessage "MI_OpenTMessage"
 #define MI_OpenColorModel "MI_OpenColorModel"
 #define MI_OpenStudioPalette "MI_OpenStudioPalette"

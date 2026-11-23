@@ -82,7 +82,6 @@ set(SOURCES
     geometrictool.cpp
     imagegrouping.cpp
     levelselection.cpp
-    morphtool.cpp
     paintbrushtool.cpp
     rastererasertool.cpp
     rastertapetool.cpp

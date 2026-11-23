@@ -8,7 +8,6 @@ set(MOC_HEADERS
     audiorecordingpopup.h
     autoinputcellnumberpopup.h
     batches.h
-    batchserversviewer.h
     binarizepopup.h
     fillholespopup.h
     boardsettingspopup.h
@@ -227,7 +226,6 @@ set(SOURCES
     scanlist.cpp
     tapp.cpp
     toolbar.cpp
-    batchserversviewer.cpp
     castviewer.cpp
     exportlevelpopup.cpp
     exportalllevelspopup.cpp

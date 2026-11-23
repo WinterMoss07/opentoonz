@@ -197,7 +197,6 @@
   <menu title="Windows">
     <command>MI_DockingCheck</command>
     <separator/>
-    <command>MI_OpenBatchServers</command>
     <command>MI_OpenCleanupSettings</command>
     <command>MI_OpenColorModel</command>
     <command>MI_OpenFileBrowser</command>

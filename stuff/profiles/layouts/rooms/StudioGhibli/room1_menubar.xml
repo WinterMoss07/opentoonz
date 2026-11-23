@@ -67,7 +67,6 @@
     <command>MI_OpenXshView</command>
     <separator/>
     <menu title="Other Windows">
-      <command>MI_OpenBatchServers</command>
       <command>MI_OpenTasks</command>
       <command>MI_OpenColorModel</command>
       <command>MI_OpenFileViewer</command>

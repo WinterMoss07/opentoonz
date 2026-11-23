@@ -34,7 +34,6 @@
 #endif
 
 #include "tasksviewer.h"
-#include "batchserversviewer.h"
 #include "colormodelviewer.h"
 
 #include "curveio.h"
@@ -1201,15 +1200,6 @@ public:
     panel->setWidget(new TasksViewer(panel));
   }
 } tasksViewerFactory;
-
-class BatchServersViewerFactory final : public TPanelFactory {
-public:
-  BatchServersViewerFactory() : TPanelFactory("BatchServers") {}
-  void initialize(TPanel *panel) override {
-    panel->setWindowTitle(QObject::tr("Batch Servers"));
-    panel->setWidget(new BatchServersViewer(panel));
-  }
-} batchServersViewerFactory;
 
 class BrowserFactory final : public TPanelFactory {
 public:

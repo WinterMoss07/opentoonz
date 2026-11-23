@@ -968,14 +968,6 @@ Room *MainWindow::createBatchesRoom() {
     layout->dockItem(tasksViewer);
   }
 
-  // BatchServers
-  TPanel *batchServersViewer =
-      TPanelFactory::createPanel(batchesRoom, "BatchServers");
-  if (batchServersViewer) {
-    batchesRoom->addDockWidget(batchServersViewer);
-    layout->dockItem(batchServersViewer, tasksViewer, Region::right);
-  }
-
   return batchesRoom;
 }
 
@@ -2480,8 +2472,6 @@ void MainWindow::defineActions() {
   createMenuWindowsAction(MI_OpenPalette, QT_TR_NOOP("&Palette"), "",
                           "palette");
   createMenuWindowsAction(MI_OpenTasks, QT_TR_NOOP("&Tasks"), "", "tasks");
-  createMenuWindowsAction(MI_OpenBatchServers, QT_TR_NOOP("&Batch Servers"), "",
-                          "batchservers");
   createMenuWindowsAction(MI_OpenTMessage, QT_TR_NOOP("&Message Center"), "",
                           "messagecenter");
   createMenuWindowsAction(MI_OpenColorModel, QT_TR_NOOP("&Color Model"), "",
