@@ -43,13 +43,6 @@
 #include "./sprite/tiio_sprite.h"
 #include "./exr/tiio_exr.h"
 
-// Platform-specific includes
-#if defined(_WIN32)
-
-#include "./zcc/tiio_zcc.h"
-
-#endif
-
 //-------------------------------------------------------------------
 
 // static TPluginInfo info("imageIOPlugin");
