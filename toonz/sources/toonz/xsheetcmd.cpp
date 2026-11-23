@@ -1899,9 +1899,11 @@ void XsheetWriter::setXsheet(TXsheet *xsh) {
 }
 
 void XsheetWriter::getSubXsheets(std::vector<TXsheet *> &xsheets) {
-  std::map<TXshChildLevel *, int>::iterator it;
-  for (it = m_childTable.begin(); it != m_childTable.end(); ++it)
-    xsheets.push_back(it->first->getXsheet());
+  // in index order, to match the "SubN" names of the cells (the table is
+  // sorted by pointer)
+  xsheets.assign(m_childTable.size(), nullptr);
+  for (const auto &child : m_childTable)
+    xsheets[child.second] = child.first->getXsheet();
 }
 
 int XsheetWriter::getChildLevelIndex(TXshChildLevel *cl) {
@@ -1931,20 +1933,30 @@ void XsheetWriter::buildChildTable(ToonzScene *scene) {
   for (i = 0; i < (int)levels.size(); i++) m_childTable[levels[i]] = k++;
 }
 
+namespace {
+std::string htmlEscape(const std::string &text) {
+  return QString::fromStdString(text).toHtmlEscaped().toStdString();
+}
+
+std::string frameText(const TFrameId &fid) {
+  return fid.expand(TFrameId::NO_PAD);
+}
+}  // namespace
+
 void XsheetWriter::tableCaption(ostream &os) { os << "<p>&nbsp;</p>\n"; }
 
 void XsheetWriter::columnHeader(ostream &os, int c) {
-  os << "  <th>" << (c + 1) << "</th>" << endl;
+  // number and name, as in the xsheet
+  std::string name =
+      m_xsh->getStageObject(TStageObjectId::ColumnId(c))->getName();
+  os << "  <th>" << (c + 1) << "<br>" << htmlEscape(name) << "</th>" << endl;
 }
 
 void XsheetWriter::numericColumnHeader(ostream &os, int c) {
   std::string pegbarName = m_numericColumns[c].m_pegbar->getName();
-  std::string curveName =
-      m_numericColumns[c]
-          .m_curve
-          ->getName();  // toString(TStringTable::translate(m_numericColumns[c].m_curve->getName()));
+  std::string curveName  = m_numericColumns[c].m_curve->getName();
   os << "  <th class='" << (c > 0 ? "numeric" : "first_numeric") << "'>";
-  os << pegbarName << "<br>" << curveName;
+  os << htmlEscape(pegbarName) << "<br>" << htmlEscape(curveName);
   os << "</th>" << endl;
 }
 
@@ -1972,7 +1984,7 @@ void XsheetWriter::cell(ostream &os, int r, int c) {
         os << "|";
       } else {
         // frame diverso
-        os << cell.m_frameId.getNumber();
+        os << frameText(cell.m_frameId);
       }
     } else {
       // livello diverso
@@ -1983,7 +1995,7 @@ void XsheetWriter::cell(ostream &os, int r, int c) {
         levelName = index >= 0 ? "Sub" + std::to_string(index + 1) : "";
       } else
         levelName = ::to_string(level->getName());
-      os << levelName << " " << cell.m_frameId.getNumber();
+      os << htmlEscape(levelName) << " " << frameText(cell.m_frameId);
     }
     os << "</td>" << endl;
   }
@@ -2027,7 +2039,8 @@ void XsheetWriter::write(ostream &os) {
       r1 = std::min(rowCount, r0 + rowsPerPage) - 1;
       tableCaption(os);
       os << "<table>" << endl << "<tr>" << endl;
-      if (c0 == 0) os << "  <th>&nbsp;</th>" << endl;
+      // every row starts with the frame number, on every page
+      os << "  <th>&nbsp;</th>" << endl;
       for (c = c0; c <= c1; c++) {
         if (c < colCount)
           columnHeader(os, c);
@@ -2076,8 +2089,10 @@ static void makeHtml(TFilePath fp) {
   for (int k = 0; k < (int)infos.size(); k++)
     os << "<tr><th>" << infos[k].first << ":</th><td>" << infos[k].second
        << "</td></tr>" << endl;
-  os << "<tr><th>Project:</th><td>" << projectName << "</td></tr>" << endl;
-  os << "<tr><th>Scene:</th><td>" << sceneName << "</td></tr>" << endl;
+  os << "<tr><th>Project:</th><td>" << htmlEscape(projectName) << "</td></tr>"
+     << endl;
+  os << "<tr><th>Scene:</th><td>" << htmlEscape(sceneName) << "</td></tr>"
+     << endl;
   os << "<tr><th>Frames:</th><td>" << scene->getFrameCount() << "</td></tr>"
      << endl;
   os << "</table>\n";
@@ -2104,12 +2119,13 @@ static void makeHtml(TFilePath fp) {
   for (i = 0; i < (int)levels.size(); i++) {
     TXshLevel *level = levels[i];
     if (!level->getSimpleLevel()) continue;
-    os << "<dt>" << ::to_string(level->getName()) << "</dt>" << endl;
+    os << "<dt>" << htmlEscape(::to_string(level->getName())) << "</dt>"
+       << endl;
     os << "<dd>" << endl;
     TFilePath fp = level->getPath();
-    os << ::to_string(fp);
+    os << htmlEscape(::to_string(fp));
     TFilePath fp2 = scene->decodeFilePath(fp);
-    if (fp != fp2) os << "<br>" << ::to_string(fp2);
+    if (fp != fp2) os << "<br>" << htmlEscape(::to_string(fp2));
     os << "</dd>" << endl;
   }
   os << "</dl>" << endl;
