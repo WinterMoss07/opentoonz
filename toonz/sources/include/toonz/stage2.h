@@ -96,36 +96,44 @@ private:
 //    Isolated check  singletons
 //*****************************************************************************
 
-class DVAPI CameraTestCheck {
-  QAction *m_toggle;
+/*!
+  \brief    On/off viewing mode bound to a checkable menu action.
+
+  setIsEnabled() triggers the action when its state has to change, so the
+  command attached to the action runs and the menu stays in sync.
+*/
+
+class DVAPI ToggleCheck {
+  QAction *m_toggle = nullptr;
 
 public:
-  static CameraTestCheck *instance();
-
-  void setToggle(QAction *toggle);
+  void setToggle(QAction *toggle) { m_toggle = toggle; }
 
   bool isEnabled() const;
   void setIsEnabled(bool on);
 
-private:
-  CameraTestCheck();
+protected:
+  ToggleCheck() = default;
 };
 
 //=============================================================================
 
-class DVAPI CleanupPreviewCheck {
-  QAction *m_toggle;
+class DVAPI CameraTestCheck final : public ToggleCheck {
+public:
+  static CameraTestCheck *instance();
 
+private:
+  CameraTestCheck() = default;
+};
+
+//=============================================================================
+
+class DVAPI CleanupPreviewCheck final : public ToggleCheck {
 public:
   static CleanupPreviewCheck *instance();
 
-  void setToggle(QAction *toggle);
-
-  bool isEnabled() const;
-  void setIsEnabled(bool on);
-
 private:
-  CleanupPreviewCheck();
+  CleanupPreviewCheck() = default;
 };
 
 //=============================================================================

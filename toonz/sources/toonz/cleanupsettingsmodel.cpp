@@ -201,13 +201,13 @@ void CleanupSettingsModel::getCleanupFrame(TXshSimpleLevel *&sl,
 //-----------------------------------------------------------------------
 
 void CleanupSettingsModel::attach(int objectFlag, bool doPreview) {
-  if ((objectFlag & LISTENER) && (m_listenersCount++ <= 0)) connectSignals();
+  if ((objectFlag & LISTENER) && (m_listenersCount++ == 0)) connectSignals();
 
   bool doRebuild = false;
 
-  if ((objectFlag & PREVIEWER) && (m_previewersCount++ <= 0)) doRebuild = true;
+  if ((objectFlag & PREVIEWER) && (m_previewersCount++ == 0)) doRebuild = true;
 
-  if ((objectFlag & CAMERATEST) && (m_cameraTestsCount++ <= 0))
+  if ((objectFlag & CAMERATEST) && (m_cameraTestsCount++ == 0))
     doRebuild = true;
 
   if (doRebuild && doPreview) rebuildPreview();
@@ -216,19 +216,25 @@ void CleanupSettingsModel::attach(int objectFlag, bool doPreview) {
 //-----------------------------------------------------------------------
 
 void CleanupSettingsModel::detach(int objectFlag) {
-  if ((objectFlag & LISTENER) && (--m_listenersCount <= 0)) disconnectSignals();
+  // An unmatched detach must not drive a count negative: the next attach
+  // would then be ignored and the preview would stop updating.
+  assert(!(objectFlag & LISTENER) || m_listenersCount > 0);
+  assert(!(objectFlag & PREVIEWER) || m_previewersCount > 0);
+  assert(!(objectFlag & CAMERATEST) || m_cameraTestsCount > 0);
 
-  if ((objectFlag & PREVIEWER) && (--m_previewersCount <= 0)) {
+  if ((objectFlag & LISTENER) && m_listenersCount > 0 &&
+      --m_listenersCount == 0)
+    disconnectSignals();
+
+  if ((objectFlag & PREVIEWER) && m_previewersCount > 0 &&
+      --m_previewersCount == 0) {
     m_previewTransformed = TRasterImageP();
     m_transform          = TAffine();
   }
 
-  if ((objectFlag & CAMERATEST) && (--m_cameraTestsCount <= 0))
+  if ((objectFlag & CAMERATEST) && m_cameraTestsCount > 0 &&
+      --m_cameraTestsCount == 0)
     m_cameraTestTransformed = TRasterImageP();
-
-  assert(m_listenersCount >= 0);
-  assert(m_previewersCount >= 0);
-  assert(m_cameraTestsCount >= 0);
 }
 
 //-----------------------------------------------------------------------

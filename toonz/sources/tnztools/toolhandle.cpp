@@ -5,13 +5,7 @@
 #include "tools/tool.h"
 #include "tools/toolcommandids.h"
 #include "timage.h"
-// #include "tapp.h"
-#include "toonzqt/menubarcommand.h"
 #include "toonz/preferences.h"
-#include <QGuiApplication>
-#include <QAction>
-#include <QMap>
-#include <QDebug>
 
 //=============================================================================
 // ToolHandle
@@ -34,7 +28,28 @@ TTool *ToolHandle::getTool() const { return m_tool; }
 
 //-----------------------------------------------------------------------------
 
+namespace {
+// Temporary viewer navigation (e.g. while holding Space)
+bool isViewNavigationTool(const QString &name) {
+  return name == T_HandView || name == T_ZoomView || name == T_RotateView;
+}
+
+bool isNavigationTool(const QString &name) {
+  return name == T_Hand || name == T_Zoom || name == T_Rotate ||
+         isViewNavigationTool(name);
+}
+}  // namespace
+
 void ToolHandle::setTool(QString name) {
+  // Leaving Camera Test or Cleanup Preview may switch tools itself, so do it
+  // before recording the requested tool. setIsEnabled() unchecks the toggle
+  // and runs its command, keeping the toggle and the mode consistent.
+  if (name != "T_CameraTest" && !isViewNavigationTool(name))
+    CameraTestCheck::instance()->setIsEnabled(false);
+  // Cleanup Preview only allows tools that don't edit the drawing
+  if (!isNavigationTool(name))
+    CleanupPreviewCheck::instance()->setIsEnabled(false);
+
   m_oldToolName = m_toolName = name;
 
   TTool *tool = TTool::getTool(m_toolName.toStdString(),
@@ -42,21 +57,8 @@ void ToolHandle::setTool(QString name) {
   if (tool == m_tool) return;
 
   if (m_tool) m_tool->onDeactivate();
-
-  // Camera test uses the automatically activated CameraTestTool
-  if (name != "T_CameraTest" && CameraTestCheck::instance()->isEnabled())
-    CameraTestCheck::instance()->setIsEnabled(false);
-
   m_tool = tool;
-
-  if (name != T_Hand && CleanupPreviewCheck::instance()->isEnabled()) {
-    // When using a tool, you have to exit from cleanup preview mode
-    QAction *act = CommandManager::instance()->getAction("MI_CleanupPreview");
-    if (act) CommandManager::instance()->execute(act);
-  }
-
-  if (m_tool)  // Should always enter
-  {
+  if (m_tool) {
     m_tool->onActivate();
     emit toolSwitched();
   }
@@ -75,7 +77,6 @@ void ToolHandle::storeTool() {
 //-----------------------------------------------------------------------------
 
 void ToolHandle::restoreTool() {
-  // qDebug() << m_storedToolTime.elapsed();
   // navigation tools will always return to the stored one even if the key press
   // time is short
   if (m_storedToolName != m_toolName && m_storedToolName != "" &&
@@ -89,8 +90,7 @@ void ToolHandle::restoreTool() {
 //-----------------------------------------------------------------------------
 
 bool ToolHandle::isViewerNavigationToolSelected() {
-  return m_toolName == T_RotateView || m_toolName == T_ZoomView ||
-         m_toolName == T_HandView;
+  return isViewNavigationTool(m_toolName);
 }
 
 //-----------------------------------------------------------------------------
@@ -113,19 +113,6 @@ void ToolHandle::setToolBusy(bool value) {
   m_toolIsBusy = value;
   if (!m_toolIsBusy) emit toolEditingFinished();
 }
-
-//-----------------------------------------------------------------------------
-
-QIcon currentIcon;
-
-
-//-----------------------------------------------------------------------------
-
-/*
-void ToolHandle::changeTool(QAction* action)
-{
-}
-*/
 
 //-----------------------------------------------------------------------------
 

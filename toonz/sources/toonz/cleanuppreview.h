@@ -17,22 +17,34 @@
 
 //========================================================
 
-//  Forward declarations
+//**********************************************************************************
+//    CleanupPreviewToggle declaration
+//**********************************************************************************
 
-class TXshSimpleLevel;
-class TTool;
+//! Common part of the Cleanup Preview and Camera Test toggles: both substitute
+//! the frame under cleanup focus with a processed image and must release the
+//! substituted frames when switched off.
+class CleanupPreviewToggle : public MenuItemHandler {
+protected:
+  TXshSimpleLevelP m_sl;         //!< Level under cleanup focus
+  std::vector<TFrameId> m_fids;  //!< Previewed frames of said level
+  bool m_enabled = false;
 
-//========================================================
+  CleanupPreviewToggle(CommandId cmdId) : MenuItemHandler(cmdId) {}
+
+  //! Follows the frame under cleanup focus and marks it as previewed.
+  //! Returns false when there is no level to preview.
+  bool updatePreviewedFrame();
+  //! Releases every previewed frame.
+  void clean();
+};
 
 //**********************************************************************************
 //    PreviewToggleCommand declaration
 //**********************************************************************************
 
-class PreviewToggleCommand final : public MenuItemHandler {
+class PreviewToggleCommand final : public CleanupPreviewToggle {
   Q_OBJECT
-
-  TXshSimpleLevelP m_sl;         //!< Level under cleanup focus
-  std::vector<TFrameId> m_fids;  //!< Previewed frames of said level
 
   QTimer m_timer;  //!< Processing timer - allows processing only
                    //!< after half a sec. without parameter changes
@@ -41,13 +53,9 @@ public:
 
   void execute() override;
 
-protected:
-  friend class CameraTestToggleCommand;
-
+private:
   void enable();
   void disable();
-
-  void clean();
 
 protected slots:
 
@@ -60,28 +68,19 @@ protected slots:
 //    CameraTestToggleCommand declaration
 //**********************************************************************************
 
-class CameraTestToggleCommand final : public MenuItemHandler {
+class CameraTestToggleCommand final : public CleanupPreviewToggle {
   Q_OBJECT
 
-  TTool *m_oldTool;
-
-  TXshSimpleLevelP m_sl;
-  std::vector<TFrameId> m_fids;
-
-  QTimer m_timer;
+  QString m_oldToolName;  //!< Tool restored when the camera test ends
 
 public:
   CameraTestToggleCommand();
 
   void execute() override;
 
-protected:
-  friend class PreviewToggleCommand;
-
+private:
   void enable();
   void disable();
-
-  void clean();
 
 protected slots:
 

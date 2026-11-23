@@ -755,6 +755,10 @@ void CleanupSettings::updateGui(bool needsPostProcess) {
 //-----------------------------------------------------------------------------
 
 void CleanupSettings::enableSwatch(bool enable) {
+  // Called both by the swatch toggle and by show/hide events
+  if (enable == m_swatchAttached) return;
+  m_swatchAttached = enable;
+
   CleanupSettingsModel *model = CleanupSettingsModel::instance();
   if (enable) {
     model->attach(CleanupSettingsModel::PREVIEWER);

@@ -57,8 +57,10 @@ class CleanupSettings final : public QWidget {
 
   CleanupParameters m_backupParams;
 
-  bool m_attached;  //!< Whether the settomgs are attached to the
+  bool m_attached;  //!< Whether the settings are attached to the
                     //!< cleanup model
+  bool m_swatchAttached = false;  //!< Whether the swatch is attached as a
+                                  //!< previewer
 public:
   CleanupSettings(QWidget *parent = 0);
 

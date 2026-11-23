@@ -46,7 +46,6 @@ public:
 
   TTool *getTool() const;
   void setTool(QString name);
-  void setTargetType(int targetType);  // TODO: unused, remove?
 
   const QString &getRequestedToolName() const { return m_toolName; }
 
@@ -83,7 +82,6 @@ signals:
   void toolCursorTypeChanged();
 
 public slots:
-  // void changeTool(QAction* action);
   void onImageChanged(TImage::Type type);
   void updateMatrix();
 };

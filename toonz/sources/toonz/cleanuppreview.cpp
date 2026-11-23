@@ -1,20 +1,13 @@
-
-
 // TnzCore
-#include "timagecache.h"
 #include "tcurveutil.h"
 
 // ToonzLib
 #include "toonz/stage2.h"
-#include "toonz/txshsimplelevel.h"
 #include "toonz/txshlevelhandle.h"
 #include "toonz/tcleanupper.h"
 #include "toonz/palettecontroller.h"
 #include "toonz/tpalettehandle.h"
-#include "toonz/observer.h"
 #include "toonz/imagemanager.h"
-
-#include "toonz/tscenehandle.h"
 
 // TnzTools includes
 #include "tools/toolutils.h"
@@ -29,9 +22,6 @@
 // Toonz includes
 #include "tapp.h"
 #include "cleanupsettingsmodel.h"
-
-// Qt includes
-#include <QTimer>
 
 #include "cleanuppreview.h"
 
@@ -51,14 +41,58 @@ CameraTestToggleCommand cameraTestToggle;
 }  // namespace
 
 //**********************************************************************************
+//    CleanupPreviewToggle implementation
+//**********************************************************************************
+
+bool CleanupPreviewToggle::updatePreviewedFrame() {
+  TXshSimpleLevel *sl;
+  TFrameId fid;
+  CleanupSettingsModel::instance()->getCleanupFrame(sl, fid);
+
+  // In case the level changes, release all previously previewed images
+  if (m_sl.getPointer() != sl) clean();
+
+  m_sl = sl;
+  if (!sl) return false;
+
+  int status = sl->getFrameStatus(fid);
+  if (!(status & TXshSimpleLevel::CleanupPreview)) {
+    // The frame was not yet cleanup-previewed. Update its status then.
+    m_fids.push_back(fid);
+    sl->setFrameStatus(fid, status | TXshSimpleLevel::CleanupPreview);
+  }
+  return true;
+}
+
+//--------------------------------------------------------------------------
+
+void CleanupPreviewToggle::clean() {
+  if (m_sl) {
+    for (const TFrameId &fid : m_fids) {
+      int status = m_sl->getFrameStatus(fid);
+      if (!(status & TXshSimpleLevel::CleanupPreview)) continue;
+
+      // Preview images are not just invalidated, but *unbound* from the IM.
+      ImageManager::instance()->unbind(
+          m_sl->getImageId(fid, TXshSimpleLevel::CleanupPreview));
+      IconGenerator::instance()->remove(m_sl.getPointer(), fid);
+
+      m_sl->setFrameStatus(fid, status & ~TXshSimpleLevel::CleanupPreview);
+    }
+  }
+
+  m_sl = TXshSimpleLevelP();
+  m_fids.clear();
+}
+
+//**********************************************************************************
 //    PreviewToggleCommand implementation
 //**********************************************************************************
 
 PreviewToggleCommand::PreviewToggleCommand()
-    : MenuItemHandler("MI_CleanupPreview") {
+    : CleanupPreviewToggle("MI_CleanupPreview") {
   // Setup the processing timer. The timer is needed to prevent (or rather,
-  // cumulate)
-  // short-lived parameter changes to trigger any preview processing.
+  // cumulate) short-lived parameter changes to trigger any preview processing.
   m_timer.setSingleShot(true);
   m_timer.setInterval(500);
 }
@@ -66,8 +100,12 @@ PreviewToggleCommand::PreviewToggleCommand()
 //--------------------------------------------------------------------------
 
 void PreviewToggleCommand::execute() {
-  CleanupPreviewCheck *pc = CleanupPreviewCheck::instance();
-  if (pc->isEnabled())
+  // The command may run without a state change (e.g. executed directly):
+  // attaching twice would leave the model attached after the toggle is off.
+  bool on = CleanupPreviewCheck::instance()->isEnabled();
+  if (on == m_enabled) return;
+
+  if (on)
     enable();
   else
     disable();
@@ -76,19 +114,17 @@ void PreviewToggleCommand::execute() {
 //--------------------------------------------------------------------------
 
 void PreviewToggleCommand::enable() {
+  m_enabled = true;
+
   // Cleanup Preview and Camera Test are exclusive. In case, disable the latter.
   // NOTE: This is done *before* attaching, since attach may invoke a preview
   // rebuild.
-  CameraTestCheck *tc = CameraTestCheck::instance();
-  tc->setIsEnabled(false);
+  CameraTestCheck::instance()->setIsEnabled(false);
 
-  // Attach to the model
   CleanupSettingsModel *model = CleanupSettingsModel::instance();
-
   model->attach(CleanupSettingsModel::LISTENER |
                 CleanupSettingsModel::PREVIEWER);
 
-  // Connect signals
   bool ret = true;
   ret      = ret && connect(model, SIGNAL(previewDataChanged()), this,
                        SLOT(onPreviewDataChanged()));
@@ -96,6 +132,7 @@ void PreviewToggleCommand::enable() {
                        SLOT(onModelChanged(bool)));
   ret = ret && connect(&m_timer, SIGNAL(timeout()), this, SLOT(postProcess()));
 
+  // Cleanup palette changes only need post-processing, not the model.
   TPaletteHandle *ph =
       TApp::instance()->getPaletteController()->getCurrentCleanupPalette();
   ret = ret &&
@@ -112,28 +149,19 @@ void PreviewToggleCommand::enable() {
 //--------------------------------------------------------------------------
 
 void PreviewToggleCommand::disable() {
-  CleanupSettingsModel *model = CleanupSettingsModel::instance();
+  m_enabled = false;
 
+  CleanupSettingsModel *model = CleanupSettingsModel::instance();
   model->detach(CleanupSettingsModel::LISTENER |
                 CleanupSettingsModel::PREVIEWER);
 
-  bool ret = true;
-  ret      = ret && disconnect(model, SIGNAL(previewDataChanged()), this,
-                          SLOT(onPreviewDataChanged()));
-  ret = ret && disconnect(model, SIGNAL(modelChanged(bool)), this,
-                          SLOT(onModelChanged(bool)));
-  ret =
-      ret && disconnect(&m_timer, SIGNAL(timeout()), this, SLOT(postProcess()));
-
-  // Cleanup palette changes all falls under post-processing stuff. And do not
-  // involve the model.
-  TPaletteHandle *ph =
-      TApp::instance()->getPaletteController()->getCurrentCleanupPalette();
-  ret = ret && disconnect(ph, SIGNAL(colorStyleChanged(bool)), &m_timer,
-                          SLOT(start()));
-  ret =
-      ret && disconnect(ph, SIGNAL(paletteChanged()), &m_timer, SLOT(start()));
-  assert(ret);
+  m_timer.stop();
+  model->disconnect(this);
+  m_timer.disconnect(this);
+  TApp::instance()
+      ->getPaletteController()
+      ->getCurrentCleanupPalette()
+      ->disconnect(&m_timer);
 
   clean();
 
@@ -143,27 +171,7 @@ void PreviewToggleCommand::disable() {
 //--------------------------------------------------------------------------
 
 void PreviewToggleCommand::onPreviewDataChanged() {
-  CleanupSettingsModel *model = CleanupSettingsModel::instance();
-
-  // Retrieve level under cleanup
-  TXshSimpleLevel *sl;
-  TFrameId fid;
-  model->getCleanupFrame(sl, fid);
-
-  // In case the level changes, release all previously previewed images
-  if (m_sl.getPointer() != sl) clean();
-
-  m_sl = sl;
-  if (sl) {
-    if (!(sl->getFrameStatus(fid) & TXshSimpleLevel::CleanupPreview)) {
-      // The frame was not yet cleanup-previewed. Update its status then.
-      m_fids.push_back(fid);
-      sl->setFrameStatus(
-          fid, sl->getFrameStatus(fid) | TXshSimpleLevel::CleanupPreview);
-    }
-
-    postProcess();
-  }
+  if (updatePreviewedFrame()) postProcess();
 }
 
 //--------------------------------------------------------------------------
@@ -175,14 +183,11 @@ void PreviewToggleCommand::onModelChanged(bool needsPostProcess) {
 //--------------------------------------------------------------------------
 
 void PreviewToggleCommand::postProcess() {
-  TApp *app                   = TApp::instance();
   CleanupSettingsModel *model = CleanupSettingsModel::instance();
 
   TXshSimpleLevel *sl;
   TFrameId fid;
   model->getCleanupFrame(sl, fid);
-
-  assert(sl);
   if (!sl) return;
 
   // Retrieve transformed image
@@ -203,40 +208,10 @@ void PreviewToggleCommand::postProcess() {
   transformed->getDpi(dpi.x, dpi.y);
   preview->setDpi(dpi.x, dpi.y);
 
-  transformed = TRasterImageP();
-
   // Substitute current frame image with previewed one
   sl->setFrame(fid, preview);
 
   TApp::instance()->getCurrentLevel()->notifyLevelChange();
-}
-
-//--------------------------------------------------------------------------
-
-void PreviewToggleCommand::clean() {
-  // Release all previewed images
-  if (m_sl) {
-    int i, fidsCount = m_fids.size();
-    for (i = 0; i < fidsCount; ++i) {
-      const TFrameId &fid = m_fids[i];
-
-      int status = m_sl->getFrameStatus(fid);
-      if (status & TXshSimpleLevel::CleanupPreview) {
-        // Preview images are not just invalidated, but *unbound* from the IM.
-        // This is currently done hard here - should be skipped to m_sl,
-        // though...
-        ImageManager *im = ImageManager::instance();
-        im->unbind(m_sl->getImageId(fid, TXshSimpleLevel::CleanupPreview));
-
-        IconGenerator::instance()->remove(m_sl.getPointer(), fid);
-
-        m_sl->setFrameStatus(fid, status & ~TXshSimpleLevel::CleanupPreview);
-      }
-    }
-  }
-
-  m_sl = TXshSimpleLevelP();
-  m_fids.clear();
 }
 
 //**********************************************************************************
@@ -244,16 +219,15 @@ void PreviewToggleCommand::clean() {
 //**********************************************************************************
 
 CameraTestToggleCommand::CameraTestToggleCommand()
-    : MenuItemHandler("MI_CameraTest"), m_oldTool(0) {
-  m_timer.setSingleShot(true);
-  m_timer.setInterval(500);
-}
+    : CleanupPreviewToggle("MI_CameraTest") {}
 
 //--------------------------------------------------------------------------
 
 void CameraTestToggleCommand::execute() {
-  CameraTestCheck *tc = CameraTestCheck::instance();
-  if (tc->isEnabled())
+  bool on = CameraTestCheck::instance()->isEnabled();
+  if (on == m_enabled) return;
+
+  if (on)
     enable();
   else
     disable();
@@ -262,131 +236,73 @@ void CameraTestToggleCommand::execute() {
 //--------------------------------------------------------------------------
 
 void CameraTestToggleCommand::enable() {
-  /*---既に現在のツールがCameraTestになっている場合はreturn---*/
-  m_oldTool = TApp::instance()->getCurrentTool()->getTool();
-  if (m_oldTool->getName().compare("T_CameraTest") == 0) {
-    CameraTestCheck::instance()->setIsEnabled(true);
-    disable();
-    return;
-  }
+  m_enabled = true;
 
-  // Cleanup Preview and Camera Test are exclusive. In case, disable the latter.
+  ToolHandle *toolHandle = TApp::instance()->getCurrentTool();
+  m_oldToolName          = toolHandle->getRequestedToolName();
+  if (m_oldToolName == "T_CameraTest") m_oldToolName = T_Hand;
+
+  // Cleanup Preview and Camera Test are exclusive. In case, disable the former.
   // NOTE: This is done *before* attaching, since attach may invoke a preview
   // rebuild.
-  CleanupPreviewCheck *pc = CleanupPreviewCheck::instance();
-  pc->setIsEnabled(false);
+  CleanupPreviewCheck::instance()->setIsEnabled(false);
 
-  // Attach to the model
   CleanupSettingsModel *model = CleanupSettingsModel::instance();
   model->attach(
       CleanupSettingsModel::LISTENER | CleanupSettingsModel::CAMERATEST, false);
 
-  // Connect signals
-  bool ret = true;
-  ret      = ret && connect(model, SIGNAL(previewDataChanged()), this,
-                       SLOT(onPreviewDataChanged()));
+  bool ret = connect(model, SIGNAL(previewDataChanged()), this,
+                     SLOT(onPreviewDataChanged()));
   assert(ret);
 
   onPreviewDataChanged();
 
-  TApp::instance()->getCurrentTool()->setTool("T_CameraTest");
+  toolHandle->setTool("T_CameraTest");
 }
 
 //--------------------------------------------------------------------------
 
 void CameraTestToggleCommand::disable() {
+  m_enabled = false;
+
   CleanupSettingsModel *model = CleanupSettingsModel::instance();
   model->detach(CleanupSettingsModel::LISTENER |
                 CleanupSettingsModel::CAMERATEST);
-
-  bool ret = true;
-  ret      = ret && disconnect(model, SIGNAL(previewDataChanged()), this,
-                          SLOT(onPreviewDataChanged()));
-  assert(ret);
+  model->disconnect(this);
 
   clean();
 
   TApp::instance()->getCurrentLevel()->notifyLevelChange();
 
-  TApp::instance()->getCurrentTool()->setTool(
-      QString::fromStdString(m_oldTool->getName()));
-  m_oldTool = 0;
+  // Cleanup Preview sets its own tool. When another tool was picked,
+  // ToolHandle switches to it right after.
+  if (!CleanupPreviewCheck::instance()->isEnabled())
+    TApp::instance()->getCurrentTool()->setTool(m_oldToolName);
 }
 
 //--------------------------------------------------------------------------
 
 void CameraTestToggleCommand::onPreviewDataChanged() {
-  CleanupSettingsModel *model = CleanupSettingsModel::instance();
-
-  // Retrieve level under cleanup
-  TXshSimpleLevel *sl;
-  TFrameId fid;
-  model->getCleanupFrame(sl, fid);
-
-  // In case the level changes, release all previously previewed images
-  if (m_sl.getPointer() != sl) clean();
-
-  m_sl = sl;
-  if (sl) {
-    if (!(sl->getFrameStatus(fid) & TXshSimpleLevel::CleanupPreview)) {
-      m_fids.push_back(fid);
-      sl->setFrameStatus(
-          fid, sl->getFrameStatus(fid) | TXshSimpleLevel::CleanupPreview);
-    }
-
-    postProcess();
-  }
+  if (updatePreviewedFrame()) postProcess();
 }
 
 //--------------------------------------------------------------------------
 
 void CameraTestToggleCommand::postProcess() {
-  TApp *app                   = TApp::instance();
   CleanupSettingsModel *model = CleanupSettingsModel::instance();
 
   TXshSimpleLevel *sl;
   TFrameId fid;
   model->getCleanupFrame(sl, fid);
-
-  assert(sl);
   if (!sl) return;
 
-  // Retrieve transformed image
-  TRasterImageP transformed;
-  {
-    TRasterImageP original;
-    model->getCameraTestData(original, transformed);
-  }
+  TRasterImageP original, transformed;
+  model->getCameraTestData(original, transformed);
 
   // Substitute current frame image with previewed one
   sl->setFrame(fid, transformed);
 
   TApp::instance()->getCurrentLevel()->notifyLevelChange();
-}
-
-//--------------------------------------------------------------------------
-
-void CameraTestToggleCommand::clean() {
-  // Release all previewed images
-  if (m_sl) {
-    int i, fidsCount = m_fids.size();
-    for (i = 0; i < fidsCount; ++i) {
-      const TFrameId &fid = m_fids[i];
-
-      int status = m_sl->getFrameStatus(fid);
-      if (status & TXshSimpleLevel::CleanupPreview) {
-        ImageManager *im = ImageManager::instance();
-        im->unbind(m_sl->getImageId(fid, TXshSimpleLevel::CleanupPreview));
-
-        IconGenerator::instance()->remove(m_sl.getPointer(), fid);
-
-        m_sl->setFrameStatus(fid, status & ~TXshSimpleLevel::CleanupPreview);
-      }
-    }
-  }
-
-  m_sl = TXshSimpleLevelP();
-  m_fids.clear();
 }
 
 //=============================================================================
