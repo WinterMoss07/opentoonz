@@ -2002,9 +2002,6 @@ void MainWindow::defineActions() {
       MI_ImportOCA,
       QT_TRANSLATE_NOOP("MainWindow", "Import Open Cel Animation (OCA)"), "",
       "import_oca");
-  createMenuFileAction(
-      MI_ExportTvpJson,
-      QT_TRANSLATE_NOOP("MainWindow", "Export TVPaint JSON File"), "");
   createMenuFileAction("MI_RunScript", QT_TR_NOOP("Run Script..."), "",
                        "run_script");
   createMenuFileAction("MI_OpenScriptConsole",
@@ -2023,8 +2020,6 @@ void MainWindow::defineActions() {
                        "", "clear_cache");
   createMenuFileAction(MI_ExportCurrentScene,
                        QT_TR_NOOP("&Export Current Scene"), "");
-  createMenuFileAction(MI_ExportCameraTrack, QT_TR_NOOP("&Export Camera Track"),
-                       "");
 
   // Menu - Edit
 

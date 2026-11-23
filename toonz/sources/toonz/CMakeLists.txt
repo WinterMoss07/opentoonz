@@ -129,7 +129,6 @@ set(MOC_HEADERS
     toolpresetcommandmanager.h
     custompaneleditorpopup.h
     convertfolderpopup.h
-    exportcameratrackpopup.h
 )
 
 set(MOC_HEADERS
@@ -198,7 +197,6 @@ set(HEADERS
     sxfio.h
     levelcommand.h
     processor.h
-    tvpjson_io.h
 )
 
 set(SOURCES
@@ -373,13 +371,11 @@ set(SOURCES
     xdtsimportpopup.cpp
     expressionreferencemanager.cpp
     tooloptionsshortcutinvoker.cpp
-    tvpjson_io.cpp
     exportxsheetpdf.cpp
     custompanelmanager.cpp
     toolpresetcommandmanager.cpp
     custompaneleditorpopup.cpp
     convertfolderpopup.cpp
-    exportcameratrackpopup.cpp
 )
 
 set(SOURCES
