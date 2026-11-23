@@ -823,7 +823,7 @@ void EraserTool::multiUpdate(const TXshSimpleLevelP &level, TFrameId firstFid,
     TToonzImageP ti = level->getFrame(fid, true);
     if (!ti) continue;
     /*-- Get interpolation coefficient --*/
-    double t = m > 1 ? (double)i / (double)(m - 1) : 0.5;
+    double t = m > 1 ? (double)i / (double)(m - 1) : 1.0;
     /*-- When invert is ON, divide the outer area into 4 Rects and update --*/
     if (m_invertOption.getValue()) {
       TRect rect =
@@ -1636,7 +1636,7 @@ void EraserTool::multiAreaEraser(const TXshSimpleLevelP &sl, TFrameId &firstFid,
     TFrameId fid = fids[i];
     assert(firstFid <= fid && fid <= lastFid);
     TImageP img = sl->getFrame(fid, true);
-    double t    = m > 1 ? (double)i / (double)(m - 1) : 0.5;
+    double t    = m > 1 ? (double)i / (double)(m - 1) : 1.0;
     doMultiEraser(img, backward ? 1 - t : t, sl, fid, firstImage, lastImage);
     sl->getProperties()->setDirtyFlag(true);
     notifyImageChanged(fid);

@@ -933,7 +933,7 @@ void EraserTool::multiEraseRect(TFrameId firstFrameId, TFrameId lastFrameId,
     assert(firstFrameId <= fid && fid <= lastFrameId);
     TVectorImageP img = (TVectorImageP)m_level->getFrame(fid, true);
     assert(img);
-    double t    = m > 1 ? (double)i / (double)(m - 1) : 0.5;
+    double t    = m > 1 ? (double)i / (double)(m - 1) : 1.0;
     t           = TInbetween::interpolation(t, algorithm);
     TRectD rect = interpolateRect(firstRect, lastRect, t);
     // m_level->setFrame(fid, img); // Necessary: if getFrame uncompressed a
@@ -1614,7 +1614,7 @@ void EraserTool::doMultiErase(TFrameId &firstFrameId, TFrameId &lastFrameId,
   for (int i = 0; i < m; ++i) {
     TFrameId fid = fids[i];
     assert(firstFrameId <= fid && fid <= lastFrameId);
-    double t = m > 1 ? (double)i / (double)(m - 1) : 0.5;
+    double t = m > 1 ? (double)i / (double)(m - 1) : 1.0;
     t        = TInbetween::interpolation(t, algorithm);
     // Set the fid as current to notify the image change
     if (app) {

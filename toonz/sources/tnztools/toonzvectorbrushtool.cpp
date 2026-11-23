@@ -1305,7 +1305,7 @@ bool ToonzVectorBrushTool::doFrameRangeStrokes(
     assert(firstFrameId <= fid && fid <= lastFrameId);
 
     // This is an attempt to divide the tween evenly
-    double t = m > 1 ? (double)i / (double)(m - 1) : 0.5;
+    double t = m > 1 ? (double)i / (double)(m - 1) : 1.0;
     double s = t;
     switch (interpolationType) {
     case 1:  // LINEAR_WSTR

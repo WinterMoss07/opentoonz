@@ -1461,7 +1461,7 @@ void FullColorEraserTool::multiUpdate(const TRectD firstRect,
     assert(firstFid <= fid && fid <= lastFid);
     TRasterImageP ri = m_level->getFrame(fid, true);
     assert(ri);
-    double t    = m > 1 ? (double)i / (double)(m - 1) : 0.5;
+    double t    = m > 1 ? (double)i / (double)(m - 1) : 1.0;
     TRectD rect = interpolateRect(firstRect, lastRect, backward ? 1 - t : t);
     if (m_invertOption.getValue()) {
       TRectD rect01 =
@@ -1531,7 +1531,7 @@ void FullColorEraserTool::multiAreaEraser(TFrameId &firstFid, TFrameId &lastFid,
     TFrameId fid = fids[i];
     assert(firstFid <= fid && fid <= lastFid);
     TImageP img = m_level->getFrame(fid, true);
-    double t    = m > 1 ? (double)i / (double)(m - 1) : 0.5;
+    double t    = m > 1 ? (double)i / (double)(m - 1) : 1.0;
     doMultiEraser(img, backward ? 1 - t : t, fid, firstImage, lastImage);
     m_level->getProperties()->setDirtyFlag(true);
     notifyImageChanged(fid);

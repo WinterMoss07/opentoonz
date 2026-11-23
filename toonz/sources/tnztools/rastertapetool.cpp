@@ -353,7 +353,10 @@ public:
       TFrameId fid     = fids[i];
       TToonzImageP img = (TToonzImageP)m_level->getFrame(fid, true);
       if (!img) continue;
-      double t = m > 1 ? (double)i / (double)(m - 1) : 0.5;
+      double t = m > 1 ? (double)i / (double)(m - 1) : 1.0;
+      // fids are sorted: when the range was drawn backward, t runs from the
+      // last shape to the first one
+      if (backward) t = 1 - t;
       if (m_closeType.getValue() == RECT_CLOSE)
         applyAutoclose(img, fid, interpolateRect(firstRect, lastRect, t));
       else if ((m_closeType.getValue() == FREEHAND_CLOSE ||
