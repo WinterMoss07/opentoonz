@@ -153,12 +153,6 @@ class SceneViewer final : public TToolViewer, public Previewer::Listener {
   TRaster32P m_3DSideL;
   TRaster32P m_3DSideR;
   TRaster32P m_3DTop;
-#if defined(WITH_STOPMOTION)
-  TRasterImageP m_stopMotionImage, m_stopMotionLineUpImage;
-  StopMotion *m_stopMotion        = NULL;
-  bool m_hasStopMotionImage       = false;
-  bool m_hasStopMotionLineUpImage = false;
-#endif
   TPointD m_sideRasterPos;
   TPointD m_topRasterPos;
   QString m_toolDisableReason;
@@ -464,10 +458,6 @@ public slots:
   void releaseBusyOnTabletMove() { m_isBusyOnTabletMove = false; }
 
   void onContextAboutToBeDestroyed();
-#if defined(WITH_STOPMOTION)
-  void onNewStopMotionImageReady();
-  void onStopMotionLiveViewStopped();
-#endif
   void onPreferenceChanged(const QString &prefName);
 
 signals:

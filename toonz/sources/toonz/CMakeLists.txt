@@ -137,20 +137,6 @@ set(MOC_HEADERS
     xshbreadcrumbs.h
 )
 
-if(WITH_STOPMOTION AND (PLATFORM EQUAL 64))
-    set(MOC_HEADERS
-        ${MOC_HEADERS}
-        ../stopmotion/stopmotion.h
-        ../stopmotion/stopmotioncontroller.h
-        ../stopmotion/webcam.h
-        ../stopmotion/jpgconverter.h
-        ../stopmotion/canon.h
-        ../stopmotion/stopmotionserial.h
-        ../stopmotion/stopmotionlight.h
-        cameracapturelevelcontrol.h
-        penciltestpopup.h
-    )
-endif()
 
 set(HEADERS
     ${MOC_HEADERS}
@@ -381,20 +367,6 @@ set(SOURCES
     xshbreadcrumbs.cpp
 )
 
-if(WITH_STOPMOTION AND (PLATFORM EQUAL 64))
-    set(SOURCES
-        ${SOURCES}
-        ../stopmotion/stopmotion.cpp
-        ../stopmotion/stopmotioncontroller.cpp
-        ../stopmotion/webcam.cpp
-        ../stopmotion/jpgconverter.cpp
-        ../stopmotion/canon.cpp
-        ../stopmotion/stopmotionserial.cpp
-        ../stopmotion/stopmotionlight.cpp
-        cameracapturelevelcontrol.cpp
-        penciltestpopup.cpp
-    )
-endif()
 
 
 set(OBJCSOURCES filebrowsermodel.cpp)
@@ -453,16 +425,7 @@ message("Bin: " ${CMAKE_CURRENT_BINARY_DIR})
 include_directories(
     ../../sources/toonzfarm/include
     ../../sources/toonzqt
-    ../../sources/stopmotion
 )
-
-if (WITH_STOPMOTION AND (PLATFORM EQUAL 64))
-    add_definitions(-DWITH_STOPMOTION)
-endif()
-
-if (WITH_CANON)
-    add_definitions(-DWITH_CANON)
-endif()
 
 if (WITH_WINTAB AND BUILD_TARGET_WIN AND (PLATFORM EQUAL 64))
     add_definitions(-DWITH_WINTAB)
@@ -470,9 +433,6 @@ endif()
 
 if(BUILD_ENV_APPLE)
     include_directories(../../sources/mousedragfilter)
-    if(PLATFORM EQUAL 64)
-        include_directories(${TURBOJPEG_INCLUDE_DIRS})
-    endif()
 endif()
 
 if(BUILD_TARGET_WIN)
@@ -489,12 +449,6 @@ if(BUILD_ENV_MSVC)
     if(CMAKE_CXX_FLAGS_DEBUG)
         target_compile_options(OpenToonz PRIVATE /EHsc) # Enable C++ Exceptions in Debug Mode.
     endif()
-    if(WITH_STOPMOTION AND (PLATFORM EQUAL 64))
-        set(EXTRA_LIBS ${EXTRA_LIBS} Qt5::SerialPort ${TURBOJPEG_LIB} ${OpenCV_LIBS})
-        if(WITH_CANON)
-            set(EXTRA_LIBS ${EXTRA_LIBS} ${CANON_LIB})
-        endif()
-    endif()
     target_link_libraries(OpenToonz
         Qt5::WinMain Qt5::Core Qt5::Gui Qt5::Network Qt5::OpenGL Qt5::Svg Qt5::Xml
         Qt5::Script Qt5::Widgets Qt5::PrintSupport Qt5::Multimedia Qt5::UiTools
@@ -509,21 +463,14 @@ elseif(BUILD_ENV_APPLE)
 
     # Workaround for non-standard library output locations
     set(EXTRA_LIBS ${EXTRA_LIBS} "$<TARGET_FILE:tnzstdfx>" "$<TARGET_FILE:tfarm>")
-    set(X64ONLY_LIBS)
-    if(PLATFORM EQUAL 64)
-        set(X64ONLY_LIBS ${X64ONLY_LIBS} Qt5::SerialPort ${TURBOJPEG_LIB} ${OpenCV_LIBS})
-        if(WITH_CANON)
-            set(X64ONLY_LIBS ${X64ONLY_LIBS} ${CANON_LIB})
-        endif()
-    endif()
 
     target_link_directories(OpenToonz PRIVATE ${MYPAINT_LIB_LIBRARY_DIRS})
 
     target_link_libraries(OpenToonz
         Qt5::Core Qt5::Gui Qt5::Network Qt5::OpenGL Qt5::Svg Qt5::Xml
-        Qt5::Script Qt5::Widgets Qt5::PrintSupport Qt5::Multimedia Qt5::MultimediaWidgets Qt5::UiTools
+        Qt5::Script Qt5::Widgets Qt5::PrintSupport Qt5::Multimedia Qt5::UiTools
         ${GL_LIB} ${GLUT_LIB}
-        ${COCOA_LIB} ${EXTRA_LIBS} ${X64ONLY_LIBS} mousedragfilter
+        ${COCOA_LIB} ${EXTRA_LIBS} mousedragfilter
         ${MYPAINT_LIB_LIBRARIES}
     )
 
@@ -547,10 +494,6 @@ elseif(BUILD_ENV_UNIXLIKE)
     set(EXTRA_LIBS ${EXTRA_LIBS} "$<TARGET_FILE:tnzstdfx>" "$<TARGET_FILE:tfarm>")
 
     set(EXTRA_LIBS ${EXTRA_LIBS} ${Boost_LIBRARIES} ${OPENBLAS_LIB} ${EXECINFO_LIBRARY})
-    if(PLATFORM EQUAL 64)
-        set(EXTRA_LIBS ${EXTRA_LIBS} Qt5::SerialPort ${TURBOJPEG_LIB} ${OpenCV_LIBS})
-    endif()
-
     if(BUILD_TARGET_WIN)
         set(EXTRA_LIBS ${EXTRA_LIBS} Qt5::WinMain -lstrmiids -mwindows)
     endif()

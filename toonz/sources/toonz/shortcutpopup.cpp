@@ -302,7 +302,6 @@ ShortcutTree::ShortcutTree(QWidget *parent) : QTreeWidget(parent) {
   QTreeWidgetItem *toolModifiersFolder = m_folders.back();
   addFolder(tr("Brush Presets"), BrushPresetCommandType, toolModifiersFolder);
   addFolder(tr("Brush Sizes"), BrushSizeCommandType, toolModifiersFolder);
-  addFolder(tr("Stop Motion"), StopMotionCommandType);
   addFolder(tr("Visualization"), ZoomCommandType);
   addFolder(tr("Misc"), MiscCommandType);
   addFolder(tr("RGBA Channels"), RGBACommandType);
@@ -459,7 +458,6 @@ void ShortcutTree::refreshTree() {
   QTreeWidgetItem *toolModifiersFolder = m_folders.back();
   addFolder(tr("Brush Presets"), BrushPresetCommandType, toolModifiersFolder);
   addFolder(tr("Brush Sizes"), BrushSizeCommandType, toolModifiersFolder);
-  addFolder(tr("Stop Motion"), StopMotionCommandType);
   addFolder(tr("Visualization"), ZoomCommandType);
   addFolder(tr("Misc"), MiscCommandType);
   addFolder(tr("RGBA Channels"), RGBACommandType);

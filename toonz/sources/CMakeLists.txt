@@ -105,8 +105,6 @@ endif()
 
 option(WITH_SYSTEM_LZO "Use the system LZO library instead of 'thirdparty'" ${_init_SYSTEM_LZO})
 option(WITH_SYSTEM_SUPERLU "Use the system SuperLU library instead of 'thirdparty'" ${_init_SYSTEM_SUPERLU})
-option(WITH_STOPMOTION "Build the stop motion controller and camera capture" OFF)
-option(WITH_CANON "Build with Canon DSLR support - Requires Canon SDK" OFF)
 option(WITH_TRANSLATION "Generate translation projects as well" ON)
 option(WITH_WINTAB "(Windows only) Build with customized Qt with WinTab support. https://github.com/shun-iwasawa/qt5/releases/tag/v5.15.2_wintab" OFF)
 
@@ -294,8 +292,6 @@ find_package(Qt5 REQUIRED
     PrintSupport
     LinguistTools
     Multimedia
-    MultimediaWidgets
-    SerialPort
     UiTools
   )
 
@@ -334,11 +330,6 @@ if(PLATFORM EQUAL 64)
     #include_directories(
     #    ${SDKROOT}/libjpeg-turbo64/include
     #)
-    if(WITH_CANON)
-        include_directories(
-            ${SDKROOT}/canon/Header
-          )
-    endif()
 endif()
 
 get_target_property(QtCore_location Qt5::Core LOCATION)
@@ -376,7 +367,6 @@ if(BUILD_ENV_MSVC)
       )
     #set(JPEG_LIB ${SDKROOT}/LibJPEG/jpeg-9/lib/LibJPEG-9_${MSVC_LIB_VERSION}${PLATFORM2}.lib)
     set(JPEG_LIB ${SDKROOT}/libjpeg-turbo/lib/jpeg-static_${MSVC_LIB_VERSION}${PLATFORM2}.lib)
-    set(TURBOJPEG_LIB ${SDKROOT}/libjpeg-turbo/lib/turbojpeg-static_${MSVC_LIB_VERSION}${PLATFORM2}.lib)
     set(TIFF_INCLUDE_DIR ${SDKROOT}/tiff-4.0.3/libtiff)
     set(TIFF_LIB
     optimized ${SDKROOT}/tiff-4.0.3/lib/LibTIFF-4.0.3_${MSVC_LIB_VERSION}${PLATFORM2}.lib
@@ -398,11 +388,6 @@ if(BUILD_ENV_MSVC)
     set(MYPAINT_LIB_INCLUDE_DIRS ${SDKROOT}/libmypaint/dist/${PLATFORM}/include/libmypaint)
     set(MYPAINT_LIB_LDFLAGS ${SDKROOT}/libmypaint/dist/${PLATFORM}/libmypaint.lib)
 
-    if(PLATFORM EQUAL 64)
-        if (WITH_CANON)
-            set(CANON_LIB ${SDKROOT}/canon/library/EDSDK.lib)
-        endif()
-    endif()
 elseif(BUILD_ENV_APPLE)
     find_library(GLUT_LIB GLUT)
     find_library(GL_LIB OpenGL)
@@ -459,15 +444,6 @@ elseif(BUILD_ENV_APPLE)
     set(MYPAINT_LIB_LIBRARIES ${MYPAINT_LIB_LIBRARIES} CACHE INTERNAL "")
     set(MYPAINT_LIB_INCLUDE_DIRS ${MYPAINT_LIB_INCLUDE_DIRS} CACHE INTERNAL "")
 
-    if(PLATFORM EQUAL 64)
-        pkg_check_modules(TURBOJPEG REQUIRED libturbojpeg)
-        find_library(TURBOJPEG_LIB turbojpeg ${TURBOJPEG_LIBRARY_DIRS})
-        message("**************** turbojpeg lib:" ${TURBOJPEG_LIB})
-
-        if (WITH_CANON)
-            set(CANON_LIB ${SDKROOT}/canon/Framework/EDSDK.framework)
-        endif()
-    endif()
 
 elseif(BUILD_ENV_UNIXLIKE)
     if(BUILD_TARGET_WIN)
@@ -542,10 +518,6 @@ elseif(BUILD_ENV_UNIXLIKE)
     # Can be 'libmypaint' or 'libmypaint-1.x'
     pkg_search_module(MYPAINT_LIB REQUIRED libmypaint libmypaint-1.3>=1.3)
 
-    if(PLATFORM EQUAL 64)
-        find_library(TURBOJPEG_LIB turbojpeg)
-        message("**************** turbojpeg lib:" ${TURBOJPEG_LIB})
-    endif()
 endif()
 
 

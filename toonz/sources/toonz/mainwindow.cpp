@@ -1859,15 +1859,6 @@ QAction *MainWindow::createToolOptionsAction(const char *id, const char *name,
 
 //-----------------------------------------------------------------------------
 
-QAction *MainWindow::createStopMotionAction(const char *id, const char *name,
-                                            const QString &defaultShortcut,
-                                            const char *iconSVGName) {
-  return createAction(id, name, defaultShortcut, StopMotionCommandType,
-                      iconSVGName);
-}
-
-//-----------------------------------------------------------------------------
-
 QAction *MainWindow::createSpecialModifierAction(
     const char *id, const char *name, const QString &defaultShortcut) {
   return createAction(id, name, defaultShortcut, SpecialModifierKeyType);
@@ -2074,10 +2065,6 @@ void MainWindow::defineActions() {
                MenuScanCleanupCommandType, "opacity_check");
   createMenuScanCleanupAction(MI_Cleanup, QT_TR_NOOP("&Cleanup"), "",
                               "cleanup");
-#if defined(WITH_STOPMOTION)
-  createMenuScanCleanupAction(MI_PencilTest, QT_TR_NOOP("&Camera Capture..."),
-                              "", "camera_capture");
-#endif
 
   // Menu - Level
 
@@ -2450,10 +2437,6 @@ void MainWindow::defineActions() {
                           "", "tool_options");
   createMenuWindowsAction(MI_OpenCommandToolbar, QT_TR_NOOP("&Command Bar"), "",
                           "star");
-#if defined(WITH_STOPMOTION)
-  createMenuWindowsAction(MI_OpenStopMotionPanel,
-                          QT_TR_NOOP("&Stop Motion Controls"), "");
-#endif
   createMenuWindowsAction(MI_OpenLevelView, QT_TR_NOOP("&Viewer"), "",
                           "viewer");
   createMenuWindowsAction(MI_OpenXshView, QT_TR_NOOP("&Xsheet"), "", "xsheet");
@@ -3171,38 +3154,6 @@ void MainWindow::defineActions() {
 
   // Stop Motion
 
-#if defined(WITH_STOPMOTION)
-  createStopMotionAction(MI_StopMotionExportImageSequence,
-                         QT_TR_NOOP("&Export Stop Motion Image Sequence"), "");
-  createStopMotionAction(MI_StopMotionCapture,
-                         QT_TR_NOOP("Capture Stop Motion Frame"), "");
-  createStopMotionAction(MI_StopMotionRaiseOpacity,
-                         QT_TR_NOOP("Raise Stop Motion Opacity"), "");
-  createStopMotionAction(MI_StopMotionLowerOpacity,
-                         QT_TR_NOOP("Lower Stop Motion Opacity"), "");
-  createStopMotionAction(MI_StopMotionToggleLiveView,
-                         QT_TR_NOOP("Toggle Stop Motion Live View"), "");
-#ifdef WITH_CANON
-  createStopMotionAction(MI_StopMotionToggleZoom,
-                         QT_TR_NOOP("Toggle Stop Motion Zoom"), "");
-  createStopMotionAction(MI_StopMotionPickFocusCheck,
-                         QT_TR_NOOP("Pick Focus Check Location"), "");
-#endif  // WITH_CANON
-  createStopMotionAction(MI_StopMotionLowerSubsampling,
-                         QT_TR_NOOP("Lower Stop Motion Level Subsampling"), "");
-  createStopMotionAction(MI_StopMotionRaiseSubsampling,
-                         QT_TR_NOOP("Raise Stop Motion Level Subsampling"), "");
-  createStopMotionAction(MI_StopMotionJumpToCamera,
-                         QT_TR_NOOP("Go to Stop Motion Insert Frame"), "");
-  createStopMotionAction(MI_StopMotionRemoveFrame,
-                         QT_TR_NOOP("Remove frame before Stop Motion Camera"),
-                         "");
-  createStopMotionAction(MI_StopMotionNextFrame,
-                         QT_TR_NOOP("Next Frame including Stop Motion Camera"),
-                         "");
-  createStopMotionAction(MI_StopMotionToggleUseLiveViewImages,
-                         QT_TR_NOOP("Show original live view images."), "");
-#endif  // WITH_STOPMOTION
 
   // Special Modifier Keys
   createSpecialModifierAction(V_Scrub, QT_TR_NOOP("Viewer Scrub"), "#");

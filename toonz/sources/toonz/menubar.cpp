@@ -1114,9 +1114,6 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
     addMenuItem(exportMenu, MI_ExportSXF);
     addMenuItem(exportMenu, MI_ExportOCA);
     addMenuItem(exportMenu, MI_ExportXsheetPDF);
-#if defined(WITH_STOPMOTION)
-    addMenuItem(exportMenu, MI_StopMotionExportImageSequence);
-#endif
   }
   fileMenu->addSeparator();
   addMenuItem(fileMenu, MI_PrintXsheet);
@@ -1179,9 +1176,6 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
   addMenuItem(scanCleanupMenu, MI_CameraTest);
   addMenuItem(scanCleanupMenu, MI_Cleanup);
   scanCleanupMenu->addSeparator();
-#if defined(WITH_STOPMOTION)
-  addMenuItem(scanCleanupMenu, MI_PencilTest);
-#endif
 
   // Menu' LEVEL
   QMenu *levelMenu = addMenu(tr("Level"), fullMenuBar);
@@ -1423,9 +1417,6 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
   addMenuItem(windowsMenu, MI_OpenTasks);
   addMenuItem(windowsMenu, MI_OpenTMessage);
   addMenuItem(windowsMenu, MI_OpenHistoryPanel);
-#if defined(WITH_STOPMOTION)
-  addMenuItem(windowsMenu, MI_OpenStopMotionPanel);
-#endif
   addMenuItem(windowsMenu, MI_StartupPopup);
   addMenuItem(windowsMenu, MI_OpenGuidedDrawingControls);
   addMenuItem(windowsMenu, MI_OpenCustomPanels);

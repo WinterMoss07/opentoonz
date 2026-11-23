@@ -12,9 +12,6 @@
 #include "cellselection.h"
 #include "menubarcommandids.h"
 #include "toonzqt/menubarcommand.h"
-#if defined(WITH_STOPMOTION)
-#include "../stopmotion/stopmotion.h"
-#endif
 
 #include "toonz/toonzscene.h"
 #include "tconvert.h"
@@ -415,25 +412,6 @@ void RowArea::drawCurrentRowGadget(QPainter &p, int r0, int r1) {
   p.fillRect(header, m_viewer->getCurrentRowBgColor());
 }
 
-#if defined(WITH_STOPMOTION)
-//-----------------------------------------------------------------------------
-
-void RowArea::drawStopMotionCameraIndicator(QPainter &p) {
-  int cameraRow = StopMotion::instance()->getXSheetFrameNumber() - 1;
-  if (cameraRow < 0) return;
-
-  QPoint topLeft = m_viewer->positionToXY(CellPosition(cameraRow, 0));
-  if (!m_viewer->orientation()->isVerticalTimeline()) topLeft.setY(0);
-  QRect header = m_viewer->orientation()
-                     ->rect(PredefinedRect::FRAME_HEADER)
-                     .translated(topLeft);
-  QPoint frameAdj = m_viewer->getFrameZoomAdjustment();
-  header.adjust(1, 1, -frameAdj.x(), -frameAdj.y());
-  p.fillRect(header, Qt::GlobalColor::darkGreen);
-}
-
-//-----------------------------------------------------------------------------
-#endif
 
 void RowArea::drawNavigationTags(QPainter &p, int r0, int r1) {
   TApp *app    = TApp::instance();
@@ -976,12 +954,6 @@ void RowArea::paintEvent(QPaintEvent *event) {
     // current frame
     drawCurrentRowGadget(p, r0, r1);
 
-#if defined(WITH_STOPMOTION)
-  StopMotion *stopMotion = StopMotion::instance();
-  if (stopMotion->getPlaceOnXSheet() && (stopMotion->m_liveViewStatus > 0)) {
-    drawStopMotionCameraIndicator(p);
-  }
-#endif
 
   // For now, the current frame indicator is not displayed in the xsheet row
   // area

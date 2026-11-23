@@ -57,9 +57,6 @@ class RowArea final : public QWidget {
   void drawCurrentTimeLine(QPainter &p);
   void drawShiftTraceMarker(QPainter &p);
 
-#if defined(WITH_STOPMOTION)
-  void drawStopMotionCameraIndicator(QPainter &p);
-#endif
 
   void drawNavigationTags(QPainter &p, int r0, int r1);
 

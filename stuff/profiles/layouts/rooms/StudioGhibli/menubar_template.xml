@@ -80,7 +80,6 @@
     <command>MI_CameraTest</command>
     <command>MI_Cleanup</command>
     <separator/>
-    <command>MI_PencilTest</command>
   </menu>
   <menu title="Level">
     <command>MI_AddFrames</command>

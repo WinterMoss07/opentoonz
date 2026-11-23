@@ -94,7 +94,6 @@
 #define MI_OpenCommandToolbar "MI_OpenCommandToolbar"
 #define MI_OpenToolOptionBar "MI_OpenToolOptionBar"
 #define MI_OpenLevelView "MI_OpenLevelView"
-#define MI_OpenStopMotionPanel "MI_OpenStopMotionPanel"
 // #define MI_OpenExport "MI_OpenExport"
 #define MI_BrightnessAndContrast "MI_BrightnessAndContrast"
 #define MI_Antialias "MI_Antialias"
@@ -412,25 +411,10 @@
 
 #define MI_About "MI_About"
 #define MI_StartupPopup "MI_StartupPopup"
-#define MI_PencilTest "MI_PencilTest"
 #define MI_AutoInputCellNumber "MI_AutoInputCellNumber"
 #define MI_TouchGestureControl "MI_TouchGestureControl"
 #define MI_SeparateColors "MI_SeparateColors"
 
-#define MI_StopMotionCapture "MI_StopMotionCapture"
-#define MI_StopMotionRaiseOpacity "MI_StopMotionRaiseOpacity"
-#define MI_StopMotionLowerOpacity "MI_StopMotionLowerOpacity"
-#define MI_StopMotionToggleLiveView "MI_StopMotionToggleLiveView"
-#define MI_StopMotionToggleZoom "MI_StopMotionToggleZoom"
-#define MI_StopMotionToggleUseLiveViewImages                                   \
-  "MI_StopMotionToggleUseLiveViewImages"
-#define MI_StopMotionLowerSubsampling "MI_StopMotionLowerSubsampling"
-#define MI_StopMotionRaiseSubsampling "MI_StopMotionRaiseSubsampling"
-#define MI_StopMotionJumpToCamera "MI_StopMotionJumpToCamera"
-#define MI_StopMotionPickFocusCheck "MI_StopMotionPickFocusCheck"
-#define MI_StopMotionExportImageSequence "MI_StopMotionExportImageSequence"
-#define MI_StopMotionRemoveFrame "MI_StopMotionRemoveFrame"
-#define MI_StopMotionNextFrame "MI_StopMotionNextFrame"
 
 #define MI_OpenOnlineManual "MI_OpenOnlineManual"
 #define MI_OpenWhatsNew "MI_OpenWhatsNew"

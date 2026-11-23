@@ -218,9 +218,6 @@ private:
   QAction *createToolOptionsAction(const char *id, const char *name,
                                    const QString &defaultShortcut,
                                    const char *iconSVGName = "");
-  QAction *createStopMotionAction(const char *id, const char *name,
-                                  const QString &defaultShortcut,
-                                  const char *iconSVGName = "");
 
   QAction *createSpecialModifierAction(const char *id, const char *name,
                                        const QString &defaultShortcut);

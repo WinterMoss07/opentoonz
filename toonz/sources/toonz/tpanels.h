@@ -17,7 +17,6 @@
 class PaletteViewer;
 class TPaletteHandle;
 class StyleEditor;
-class StopMotionController;
 class TLevel;
 class StudioPaletteViewer;
 class TPanelTitleBarButton;

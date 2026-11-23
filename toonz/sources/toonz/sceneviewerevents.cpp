@@ -17,9 +17,6 @@
 #include "cellselection.h"
 #include "styleshortcutswitchablepanel.h"
 
-#if defined(WITH_STOPMOTION)
-#include "stopmotion.h"
-#endif
 
 // TnzQt includes
 #include "toonzqt/tselectionhandle.h"
@@ -640,14 +637,6 @@ void SceneViewer::onMove(const TMouseEvent &event) {
     TPointD worldPos = winToWorld(curPos);
     TPointD pos      = tool->getMatrix().inv() * worldPos;
 
-#ifdef WITH_CANON
-    // grab screen picking for stop motion live view zoom
-    if ((event.buttons() & Qt::LeftButton) &&
-        StopMotion::instance()->m_canon->m_pickLiveViewZoom) {
-      StopMotion::instance()->m_canon->makeZoomPoint(pos);
-      return;
-    }
-#endif
     LocatorPopup *locator = TApp::instance()->getActiveLocator();
     if (!m_isLocator && locator) {
       locator->onChangeViewAff(worldPos);
@@ -693,10 +682,6 @@ void SceneViewer::onMove(const TMouseEvent &event) {
 
     m_toolPos = pos;
 
-#ifdef WITH_CANON
-    if (StopMotion::instance()->m_canon->m_pickLiveViewZoom)
-      setToolCursor(this, ToolCursor::ZoomCursor);
-#endif
     m_pos          = curPos;
     m_tabletMove   = false;
     m_toolSwitched = false;
@@ -873,13 +858,6 @@ void SceneViewer::onPress(const TMouseEvent &event) {
     pos.y /= m_dpiScale.y;
   }
 
-#ifdef WITH_CANON
-  // grab screen picking for stop motion live view zoom
-  if (StopMotion::instance()->m_canon->m_pickLiveViewZoom) {
-    StopMotion::instance()->m_canon->makeZoomPoint(pos);
-    return;
-  }
-#endif
 
   // separate tablet and mouse events
   if (m_tabletEvent && m_tabletState == Touched) {
@@ -1464,52 +1442,8 @@ void SceneViewer::keyPressEvent(QKeyEvent *event) {
   int key = event->key();
 
   // Handle Canon camera controls if enabled
-#ifdef WITH_CANON
-  if ((m_stopMotion->m_canon->m_pickLiveViewZoom ||
-       m_stopMotion->m_canon->m_zooming) &&
-      (key == Qt::Key_Left || key == Qt::Key_Right || key == Qt::Key_Up ||
-       key == Qt::Key_Down || key == Qt::Key_2 || key == Qt::Key_4 ||
-       key == Qt::Key_6 || key == Qt::Key_8)) {
-    // Handle camera zoom point adjustment
-    if (m_stopMotion->m_canon->m_liveViewZoomReadyToPick == true) {
-      if (key == Qt::Key_Left || key == Qt::Key_4) {
-        m_stopMotion->m_canon->m_liveViewZoomPickPoint.x -= 10;
-      }
-      if (key == Qt::Key_Right || key == Qt::Key_6) {
-        m_stopMotion->m_canon->m_liveViewZoomPickPoint.x += 10;
-      }
-      if (key == Qt::Key_Up || key == Qt::Key_8) {
-        m_stopMotion->m_canon->m_liveViewZoomPickPoint.y += 10;
-      }
-      if (key == Qt::Key_Down || key == Qt::Key_2) {
-        m_stopMotion->m_canon->m_liveViewZoomPickPoint.y -= 10;
-      }
-      if (m_stopMotion->m_canon->m_zooming) {
-        m_stopMotion->m_canon->setZoomPoint();
-      }
-    }
-
-    m_stopMotion->m_canon->calculateZoomPoint();
-    event->accept();
-    return;
-  } else if (m_stopMotion->m_canon->m_pickLiveViewZoom &&
-             (key == Qt::Key_Escape || key == Qt::Key_Enter ||
-              key == Qt::Key_Return)) {
-    m_stopMotion->m_canon->toggleZoomPicking();
-    event->accept();
-    return;
-  } else
-#endif
 
   // Handle stop motion capture
-#if defined(WITH_STOPMOTION)
-      if (m_stopMotion->m_liveViewStatus == 2 &&
-          (key == Qt::Key_Enter || key == Qt::Key_Return)) {
-    m_stopMotion->captureImage();
-    event->accept();
-    return;
-  }
-#endif
 
   // Handle tool-specific key events and viewer shortcuts
   auto ret = [&]() -> bool {

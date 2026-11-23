@@ -13,7 +13,6 @@
     <command>MI_Paste</command>
     <command>MI_Clear</command>
     <separator/>
-    <command>MI_PencilTest</command>
     <separator/>
     <command>MI_SendBack</command>
     <command>MI_SendBackward</command>

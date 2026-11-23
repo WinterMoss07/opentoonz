@@ -29,9 +29,6 @@
 
 #include "expressionreferencemanager.h"
 
-#if defined(WITH_STOPMOTION)
-#include "stopmotioncontroller.h"
-#endif
 
 #include "tasksviewer.h"
 #include "colormodelviewer.h"
@@ -1498,33 +1495,6 @@ OpenFloatingPanel openHistoryPanelCommand(MI_OpenHistoryPanel, "HistoryPanel",
                                           QObject::tr("History"));
 //=============================================================================
 
-#if defined(WITH_STOPMOTION)
-//=============================================================================
-// Stop Motion Controller
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-
-class StopMotionPanelFactory final : public TPanelFactory {
-public:
-  StopMotionPanelFactory() : TPanelFactory("StopMotionController") {}
-
-  void initialize(TPanel *panel) override {
-    StopMotionController *stopMotionController =
-        new StopMotionController(panel);
-    panel->setWidget(stopMotionController);
-    panel->setWindowTitle(QObject::tr("Stop Motion Controller"));
-    panel->setIsMaximizable(false);
-  }
-} stopMotionPanelFactory;
-
-//=============================================================================
-OpenFloatingPanel openStopMotionPanelCommand(
-    MI_OpenStopMotionPanel, "StopMotionController",
-    QObject::tr("Stop Motion Controller"));
-//-----------------------------------------------------------------------------
-
-#endif  // WITH_STOPMOTION
 
 //-----------------------------------------------------------------------------
 
