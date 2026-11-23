@@ -595,7 +595,7 @@ unsigned int nsvg__parseColorHex(const char *str) {
 unsigned int nsvg__parseColorRGB(const char *str) {
   int r = -1, g = -1, b = -1;
   char s1[32] = "", s2[32] = "";
-  sscanf(str + 4, "%d%[%%, \t]%d%[%%, \t]%d", &r, s1, &g, s2, &b);
+  sscanf(str + 4, "%d%31[%%, \t]%d%31[%%, \t]%d", &r, s1, &g, s2, &b);
   if (strchr(s1, '%')) {
     return NSVG_RGB((r * 255) / 100, (g * 255) / 100, (b * 255) / 100);
   } else {
@@ -935,7 +935,8 @@ int nsvg__parseAttr(struct NSVGParser *p, const char *name, const char *value) {
   if (!attr) return 0;
 
   if (strcmp(name, "id") == 0) {
-    strcpy(attr->id, value);
+    strncpy(attr->id, value, sizeof(attr->id) - 1);
+    attr->id[sizeof(attr->id) - 1] = '\0';
   } else if (strcmp(name, "style") == 0) {
     nsvg__parseStyle(p, value);
   } else if (strcmp(name, "display") == 0) {
@@ -1690,27 +1691,27 @@ void nsvg__parseSVG(struct NSVGParser *p, const char **attr) {
   for (i = 0; attr[i]; i += 2) {
     if (!nsvg__parseAttr(p, attr[i], attr[i + 1])) {
       if (strcmp(attr[i], "width") == 0) {
-        float w;
+        float w = 0;
         char units[8];
         units[0]            = '\0';
         p->image->wunits[0] = '\0';
-        sscanf(attr[i + 1], "%f%s", &w, units);
+        sscanf(attr[i + 1], "%f%7s", &w, units);
         if (strcmp(units, "%") != 0) {
           p->image->width = w;
           strcpy(p->image->wunits, units);
         }
       } else if (strcmp(attr[i], "height") == 0) {
-        float h;
+        float h = 0;
         char units[8];
         units[0]            = '\0';
         p->image->hunits[0] = '\0';
-        sscanf(attr[i + 1], "%f%s", &h, units);
+        sscanf(attr[i + 1], "%f%7s", &h, units);
         if (strcmp(units, "%") != 0) {
           p->image->height = h;
           strcpy(p->image->hunits, units);
         }
       } else if (strcmp(attr[i], "viewBox") == 0) {
-        float x, y, w, h;
+        float x = 0, y = 0, w = 0, h = 0;
         sscanf(attr[i + 1], "%f %f %f %f", &x, &y, &w, &h);
         if (p->image->width <= 0) p->image->width = w;
         if (p->image->height <= 0) p->image->height = h;
