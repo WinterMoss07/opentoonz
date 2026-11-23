@@ -1443,7 +1443,6 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
   addMenuItem(windowsMenu, MI_OpenTasks);
   addMenuItem(windowsMenu, MI_OpenTMessage);
   addMenuItem(windowsMenu, MI_OpenHistoryPanel);
-  addMenuItem(windowsMenu, MI_AudioRecording);
 #if defined(WITH_STOPMOTION)
   addMenuItem(windowsMenu, MI_OpenStopMotionPanel);
 #endif

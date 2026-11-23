@@ -5,7 +5,6 @@ set(MOC_HEADERS
     adjustlevelspopup.h
     adjustthicknesspopup.h
     antialiaspopup.h
-    audiorecordingpopup.h
     autoinputcellnumberpopup.h
     batches.h
     binarizepopup.h
@@ -360,7 +359,6 @@ set(SOURCES
     comboviewerpane.cpp
     historypane.cpp
     cleanupsettingspane.cpp
-    audiorecordingpopup.cpp
     locatorpopup.cpp
     styleshortcutswitchablepanel.cpp
     reframepopup.cpp

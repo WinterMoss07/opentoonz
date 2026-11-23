@@ -15,7 +15,6 @@
 #include "startuppopup.h"
 #include "tooloptionsshortcutinvoker.h"
 #include "custompanelmanager.h"
-#include "audiorecordingpopup.h"
 #include "pltgizmopopup.h"
 
 // TnzTools includes
@@ -1289,21 +1288,6 @@ void MainWindow::onCurrentRoomChanged(int newRoomIndex) {
   }
 
   // Handle room-bound persistent popups (DVGui::Dialog-based)
-  // AudioRecordingPopup
-  AudioRecordingPopup *audioPopup = findChild<AudioRecordingPopup *>();
-  if (audioPopup && audioPopup->isRoomBound()) {
-    QString boundRoomName = audioPopup->getBoundRoomName();
-    if (boundRoomName == newRoomName) {
-      if (!audioPopup->isVisible()) {
-        audioPopup->show();
-      }
-    } else {
-      if (audioPopup->isVisible()) {
-        audioPopup->hide();
-      }
-    }
-  }
-
   // PltGizmoPopup
   PltGizmoPopup *pltGizmoPopup = findChild<PltGizmoPopup *>();
   if (pltGizmoPopup && pltGizmoPopup->isRoomBound()) {
@@ -2502,8 +2486,6 @@ void MainWindow::defineActions() {
   createMenuWindowsAction(MI_OpenHistoryPanel, QT_TR_NOOP("&History"), "Ctrl+H",
                           "history");
 
-  createMenuWindowsAction(MI_AudioRecording, QT_TR_NOOP("Record Audio"),
-                          "Alt+A", "recordaudio");
   createMenuWindowsAction(MI_ResetRoomLayout,
                           QT_TR_NOOP("&Reset to Default Rooms"), "");
   createMenuWindowsAction(MI_MaximizePanel, QT_TR_NOOP("Toggle Maximize Panel"),
