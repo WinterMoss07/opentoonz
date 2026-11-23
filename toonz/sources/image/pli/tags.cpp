@@ -89,7 +89,7 @@ PaletteTag::PaletteTag(const PaletteTag &paletteTag) : PliTag(PliTag::PALETTE) {
 
 /*=====================================================================*/
 
-PaletteTag::~PaletteTag() { delete m_color; }
+PaletteTag::~PaletteTag() { delete[] m_color; }
 
 /*=====================================================================*/
 /*=====================================================================*/
@@ -126,7 +126,7 @@ PaletteWithAlphaTag::PaletteWithAlphaTag(PaletteWithAlphaTag &paletteTag)
 
 /*=====================================================================*/
 
-PaletteWithAlphaTag::~PaletteWithAlphaTag() { delete m_color; }
+PaletteWithAlphaTag::~PaletteWithAlphaTag() { delete[] m_color; }
 
 /*=====================================================================*/
 /*=====================================================================*/
