@@ -178,7 +178,7 @@ void FlowBlurWorker::run() {
   double logDist[101];
   if (m_filterType == Gaussian) {
     double scale = 1.0 / 3.0;
-    for (int i = 0; i <= 101; i++) {
+    for (int i = 0; i < 101; i++) {
       double x   = (double)i / 100.0;
       logDist[i] = std::tanh(x / (2.0 * scale));
     }
