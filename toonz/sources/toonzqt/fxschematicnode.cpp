@@ -2146,17 +2146,18 @@ void FxSchematicNode::addDynamicInputPort(int groupIdx) const {
   assert(m_actualFx);
   assert(groupIdx < m_actualFx->dynamicPortGroupsCount());
 
-  TFxPort *port = new TRasterFxPort;
-
-  // Add the port with a suitable port name
+  // Add the port with the first free name from <prefix><size + 1> (ports
+  // start from <prefix>1). addInputPort() deletes the port when it fails, so
+  // the name is checked first.
   const TFxPortDG *group = m_actualFx->dynamicPortGroup(groupIdx);
 
-  for (int n =
-           group->ports().size() + 1;  // +1 since ports start from <prefix>1
-       !m_actualFx->addInputPort(
-           group->portsPrefix() + QString::number(n).toStdString(), port,
-           groupIdx);
-       ++n);
+  std::string name;
+  int n = group->ports().size() + 1;
+  do
+    name = group->portsPrefix() + QString::number(n++).toStdString();
+  while (m_actualFx->getInputPort(name));
+
+  m_actualFx->addInputPort(name, new TRasterFxPort, groupIdx);
 }
 
 //-----------------------------------------------------

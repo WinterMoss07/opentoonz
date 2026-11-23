@@ -569,12 +569,13 @@ TFx *explodeFxSubTree(TFx *innerFx, QMap<TFx *, QPair<TFx *, int>> &fxs,
                                                : TPointD(pos.x + 150, pos.y));
 
     const TFxPortDG *group = overFx->dynamicPortGroup(0);
+    // the fx may already have the first ports; addInputPort() owns the new
+    // port and deletes it if it fails
     for (int i = 0; i < sortedFx.size(); i++) {
-      TFxPort *port = new TRasterFxPort;
-      if (!overFx->addInputPort(
-              group->portsPrefix() + QString::number(i + 1).toStdString(), port,
-              0))
-        delete port;
+      std::string name =
+          group->portsPrefix() + QString::number(i + 1).toStdString();
+      if (!overFx->getInputPort(name))
+        overFx->addInputPort(name, new TRasterFxPort, 0);
     }
 
     int portId      = sortedFx.size() - 1;
