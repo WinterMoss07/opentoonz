@@ -6,6 +6,7 @@
 #include "toonz/txshcell.h"
 #include "toonz/txshleveltypes.h"
 #include "toonz/scenefx.h"
+#include "toonz/tstageobjecttree.h"
 
 //=============================================================================
 // ChildStack
@@ -140,19 +141,28 @@ std::pair<TXsheet *, int> ChildStack::getAncestor(int row) const {
 //-----------------------------------------------------------------------------
 
 bool ChildStack::getAncestorAffine(TAffine &aff, int row) const {
-  aff   = TAffine();
-  int i = m_stack.size() - 1;
-  while (i >= 0) {
-    std::map<int, int>::const_iterator it = m_stack[i]->m_rowTable.find(row);
-    if (it == m_stack[i]->m_rowTable.end()) break;
+  aff = TAffine();
+  for (int i = m_stack.size() - 1; i >= 0; --i) {
+    AncestorNode *node                    = m_stack[i];
+    std::map<int, int>::const_iterator it = node->m_rowTable.find(row);
+    if (it == node->m_rowTable.end()) break;
 
-    row        = it->second;
-    AncestorNode *node = m_stack[i];
-    TAffine aff2;
-    if (!getColumnPlacement(aff2, node->m_xsheet, row, node->m_col, false))
+    // A sub-xsheet is shown in its parent through its own camera, like the
+    // stage does: without it, editing in place moved the parent scene with
+    // the sub-xsheet camera.
+    TXsheet *childXsh = node->m_cl->getXsheet();
+    TStageObject *childCamera = childXsh->getStageObject(
+        childXsh->getStageObjectTree()->getCurrentCameraId());
+    TAffine childCameraZaff =
+        childCamera->getPlacement(row) *
+        TScale((1000 + childCamera->getZ(row)) / 1000);
+
+    row = it->second;
+    TAffine columnAff;
+    if (!getColumnPlacement(columnAff, node->m_xsheet, row, node->m_col,
+                            false))
       return false;
-    aff = aff2 * aff;
-    i--;
+    aff = columnAff * childCameraZaff.inv() * aff;
   }
   return true;
 }
