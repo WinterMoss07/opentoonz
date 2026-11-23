@@ -93,6 +93,9 @@ public:
   TPointD m_pos;  //!< Mouse position in window coordinates, bottom-left origin.
   double m_pressure;  //!< Pressure of the tablet pen (0.0 - 1.0) , or 1.0 for
                       //! pure mouse events.
+  TPointD m_tilt;  //!< Tilt of the tablet pen, each axis in -1.0 - 1.0.
+                   //! Window coordinates when built from a QTabletEvent,
+                   //! tool coordinates when passed to the tool.
 
   ModifierMask m_modifiersMask;  //!< Bitmask specifying key modifiers applying
                                  //! on the event.

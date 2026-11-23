@@ -52,6 +52,7 @@
 #include "toonzqt/dvdialog.h"
 #include "toonzqt/gutil.h"
 #include "subcameramanager.h"
+#include "tools/track.h"
 
 // TnzCore includes
 #include "timagecache.h"
@@ -100,6 +101,8 @@ void initToonzEvent(TMouseEvent &toonzEvent, QTabletEvent *event,
       (float)widgetHeight - 1.0f - event->posF().y() * (float)devPixRatio);
   toonzEvent.m_mousePos = event->posF();
   toonzEvent.m_pressure = pressure;
+  toonzEvent.m_tilt     = TPointD(tcrop(event->xTilt() / 60.0, -1.0, 1.0),
+                                  tcrop(-event->yTilt() / 60.0, -1.0, 1.0));
 
   toonzEvent.setModifiers(event->modifiers() & Qt::ShiftModifier,
                           event->modifiers() & Qt::AltModifier,
@@ -662,8 +665,10 @@ void SceneViewer::onMove(const TMouseEvent &event) {
     if (m_tabletEvent &&
         (m_tabletState == OnStroke || m_tabletState == StartStroke) &&
         m_tabletMove) {
-      if (m_toolSwitched) tool->leftButtonDown(pos, event);
-      tool->leftButtonDrag(pos, event);
+      TMouseEvent toolEvent = event;
+      toolEvent.m_tilt      = toolTilt(tool, curPos, event.m_tilt);
+      if (m_toolSwitched) tool->leftButtonDown(pos, toolEvent);
+      tool->leftButtonDrag(pos, toolEvent);
       m_tabletState = OnStroke;
     }
 
@@ -718,6 +723,30 @@ void SceneViewer::onMove(const TMouseEvent &event) {
 
     return;
   }
+}
+
+//-----------------------------------------------------------------------------
+
+TPointD SceneViewer::toolTilt(TTool *tool, const QPointF &winPos,
+                              const TPointD &tilt) const {
+  if (tilt.x == 0.0 && tilt.y == 0.0) return tilt;
+
+  TAffine toTool = tool->getMatrix().inv();
+  TPointD scale(1.0, 1.0);
+  if ((tool->getToolType() & TTool::LevelTool) &&
+      !TApp::instance()->getCurrentObject()->isSpline())
+    scale = m_dpiScale;
+
+  // tilt is given in window coordinates with the y axis pointing up,
+  // while winToWorld() takes Qt coordinates with the y axis pointing down
+  TPointD p0 = toTool * winToWorld(winPos);
+  TPointD px = toTool * winToWorld(winPos + QPointF(1.0, 0.0)) - p0;
+  TPointD py = toTool * winToWorld(winPos + QPointF(0.0, -1.0)) - p0;
+  TAffine linear(px.x / scale.x, py.x / scale.x, 0.0, px.y / scale.y,
+                 py.y / scale.y, 0.0);
+
+  TPointD t = TTrackTransform::makeTiltTransform(linear) * tilt;
+  return TPointD(tcrop(t.x, -1.0, 1.0), tcrop(t.y, -1.0, 1.0));
 }
 
 //-----------------------------------------------------------------------------
@@ -867,8 +896,10 @@ void SceneViewer::onPress(const TMouseEvent &event) {
   if (m_tabletEvent && m_tabletState == Touched) {
     TApp::instance()->getCurrentTool()->setToolBusy(true);
     tool->setCanUndo(false);
-    m_tabletState = StartStroke;
-    tool->leftButtonDown(pos, event);
+    m_tabletState         = StartStroke;
+    TMouseEvent toolEvent = event;
+    toolEvent.m_tilt      = toolTilt(tool, m_pos, event.m_tilt);
+    tool->leftButtonDown(pos, toolEvent);
   } else if (m_mouseButton == Qt::LeftButton) {
     m_mouseState = StartStroke;
     TApp::instance()->getCurrentTool()->setToolBusy(true);
@@ -955,8 +986,8 @@ void SceneViewer::onRelease(const TMouseEvent &event) {
   tool->setViewer(this);
 
   {
-    TPointD pos = tool->getMatrix().inv() *
-                  winToWorld(event.mousePos() * getDevPixRatio());
+    QPointF winPos = event.mousePos() * getDevPixRatio();
+    TPointD pos    = tool->getMatrix().inv() * winToWorld(winPos);
 
     TObjectHandle *objHandle = TApp::instance()->getCurrentObject();
     if ((tool->getToolType() & TTool::LevelTool) && !objHandle->isSpline()) {
@@ -965,7 +996,9 @@ void SceneViewer::onRelease(const TMouseEvent &event) {
     }
 
     if (m_mouseButton == Qt::LeftButton || m_tabletState == Released) {
-      if (!m_toolSwitched) tool->leftButtonUp(pos, event);
+      TMouseEvent toolEvent = event;
+      toolEvent.m_tilt      = toolTilt(tool, winPos, event.m_tilt);
+      if (!m_toolSwitched) tool->leftButtonUp(pos, toolEvent);
       TApp::instance()->getCurrentTool()->setToolBusy(false);
       tool->setCanUndo(true);
     }

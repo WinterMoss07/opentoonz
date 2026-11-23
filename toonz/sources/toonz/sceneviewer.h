@@ -300,6 +300,10 @@ public:
   void bindFBO() override;
   void releaseFBO() override;
 
+private:
+  TPointD toolTilt(TTool *tool, const QPointF &winPos,
+                   const TPointD &tilt) const;
+
 public:
   // SceneViewer's gadget public functions
   TPointD winToWorld(const QPointF &pos) const;

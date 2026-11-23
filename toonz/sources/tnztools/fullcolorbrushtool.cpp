@@ -413,7 +413,7 @@ void FullColorBrushTool::handleMouseEvent(MouseEventType type,
     double pressure    = hasPressure ? e.m_pressure : defPressure;
     bool   final       = type == ME_UP;
     m_inputmanager.trackEvent(
-      deviceId, 0, pos, pressure, TPointD(), hasPressure, false, final, t);
+      deviceId, 0, pos, pressure, e.m_tilt, hasPressure, hasPressure, final, t);
     m_inputmanager.processTracks();
   }
 }

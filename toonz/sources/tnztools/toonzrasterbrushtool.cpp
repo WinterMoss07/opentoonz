@@ -1154,8 +1154,8 @@ void ToonzRasterBrushTool::handleMouseEvent(MouseEventType type,
     bool hasPressure   = e.isTablet();
     double pressure    = hasPressure ? e.m_pressure : defPressure;
     bool final         = type == ME_UP;
-    m_inputmanager.trackEvent(deviceId, 0, fixedPos, pressure, TPointD(),
-                              hasPressure, false, final, t);
+    m_inputmanager.trackEvent(deviceId, 0, fixedPos, pressure, e.m_tilt,
+                              hasPressure, hasPressure, final, t);
     m_inputmanager.processTracks();
   }
 }
