@@ -204,9 +204,9 @@ TLevelWriterAvi::~TLevelWriterAvi() {
       if (bufferOut) _aligned_free(bufferOut);
       break;
     }
-    if (AVIStreamWrite(m_videoStream, frameIndex, 1, bufferOut,
-                       outHeader.biSizeImage, flagsOut, &lSampWritten,
-                       &lBytesWritten)) {
+    if (FAILED(AVIStreamWrite(m_videoStream, frameIndex, 1, bufferOut,
+                              outHeader.biSizeImage, flagsOut, &lSampWritten,
+                              &lBytesWritten))) {
       if (bufferOut) _aligned_free(bufferOut);
       break;
     }
@@ -387,12 +387,12 @@ void TLevelWriterAvi::save(const TImageP &img, int frameIndex) {
     ::strcpy(psi.szName, m_path.getName().c_str());
     int rc;
 
-    if (AVIFileCreateStream(m_aviFile, &(m_videoStream), &(psi)))
+    if (FAILED(AVIFileCreateStream(m_aviFile, &(m_videoStream), &(psi))))
       throw TImageException(getFilePath(), "Unable to create video stream");
 
     if (!m_hic) {
-      if (AVIStreamSetFormat(m_videoStream, 0, &m_bitmapinfo->bmiHeader,
-                             m_bitmapinfo->bmiHeader.biSize))
+      if (FAILED(AVIStreamSetFormat(m_videoStream, 0, &m_bitmapinfo->bmiHeader,
+                                    m_bitmapinfo->bmiHeader.biSize)))
         throw TImageException(getFilePath(), "unable to set format");
     } else {
       m_outputFmt = (BITMAPINFO *)calloc(
@@ -425,8 +425,8 @@ void TLevelWriterAvi::save(const TImageP &img, int frameIndex) {
         throw TImageException(getFilePath(), "Error starting codec (ec = " +
                                                  std::to_string(rc) + ")");
 
-      if (AVIStreamSetFormat(m_videoStream, 0, &m_outputFmt->bmiHeader,
-                             m_outputFmt->bmiHeader.biSize))
+      if (FAILED(AVIStreamSetFormat(m_videoStream, 0, &m_outputFmt->bmiHeader,
+                                    m_outputFmt->bmiHeader.biSize)))
         throw TImageException(getFilePath(), "unable to set format");
     }
     m_initDone = true;
@@ -465,9 +465,9 @@ void TLevelWriterAvi::save(const TImageP &img, int frameIndex) {
   lBytesWritten = 0;
 
   if (!m_hic) {
-    if (AVIStreamWrite(m_videoStream, index, 1, m_buffer,
-                       m_bitmapinfo->bmiHeader.biSizeImage, AVIIF_KEYFRAME,
-                       &lSampWritten, &lBytesWritten)) {
+    if (FAILED(AVIStreamWrite(m_videoStream, index, 1, m_buffer,
+                              m_bitmapinfo->bmiHeader.biSizeImage,
+                              AVIIF_KEYFRAME, &lSampWritten, &lBytesWritten))) {
       throw TImageException(getFilePath(), "error writing frame");
     }
   } else {
@@ -496,9 +496,9 @@ void TLevelWriterAvi::save(const TImageP &img, int frameIndex) {
       index = m_delayedFrames.front();
       m_delayedFrames.pop_front();
     }
-    if (AVIStreamWrite(m_videoStream, index, 1, bufferOut,
-                       outHeader.biSizeImage, !index ? flagsOut : 0,
-                       &lSampWritten, &lBytesWritten)) {
+    if (FAILED(AVIStreamWrite(m_videoStream, index, 1, bufferOut,
+                              outHeader.biSizeImage, !index ? flagsOut : 0,
+                              &lSampWritten, &lBytesWritten))) {
       if (bufferOut) _aligned_free(bufferOut);
       throw TImageException(getFilePath(), "error writing frame");
     }
@@ -590,10 +590,11 @@ void TLevelWriterAvi::doSaveSoundTrack() {
 
   const UCHAR *buffer = m_st->getRawData();
 
-  if (AVIFileCreateStream(m_aviFile, &m_audioStream, &audioStreamInfo))
+  if (FAILED(AVIFileCreateStream(m_aviFile, &m_audioStream, &audioStreamInfo)))
     throw TException("error creating soundtrack stream");
 
-  if (AVIStreamSetFormat(m_audioStream, 0, &waveinfo, sizeof(WAVEFORMATEX)))
+  if (FAILED(AVIStreamSetFormat(m_audioStream, 0, &waveinfo,
+                                sizeof(WAVEFORMATEX))))
     throw TException("error setting soundtrack format");
 
   LONG count   = m_st->getSampleCount();
