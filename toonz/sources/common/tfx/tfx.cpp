@@ -336,15 +336,9 @@ TFx *TFx::clone(TFx *fx, bool recursive) const {
       const NamePort &namedPort = m_imp->m_portArray[p];
 
       int groupIdx = namedPort.second->getGroupIndex();
-      if (groupIdx >= 0 && !fx->getInputPort(namedPort.first)) {
-        // Fix: Use unique_ptr to prevent memory leak
-        std::unique_ptr<TRasterFxPort> port(new TRasterFxPort());
-        if (fx->addInputPort(namedPort.first, port.get(), groupIdx)) {
-          // Successfully added, release ownership to fx
-          port.release();
-        }
-        // If addInputPort fails, unique_ptr will automatically delete the port
-      }
+      // addInputPort() owns the port, and deletes it if it fails
+      if (groupIdx >= 0 && !fx->getInputPort(namedPort.first))
+        fx->addInputPort(namedPort.first, new TRasterFxPort(), groupIdx);
     }
 
     assert(pCount == fx->getInputPortCount());
@@ -768,15 +762,9 @@ void TFx::loadData(TIStream &is) {
               TFxPortDG *group = const_cast<TFxPortDG *>(dynamicPortGroup(g));
 
               if (group->contains(portName)) {
-                // Fix: Use unique_ptr to prevent memory leak
-                std::unique_ptr<TRasterFxPort> tempPort(new TRasterFxPort());
-                if (addInputPort(portName, tempPort.get(), g)) {
-                  // Successfully added, assign and release ownership
-                  port = tempPort.release();
-                } else {
-                  // Failed to add, set port to nullptr (will throw below)
-                  port = nullptr;
-                }
+                // addInputPort() owns the port, and deletes it if it fails
+                TRasterFxPort *newPort = new TRasterFxPort();
+                if (addInputPort(portName, newPort, g)) port = newPort;
                 break;
               }
             }
@@ -795,6 +783,35 @@ void TFx::loadData(TIStream &is) {
           }
 
           is.closeChild();
+        }
+      }
+
+      // Older versions saved the ports sorted by name (Source1, Source10,
+      // ..., Source2, ...), which reordered dynamic groups such as the Over
+      // Fx layers once loaded. Ports are created in increasing number, so
+      // put each group back in numeric order.
+      for (int g = 0; g < dynamicPortGroupsCount(); ++g) {
+        TFxPortDG *group = const_cast<TFxPortDG *>(dynamicPortGroup(g));
+        size_t prefixSize = group->portsPrefix().size();
+        auto number       = [prefixSize](const std::string &name) {
+          return std::atoi(name.c_str() + std::min(prefixSize, name.size()));
+        };
+
+        std::vector<size_t> positions;
+        std::vector<NamePort> ports;
+        for (size_t p = 0; p < m_imp->m_portArray.size(); ++p)
+          if (m_imp->m_portArray[p].second->getGroupIndex() == g) {
+            positions.push_back(p);
+            ports.push_back(m_imp->m_portArray[p]);
+          }
+        std::stable_sort(ports.begin(), ports.end(),
+                         [&number](const NamePort &a, const NamePort &b) {
+                           return number(a.first) < number(b.first);
+                         });
+        group->m_ports.clear();
+        for (size_t i = 0; i < positions.size(); ++i) {
+          m_imp->m_portArray[positions[i]] = ports[i];
+          group->m_ports.push_back(ports[i].second);
         }
       }
     } else if (tagName == "dagNodePos") {
