@@ -185,7 +185,7 @@ bool RenderController::onFrameCompleted(int frameCount) {
   }
 
   ++m_frame;
-  m_progressDialog->setValue(m_frame);
+  if (m_progressDialog) m_progressDialog->setValue(m_frame);
   qApp->processEvents();
   return true;
 }
@@ -401,10 +401,13 @@ you want to do?";*/
       }
     }
   } catch (TException &) {
+    m_progressDialog = 0;
     return;
   } catch (...) {
+    m_progressDialog = 0;
     return;
   }
+  m_progressDialog = 0;
   // per sicurezza
   progress.setValue(totalFrameCount);
 
