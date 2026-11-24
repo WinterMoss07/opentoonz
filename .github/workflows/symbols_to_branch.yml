@@ -1,14 +1,20 @@
-name: Symbols to branch
+name: Artifact to branch
 
-# Copies the symbol dump of a Windows build to the "analysis-symbols"
-# branch, so that it can be fetched with git
+# Copies the artifacts of a run to a branch, so that they can be fetched
+# with git
 
 on:
   workflow_dispatch:
     inputs:
       run_id:
-        description: 'Windows Build run id'
+        description: 'Run id'
         required: true
+      pattern:
+        description: 'Artifact name pattern'
+        default: 'Opentoonz-symbols-*'
+      branch:
+        description: 'Target branch'
+        default: 'analysis-symbols'
 
 permissions:
   contents: write
@@ -20,7 +26,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v5
         with:
-          pattern: Opentoonz-symbols-*
+          pattern: ${{ inputs.pattern }}
           run-id: ${{ inputs.run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: dl
@@ -30,8 +36,8 @@ jobs:
           git init -q
           git config user.name "ci"
           git config user.email "ci@users.noreply.github.com"
-          find ../dl -type f
-          cp $(find ../dl -name symbols.zip | head -1) .
-          git add symbols.zip
-          git commit -q -m "symbols of run ${{ inputs.run_id }}"
-          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:refs/heads/analysis-symbols
+          find ../dl -type f -exec cp {} . \;
+          ls -l
+          git add -A
+          git commit -q -m "artifacts of run ${{ inputs.run_id }}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:refs/heads/${{ inputs.branch }}
