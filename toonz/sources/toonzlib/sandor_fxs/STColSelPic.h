@@ -20,11 +20,17 @@
 
 #include <math.h>
 #include <memory.h>
-#include "YOMBInputParam.h"
 #include "STPic.h"
 #include "SDef.h"
 #include "CIL.h"
 #include "SError.h"
+
+#define MAXNBCIL 4096
+
+typedef struct color_index_list {
+  int nb;
+  unsigned short ci[MAXNBCIL];
+} COLOR_INDEX_LIST;
 
 template <class P>
 class CSTColSelPic final : public CSTPic<P> {

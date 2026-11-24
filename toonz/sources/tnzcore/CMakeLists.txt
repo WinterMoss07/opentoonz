@@ -2,8 +2,6 @@ set(MOC_HEADERS
     ../include/tundo.h
     ../include/tthread.h
     ../common/tcore/tthreadp.h
-    ../include/tipcsrv.h
-    ../include/tipcsrvP.h
     ../include/tmsgcore.h
     ../include/tfunctorinvoker.h
 )
@@ -12,8 +10,6 @@ set(HEADERS ${MOC_HEADERS}
     ../common/trop/loop_macros.h
     ../common/trop/optimize_for_lp64.h
     ../common/trop/quickputP.h
-    ../common/tiio/compatibility/tfile_io.h
-    ../common/tiio/bmp/filebmp.h
     ../include/tconst.h
     ../include/transparencycheck.h
     ../include/trastercm.h
@@ -29,7 +25,6 @@ set(HEADERS ${MOC_HEADERS}
     ../include/tcommon.h
     ../include/tconvert.h
     ../include/tdata.h
-    ../include/tdebugmessage.h
     ../include/texception.h
     ../include/texpression.h
     ../include/tmathutil.h
@@ -121,7 +116,6 @@ set(HEADERS ${MOC_HEADERS}
 
 set(SOURCES
     ../common/tcore/tdata.cpp
-    ../common/tcore/tdebugmessage.cpp
     ../common/tcore/texception.cpp
     ../common/tcore/threadmessage.cpp
     ../common/tcore/tmathutil.cpp
@@ -189,7 +183,6 @@ set(SOURCES
     ../common/psdlib/psd.cpp
     ../common/psdlib/psdutils.cpp
     ../common/trop/bbox.cpp
-    ../common/trop/brush.cpp
     ../common/trop/quickput.cpp
     ../common/trop/runsmap.cpp
     ../common/trop/tantialias.cpp
@@ -217,16 +210,12 @@ set(SOURCES
     ../common/tiio/tiio_jpg.cpp
     ../common/tiio/tiio_jpg_exif.cpp
     ../common/tiio/tiio_std.cpp
-    ../common/tiio/compatibility/tfile_io.c
-    ../common/tiio/bmp/filebmp.c
-    ../common/trop/tfracmove.cpp
     ../common/ttoonzimage/ttonzimage.cpp
     ../common/tsystem/uncpath.cpp
     ../common/tvectorimage/tl2lautocloser.cpp
     ../common/tvectorimage/outlineApproximation.cpp
     ../common/tipc/tipc.cpp
     ../common/tipc/tipcmsg.cpp
-    ../common/tipc/tipcsrv.cpp
     ../common/tsystem/tsystempd.cpp
     ../common/tapptools/tenv.cpp
     ../common/tmeshimage/tmeshimage.cpp

@@ -44,7 +44,6 @@ set(HEADERS
     tcenterlinevectP.h
     texturemanager.h
     xshhandlemanager.h
-    sandor_fxs/BlurMatrix.h
     sandor_fxs/CIL.h
     sandor_fxs/CallCircle.h
     sandor_fxs/CallParam.h
@@ -59,12 +58,9 @@ set(HEADERS
     sandor_fxs/SError.h
     sandor_fxs/STColSelPic.h
     sandor_fxs/STPic.h
-    sandor_fxs/YOMBInputParam.h
-    sandor_fxs/YOMBParam.h
     sandor_fxs/blend.h
     sandor_fxs/calligraph.h
     sandor_fxs/patternmap.h
-    sandor_fxs/toonz4_6staff.h
     ../include/convert2tlv.h
     ../include/thirdparty.h
     ../include/orientation.h
@@ -273,7 +269,6 @@ set(SOURCES
     xshhandlemanager.cpp
     vectorizerparameters.cpp
     sandor_fxs/blend.cpp
-    sandor_fxs/BlurMatrix.cpp
     sandor_fxs/CIL.cpp
     sandor_fxs/CallCircle.cpp
     sandor_fxs/CallParam.cpp
@@ -282,11 +277,8 @@ set(SOURCES
     sandor_fxs/PatternMapParam.cpp
     sandor_fxs/PatternPosition.cpp
     sandor_fxs/SDirection.cpp
-    sandor_fxs/YOMBInputParam.cpp
-    sandor_fxs/YOMBParam.cpp
     sandor_fxs/calligraph.cpp
     sandor_fxs/patternmap.cpp
-    sandor_fxs/toonz4_6staff.cpp
     tcolumnhandle.cpp
     tframehandle.cpp
     tfxhandle.cpp

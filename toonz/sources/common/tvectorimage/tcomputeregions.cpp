@@ -11,7 +11,6 @@
 #include "tstroke.h"
 #include "tstrokeutil.h"
 #include "tvectorimageP.h"
-#include "tdebugmessage.h"
 #include "tthreadmessage.h"
 #include "tl2lautocloser.h"
 #include "tcomputeregions.h"

@@ -8,7 +8,6 @@
 // #include "tgl.h"
 #include "tvectorrenderdata.h"
 #include "tmathutil.h"
-// #include "tdebugmessage.h"
 #include "tofflinegl.h"
 // #include "tcolorstyles.h"
 #include "tpaletteutil.h"

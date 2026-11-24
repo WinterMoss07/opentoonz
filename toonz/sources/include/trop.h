@@ -220,7 +220,6 @@ DVAPI void convolve_3_i(TRasterP rout, TRasterP rin, int dx, int dy,
 DVAPI void convolve_i(TRasterP rout, TRasterP rin, int dx, int dy,
                       double conv[], int radius);
 
-DVAPI void fracmove(TRasterP rout, TRasterP rin, double dx, double dy);
 
 //! Convert \b src raster in raster type \b dst
 DVAPI void convert(TRasterP dst, const TRasterP &src);
@@ -228,8 +227,6 @@ DVAPI void convert(TRasterP dst, const TRasterP &src);
 //! Copy \b src in \b dst
 DVAPI void copy(TRasterP dst, const TRasterP &src);
 
-DVAPI void brush(TRaster32P ras, const TPoint &a, const TPoint &b, int radius,
-                 const TPixel32 &color);
 
 //! Get \b bbox of \b ras raster
 DVAPI void computeBBox(TRasterP ras, TRect &bbox);

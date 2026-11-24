@@ -1,23 +1,16 @@
 set(HEADERS
-    ../include/service.h
     ../../include/tfarmcontroller.h
     ../include/tfarmexecutor.h
     ../../include/tfarmplatforms.h
     ../include/tfarmproxy.h
-    ../../include/tfarmserver.h
     ../../include/tfarmtask.h
-    ../include/tlog.h
 )
 
 set(SOURCES
-    service.cpp
     tfarmcontroller_c.cpp
     tfarmexecutor.cpp
     tfarmproxy.cpp
-    tfarmserver_c.cpp
-    tfarmserverstub.cpp
     tfarmtask.cpp
-    tlog.cpp
     ttcpipclient.cpp
     ttcpipserver.cpp
 )

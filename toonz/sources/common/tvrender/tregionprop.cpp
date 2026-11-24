@@ -12,7 +12,6 @@
 //#include "tcolorstyles.h"
 #include "tsimplecolorstyles.h"
 //#include "tcurveutil.h"
-//#include "tdebugmessage.h"
 
 #ifndef _WIN32
 #define CALLBACK

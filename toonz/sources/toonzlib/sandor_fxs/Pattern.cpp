@@ -18,7 +18,6 @@
 //#include "toonz4.6/casm_msg.h"
 #include "toonz4.6/file.h"
 #include "trop.h"
-#include "toonz4_6staff.h"
 
 #include "SDef.h"
 #include "SError.h"

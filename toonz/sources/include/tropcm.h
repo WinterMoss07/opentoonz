@@ -74,8 +74,6 @@ DVAPI void convolve_3_i(TRasterP rout, TRasterCM32P rin,
 DVAPI void convolve_i(TRasterP rout, TRasterCM32P rin, const TPaletteP &palette,
                       int dx, int dy, double conv[], int radius);
 
-DVAPI void fracmove(TRasterP rout, TRasterCM32P rin, const TPaletteP &palette,
-                    double dx, double dy);
 
 DVAPI void zoomOutCm32Rgbm(const TRasterCM32P &rin, TRaster32P &rout,
                            const TPalette &plt, int x1, int y1, int x2, int y2,

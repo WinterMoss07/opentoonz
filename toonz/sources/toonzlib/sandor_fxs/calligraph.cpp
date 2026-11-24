@@ -16,11 +16,8 @@
 #include <math.h>
 
 #include "Params.h"
-#include "YOMBParam.h"
-#include "YOMBInputParam.h"
 #include "InputParam.h"
 #include "STColSelPic.h"
-#include "BlurMatrix.h"
 #include "SDirection.h"
 #include "SDef.h"
 #include "CallCircle.h"

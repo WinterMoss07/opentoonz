@@ -5,7 +5,6 @@
 #include <memory>
 
 #include "tiio_bmp.h"
-// #include "bmp/filebmp.h"
 #include "tpixel.h"
 #include "tpixelgr.h"
 #include "tproperty.h"

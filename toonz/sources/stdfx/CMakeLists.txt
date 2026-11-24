@@ -10,7 +10,6 @@ set(HEADERS
     particlesfx.h
     particlesmanager.h
     perlinnoise.h
-    pins.h
     stdfx.h
     texturefxP.h
     warp.h
@@ -50,7 +49,6 @@ set(HEADERS
     igs_radial_blur.h
     igs_resource_msg_from_err.h
     igs_resource_multithread.h
-    igs_resource_sleep.h
     igs_resource_thread.h
     igs_rotate_blur.h
     igs_warp.h
@@ -140,7 +138,6 @@ set(SOURCES
     particlesmanager.cpp
     perlinnoise.cpp
     perlinnoisefx.cpp
-    pins.cpp
     posterizefx.cpp
     premultiplyfx.cpp
     radialblurfx.cpp
@@ -198,7 +195,6 @@ set(SOURCES
     igs_radial_blur.cpp
     igs_resource_msg_from_err.cpp
     igs_resource_multithread.cpp
-    igs_resource_sleep.cpp
     igs_resource_thread.cpp
     igs_rotate_blur.cpp
     igs_warp_hori.cpp
