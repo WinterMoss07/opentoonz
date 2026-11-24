@@ -426,10 +426,17 @@ void StudioPalette::setPalette(const TFilePath &palettePath,
 
 void StudioPalette::deletePalette(const TFilePath &palettePath) {
   assert(palettePath.getType() == "tpl");
+  std::wstring id = readPaletteGlobalName(palettePath);
   try {
     TSystem::deleteFile(palettePath);
   } catch (...) {
     return;
+  }
+  // a later lookup of the id must not return the deleted file
+  if (!id.empty()) {
+    table.erase(id);
+    table_cached.erase(id);
+    removeEntry(id);
   }
   notifyTreeChange();
 }
@@ -441,6 +448,13 @@ void StudioPalette::deleteFolder(const TFilePath &path) {
     TSystem::rmDirTree(path);
   } catch (...) {
   }
+  for (auto *paths : {&table, &table_cached})
+    for (auto it = paths->begin(); it != paths->end();)
+      if (path.isAncestorOf(it->second)) {
+        removeEntry(it->first);
+        it = paths->erase(it);
+      } else
+        ++it;
   notifyTreeChange();
 }
 
@@ -487,11 +501,14 @@ TFilePath StudioPalette::importPalette(const TFilePath &dstFolder,
 
 //-------------------------------------------------------------------
 
-static void foobar(std::wstring paletteId) { table.erase(paletteId); }
-
 TFilePath StudioPalette::getPalettePath(std::wstring paletteId) {
   std::map<std::wstring, TFilePath>::iterator it = table.find(paletteId);
-  if (it != table.end()) return it->second;
+  if (it != table.end()) {
+    // the file can have been moved or deleted outside OpenToonz
+    if (it->second.isEmpty() || TFileStatus(it->second).doesExist())
+      return it->second;
+    table.erase(it);
+  }
   TFilePath fp;
   // not found in the verified table, then check for the cached table
   it = table_cached.find(paletteId);
@@ -508,8 +525,9 @@ TFilePath StudioPalette::getPalettePath(std::wstring paletteId) {
     }
   }
   if (fp.isEmpty()) {
-    fp = searchPalette(m_root, paletteId);
-    if (fp.isEmpty()) fp = searchPalette(getProjectPalettesRoot(), paletteId);
+    // the current project's copy of a palette comes before the studio one
+    fp = searchPalette(getProjectPalettesRoot(), paletteId);
+    if (fp.isEmpty()) fp = searchPalette(m_root, paletteId);
 
     addEntry(paletteId, fp);
   }
@@ -728,6 +746,9 @@ void StudioPalette::addEntry(const std::wstring paletteId,
 //-------------------------------------------------------------------
 
 void StudioPalette::onProjectSwitched() {
+  // Paths found in the previous project's palettes must not be reused: two
+  // projects copied from each other have palettes with the same ids
+  table.clear();
   table_cached.clear();
   // load [global id] - [path] table file
   TFilePath rootFps[2] = {m_root, getProjectPalettesRoot()};
