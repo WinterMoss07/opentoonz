@@ -979,6 +979,11 @@ void ToonzVectorBrushTool::inputSetBusy(bool busy) {
       copyStrokes(m_firstStrokes, strokes);
       m_firstFrameId = getFrameId();
       m_rangeTracks  = m_tracks;
+      // No undo is registered for this frame yet: keep what touching it
+      // created for the undo of its stroke, and don't let the next undo take
+      // it (the first frame's creation was lost, #3070)
+      m_firstTouch = saveTouch();
+      restoreTouch(TouchState());
       
       if (app) {
         m_col        = app->getCurrentColumn()->getColumnIndex();
@@ -1003,13 +1008,17 @@ void ToonzVectorBrushTool::inputSetBusy(bool busy) {
       int curFrame = app ? app->getCurrentFrame()->getFrame()        : 0;
       
       if (size_t count = std::min(m_firstStrokes.size(), strokes.size())) {
+        TouchState lastTouch = saveTouch();
         TUndoManager::manager()->beginBlock();
         for(size_t i = 0; i < count; ++i)
           doFrameRangeStrokes(
               m_firstFrameId, m_firstStrokes[i], getFrameId(), strokes[i],
               m_frameRange.getIndex(), m_breakAngles.getValue(), false, false,
-              m_firstFrameRange );
+              m_firstFrameRange, true, true, i == 0 ? &m_firstTouch : nullptr,
+              i == 0 ? &lastTouch : nullptr);
         TUndoManager::manager()->endBlock();
+        // what was created is now in the undos
+        m_firstTouch = TouchState();
       }
       
       if (m_inputmanager.state.isKeyPressed(TInputState::Key::control)) {
@@ -1261,7 +1270,7 @@ bool ToonzVectorBrushTool::doFrameRangeStrokes(
     TFrameId firstFrameId, TStroke *firstStroke, TFrameId lastFrameId,
     TStroke *lastStroke, int interpolationType, bool breakAngles,
     bool autoGroup, bool autoFill, bool drawFirstStroke, bool drawLastStroke,
-    bool withUndo) {
+    bool withUndo, const TouchState *firstTouch, const TouchState *lastTouch) {
   TXshSimpleLevel *sl =
       TTool::getApplication()->getCurrentLevel()->getLevel()->getSimpleLevel();
   TStroke *first           = new TStroke();
@@ -1272,6 +1281,7 @@ bool ToonzVectorBrushTool::doFrameRangeStrokes(
   bool swapped = firstFrameId > lastFrameId;
   if (swapped) {
     std::swap(firstFrameId, lastFrameId);
+    std::swap(firstTouch, lastTouch);
     *first = *lastStroke;
     *last  = *firstStroke;
   } else {
@@ -1324,6 +1334,16 @@ bool ToonzVectorBrushTool::doFrameRangeStrokes(
     TTool::Application *app = TTool::getApplication();
     if (app) app->getCurrentFrame()->setFid(fid);
 
+    // Each frame's undo gets what touching that frame created: the creation
+    // flags of the last frame went to the first undo of the range, so undo
+    // erased an existing frame and left the created one (#3070)
+    if (firstTouch || lastTouch) {
+      const TouchState *touch = (fid == firstFrameId)  ? firstTouch
+                                : (fid == lastFrameId) ? lastTouch
+                                                       : nullptr;
+      restoreTouch(touch ? *touch : TouchState());
+    }
+
     TVectorImageP img = sl->getFrame(fid, true);
     if (t == 0) {
       if (!swapped && !drawFirstStroke) {
@@ -1350,6 +1370,7 @@ bool ToonzVectorBrushTool::doFrameRangeStrokes(
                        sl, fid);
     }
   }
+  if (firstTouch || lastTouch) restoreTouch(TouchState());
   if (row != -1)
     getApplication()->getCurrentFrame()->setFrame(row);
   else

@@ -156,7 +156,9 @@ public:
                            int interpolationType, bool breakAngles,
                            bool autoGroup = false, bool autoFill = false,
                            bool drawFirstStroke = true,
-                           bool drawLastStroke = true, bool withUndo = true);
+                           bool drawLastStroke = true, bool withUndo = true,
+                           const TouchState *firstTouch = nullptr,
+                           const TouchState *lastTouch  = nullptr);
   bool doGuidedAutoInbetween(TFrameId cFid, const TVectorImageP &cvi,
                              TStroke *cStroke, bool breakAngles,
                              bool autoGroup = false, bool autoFill = false,
@@ -210,6 +212,9 @@ protected:
   TrackList m_tracks;
   TrackList m_rangeTracks;
   StrokeList m_firstStrokes;
+  //! what touching the first frame of the range created, undone with the
+  //! stroke of that frame
+  TouchState m_firstTouch;
   TFrameId m_firstFrameId, m_veryFirstFrameId;
   TPixel32 m_currentColor;
   int m_styleId;

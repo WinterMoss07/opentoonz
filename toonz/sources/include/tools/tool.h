@@ -582,6 +582,19 @@ public:
   static std::vector<TFrameId> m_newFids;
   static bool m_isLevelRenumbererd;
 
+  //! What touchImage() created (frame, level, renumbering, xsheet cells),
+  //! taken by the next TToolUndo. A tool that registers the undo of a touched
+  //! frame later, after touching another one, keeps it with saveTouch() and
+  //! puts it back with restoreTouch() just before that undo.
+  struct TouchState {
+    bool m_frameCreated = false, m_levelCreated = false,
+         m_levelRenumbered = false;
+    std::vector<TFrameId> m_oldFids, m_newFids;
+    std::vector<CellOps> m_cellsData;
+  };
+  static TouchState saveTouch();
+  static void restoreTouch(const TouchState &state);
+
 protected:
   std::string m_name;  //!< The tool's name.
 

@@ -164,6 +164,26 @@ std::vector<TTool::CellOps> TTool::m_cellsData;
 std::vector<TFrameId> TTool::m_oldFids;
 std::vector<TFrameId> TTool::m_newFids;
 
+TTool::TouchState TTool::saveTouch() {
+  TouchState state;
+  state.m_frameCreated    = m_isFrameCreated;
+  state.m_levelCreated    = m_isLevelCreated;
+  state.m_levelRenumbered = m_isLevelRenumbererd;
+  state.m_oldFids         = m_oldFids;
+  state.m_newFids         = m_newFids;
+  state.m_cellsData       = m_cellsData;
+  return state;
+}
+
+void TTool::restoreTouch(const TouchState &state) {
+  m_isFrameCreated     = state.m_frameCreated;
+  m_isLevelCreated     = state.m_levelCreated;
+  m_isLevelRenumbererd = state.m_levelRenumbered;
+  m_oldFids            = state.m_oldFids;
+  m_newFids            = state.m_newFids;
+  m_cellsData          = state.m_cellsData;
+}
+
 //*****************************************************************************************
 //    TTool  implementation
 //*****************************************************************************************
