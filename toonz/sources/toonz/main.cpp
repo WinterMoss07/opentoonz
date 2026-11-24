@@ -254,6 +254,10 @@ int main(int argc, char *argv[]) {
     freopen("CON", "w", stderr);
     atexit([]() { ::FreeConsole(); });
   }
+  // Browsing a drive with no media (empty DVD or card reader) must fail
+  // quietly: Windows otherwise shows "There is no disk in the drive" for
+  // every access the File Browser tree makes (#7087)
+  ::SetErrorMode(::GetErrorMode() | SEM_FAILCRITICALERRORS);
 #endif
 
   // Install signal handlers to catch crashes
