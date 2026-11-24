@@ -17,7 +17,6 @@
 #include "flipbook.h"
 #include "castviewer.h"
 #include "filebrowser.h"
-#include "scenebrowser.h"
 #include "filmstrip.h"
 #include "previewfxmanager.h"
 #include "comboviewerpane.h"
@@ -1203,24 +1202,6 @@ public:
     browser->enableDoubleClickToOpenScenes();
   }
 } browserFactory;
-
-//=============================================================================
-// PreproductionBoardFactory
-//-----------------------------------------------------------------------------
-class PreproductionBoardFactory final : public TPanelFactory {
-public:
-  PreproductionBoardFactory() : TPanelFactory("PreproductionBoard") {}
-  void initialize(TPanel *panel) override {
-    SceneBrowser *browser =
-        new SceneBrowser(panel, Qt::WindowFlags(), false, true);
-    panel->setWidget(browser);
-    panel->setWindowTitle(QObject::tr("Preproduction Board"));
-    TFilePath scenesFolder =
-        TProjectManager::instance()->getCurrentProject()->getScenesPath();
-    browser->setFolder(scenesFolder, true);
-    browser->enableSingleClickToOpenScenes();
-  }
-} PreproductionBoardFactory;
 
 //=============================================================================
 // CastViewerFactory

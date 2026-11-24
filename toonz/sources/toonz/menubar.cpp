@@ -439,7 +439,6 @@ QMenuBar *StackedMenuBar::createCleanupMenuBar() {
   //----Windows Menu
   QMenu *windowsMenu = addMenu(tr("Windows"), cleanupMenuBar);
   addMenuItem(windowsMenu, MI_OpenFileBrowser);
-  addMenuItem(windowsMenu, MI_OpenPreproductionBoard);
   addMenuItem(windowsMenu, MI_OpenStyleControl);
   addMenuItem(windowsMenu, MI_OpenComboViewer);
   addMenuItem(windowsMenu, MI_OpenXshView);
@@ -596,7 +595,6 @@ QMenuBar *StackedMenuBar::createPltEditMenuBar() {
   //---Windows Menu
   QMenu *windowsMenu = addMenu(tr("Windows"), pltEditMenuBar);
   addMenuItem(windowsMenu, MI_OpenFileBrowser);
-  addMenuItem(windowsMenu, MI_OpenPreproductionBoard);
   addMenuItem(windowsMenu, MI_OpenFileViewer);
   addMenuItem(windowsMenu, MI_OpenFilmStrip);
   addMenuItem(windowsMenu, MI_OpenPalette);
@@ -771,7 +769,6 @@ QMenuBar *StackedMenuBar::createInknPaintMenuBar() {
   addMenuItem(windowsMenu, MI_OpenTimelineView);
   addMenuItem(windowsMenu, MI_OpenColorModel);
   addMenuItem(windowsMenu, MI_OpenFileBrowser);
-  addMenuItem(windowsMenu, MI_OpenPreproductionBoard);
   addMenuItem(windowsMenu, MI_OpenFilmStrip);
   addMenuItem(windowsMenu, MI_OpenToolbar);
   addMenuItem(windowsMenu, MI_OpenToolOptionBar);
@@ -947,7 +944,6 @@ QMenuBar *StackedMenuBar::createXsheetMenuBar() {
   addMenuItem(windowsMenu, MI_OpenSchematic);
   addMenuItem(windowsMenu, MI_OpenComboViewer);
   addMenuItem(windowsMenu, MI_OpenFileBrowser);
-  addMenuItem(windowsMenu, MI_OpenPreproductionBoard);
   addMenuItem(windowsMenu, MI_OpenFunctionEditor);
   addMenuItem(windowsMenu, MI_OpenFileViewer);
   addMenuItem(windowsMenu, MI_OpenFilmStrip);
@@ -1012,7 +1008,6 @@ QMenuBar *StackedMenuBar::createBatchesMenuBar() {
   //----Windows Menu
   QMenu *windowsMenu = addMenu(tr("Windows"), batchesMenuBar);
   addMenuItem(windowsMenu, MI_OpenFileBrowser);
-  addMenuItem(windowsMenu, MI_OpenPreproductionBoard);
   addMenuItem(windowsMenu, MI_OpenTasks);
 
   //---Customize Menu
@@ -1410,7 +1405,6 @@ QMenuBar *StackedMenuBar::createFullMenuBar() {
   addMenuItem(windowsMenu, MI_OpenLocator);
   windowsMenu->addSeparator();
   addMenuItem(windowsMenu, MI_OpenFileBrowser);
-  addMenuItem(windowsMenu, MI_OpenPreproductionBoard);
   addMenuItem(windowsMenu, MI_OpenFileBrowser2);
   windowsMenu->addSeparator();
   addMenuItem(windowsMenu, MI_OpenCleanupSettings);
