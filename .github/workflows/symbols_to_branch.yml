@@ -1,0 +1,36 @@
+name: Symbols to branch
+
+# Copies the symbol dump of a Windows build to the "analysis-symbols"
+# branch, so that it can be fetched with git
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Windows Build run id'
+        required: true
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: Opentoonz-symbols-*
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: dl
+      - name: Push
+        run: |
+          mkdir out && cd out
+          git init -q
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          cp ../dl/*/symbols.zip .
+          git add symbols.zip
+          git commit -q -m "symbols of run ${{ inputs.run_id }}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:refs/heads/analysis-symbols
