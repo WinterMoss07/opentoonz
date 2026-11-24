@@ -332,97 +332,72 @@ void XDTSImportPopup::onPathChanged() {
 //-----------------------------------------------------------------------------
 
 void XDTSImportPopup::updateSuggestions(const QString& samplePath) {
-  TFilePath filePath(samplePath);
-  filePath = m_scene->decodeFilePath(filePath).getParentDir();
+  const TFilePath folder =
+      m_scene->decodeFilePath(TFilePath(samplePath)).getParentDir();
 
-  QDir suggestFolder(filePath.getQString());
-
-  // Supported image file extensions
   static const QStringList filters = {"*.bmp",  "*.jpg",  "*.jpeg", "*.nol",
                                       "*.pic",  "*.pict", "*.pct",  "*.png",
                                       "*.rgb",  "*.sgi",  "*.tga",  "*.tif",
                                       "*.tiff", "*.tlv",  "*.pli",  "*.psd"};
-
-  suggestFolder.setNameFilters(filters);
-  suggestFolder.setFilter(QDir::Files);
-
-  TFilePathSet pathSet;
-  try {
-    TSystem::readDirectory(pathSet, suggestFolder, true);
-  } catch (...) {
-    return;
-  }
-
-  auto fieldsItr = m_fields.begin();
-  bool suggested = false;
-
-  while (fieldsItr != m_fields.end()) {
-    const QString levelName = fieldsItr.key();
-    FileField* fileField    = fieldsItr.value();
-
-    // Check if field can be filled with suggestion
-    if (fileField->getPath().isEmpty() ||
-        m_pathSuggestedLevels.contains(levelName)) {
-      bool found = false;
-
-      // Look for file with same name as level in current folder
-      for (const auto& path : pathSet) {
-        if (path.getName() == levelName.toStdString()) {
-          const TFilePath codedPath = m_scene->codeFilePath(path);
-          fileField->setPath(codedPath.getQString());
-
-          if (!m_pathSuggestedLevels.contains(levelName)) {
-            m_pathSuggestedLevels.append(levelName);
-          }
-
-          found = true;
-          break;
-        }
+  // Exports put levels in sub-folders, possibly nested (FOLDER1/A/A_0001.png):
+  // the folder and its sub-folders are searched, the shallowest match wins.
+  // A file named after the level comes first, then one ending with "_<level>"
+  // or " <level>" (prefixed by the cut name).
+  const int maxDepth   = 3;
+  int foldersLeft      = 500;
+  QMap<QString, TFilePath> exact, prefixed;
+  QStringList folders = {folder.getQString()};
+  for (int depth = 0; depth <= maxDepth && !folders.isEmpty(); ++depth) {
+    QStringList subFolders;
+    for (const QString& folderPath : folders) {
+      if (--foldersLeft < 0) break;
+      QDir dir(folderPath);
+      dir.setNameFilters(filters);
+      dir.setFilter(QDir::Files | QDir::Readable);
+      TFilePathSet paths;
+      try {
+        TSystem::readDirectory(paths, dir, true);
+      } catch (...) {
       }
-
-      // If not found, check sub-folder with same name as level
-      if (!found && suggestFolder.cd(levelName)) {
-        TFilePathSet subPathSet;
-        try {
-          TSystem::readDirectory(subPathSet, suggestFolder, true);
-        } catch (...) {
-          return;
-        }
-
-        for (const auto& path : subPathSet) {
-          if (path.getName() == levelName.toStdString()) {
-            suggested                 = true;
-            const TFilePath codedPath = m_scene->codeFilePath(path);
-            fileField->setPath(codedPath.getQString());
-
-            if (!m_pathSuggestedLevels.contains(levelName)) {
-              m_pathSuggestedLevels.append(levelName);
-            }
-
-            break;
+      for (const TFilePath& path : paths) {
+        const QString name = QString::fromStdWString(path.getWideName());
+        for (auto it = m_fields.begin(); it != m_fields.end(); ++it) {
+          const QString& levelName = it.key();
+          if (name == levelName) {
+            if (!exact.contains(levelName)) exact.insert(levelName, path);
+          } else if (name.endsWith(levelName) &&
+                     name.length() > levelName.length()) {
+            QChar sep = name.at(name.length() - levelName.length() - 1);
+            if ((sep == '_' || sep == ' ' || sep == '-') &&
+                !prefixed.contains(levelName))
+              prefixed.insert(levelName, path);
           }
         }
-
-        suggestFolder.cdUp();  // Return to parent folder
       }
-
-      if (found) suggested = true;
+      for (const QString& sub : QDir(folderPath).entryList(
+               QDir::Dirs | QDir::Readable | QDir::NoDotAndDotDot))
+        subFolders.append(QDir(folderPath).filePath(sub));
     }
-
-    ++fieldsItr;
+    folders = subFolders;
   }
 
-  // Fallback search if no suggestions found
-  if (!suggested) {
-    updateSuggestions(filePath);
+  for (auto it = m_fields.begin(); it != m_fields.end(); ++it) {
+    const QString& levelName = it.key();
+    DVGui::FileField* field  = it.value();
+    if (!field->getPath().isEmpty() &&
+        !m_pathSuggestedLevels.contains(levelName))
+      continue;  // chosen by the user
+    TFilePath path = exact.value(levelName, prefixed.value(levelName));
+    if (path.isEmpty()) continue;
+    field->setPath(m_scene->codeFilePath(path).getQString());
+    if (!m_pathSuggestedLevels.contains(levelName))
+      m_pathSuggestedLevels.append(levelName);
   }
 
   // Update field styles based on suggestion status
-  fieldsItr = m_fields.begin();
-  while (fieldsItr != m_fields.end()) {
-    FileField* field = fieldsItr.value();
-
-    if (m_pathSuggestedLevels.contains(fieldsItr.key())) {
+  for (auto it = m_fields.begin(); it != m_fields.end(); ++it) {
+    DVGui::FileField* field = it.value();
+    if (m_pathSuggestedLevels.contains(it.key())) {
       // Highlight suggested fields with blue border
       field->setStyleSheet(
           "#SuggestiveFileField QLineEdit {"
@@ -430,84 +405,13 @@ void XDTSImportPopup::updateSuggestions(const QString& samplePath) {
           "border-width: 2px;"
           "}");
     } else {
-      // Clear styling for non-suggested fields
       field->setStyleSheet("");
-
       // Set default path but clear displayed text
       if (field->getPath().isEmpty()) {
         field->setPath(m_scene->getScenePath().getParentDir().getQString());
         field->getField()->clear();
       }
     }
-
-    ++fieldsItr;
-  }
-}
-
-//-----------------------------------------------------------------------------
-
-void XDTSImportPopup::updateSuggestions(const TFilePath& path) {
-  static const QStringList filters = {
-      "*.bmp", "*.jpg", "*.jpeg", "*.nol", "*.pic", "*.pict", "*.pct",
-      "*.png", "*.rgb", "*.sgi",  "*.tga", "*.tif", "*.tiff"};
-
-  bool suggestFolderFound = false;
-  QDir suggestFolder(path.getQString());
-
-  auto assignMatchingFiles = [&](QStringList& files) {
-    auto it = m_fields.begin();
-    while (it != m_fields.end()) {
-      const QString levelName = it.key();
-      FileField* fileField    = it.value();
-
-      if (fileField->getPath().isEmpty() ||
-          m_pathSuggestedLevels.contains(levelName)) {
-        // Create regex pattern to match level name with any extension
-        const QString filePattern =
-            QString(".*%1.*\\.[a-zA-Z0-9]{3,4}$").arg(levelName);
-        const QRegularExpression regex(filePattern);
-
-        const int index = files.indexOf(regex);
-        if (index != -1) {
-          suggestFolderFound = true;
-          const TFilePath foundPath(suggestFolder.filePath(files[index]));
-          const TFilePath codedPath = m_scene->codeFilePath(foundPath);
-
-          fileField->setPath(codedPath.getQString());
-          files.removeAt(index);
-          m_pathSuggestedLevels.append(levelName);
-        }
-      }
-      ++it;
-    }
-  };
-
-  // Search in relative paths
-  QStringList relativePaths = suggestFolder.entryList(
-      filters, QDir::Files | QDir::Readable | QDir::NoDotAndDotDot);
-
-  assignMatchingFiles(relativePaths);
-
-  if (!suggestFolderFound) {
-    relativePaths.clear();
-
-    // Search in subdirectories
-    const QStringList subDirs = suggestFolder.entryList(
-        QDir::Dirs | QDir::Readable | QDir::NoDotAndDotDot);
-
-    for (const QString& subDirName : subDirs) {
-      QDir subDir = suggestFolder;
-      if (!subDir.cd(subDirName)) continue;
-
-      const QStringList filesInSubDir = subDir.entryList(
-          filters, QDir::Files | QDir::Readable | QDir::NoDotAndDotDot);
-
-      for (const QString& file : filesInSubDir) {
-        relativePaths.append(subDirName + "/" + file);
-      }
-    }
-
-    assignMatchingFiles(relativePaths);
   }
 }
 
@@ -541,15 +445,30 @@ void XDTSImportPopup::accept() {
 
   std::vector<IoCmd::LoadResourceArguments::ResourceData> resourceData;
 
-  // Collect resource data from fields
+  // Collect resource data from fields. The fields hold coded paths
+  // (+extras...): files are renamed and converted at their real place.
   for (auto it = m_fields.constBegin(); it != m_fields.constEnd(); ++it) {
     IoCmd::LoadResourceArguments::ResourceData data;
-    data.m_path = TFilePath(it.value()->getPath());
+    QString path = it.value()->getPath();
+    if (!path.isEmpty()) data.m_path = m_scene->decodeFilePath(TFilePath(path));
     resourceData.push_back(data);
   }
 
-  // Fetch sequence files if available
+  // Fetch sequence files if available. They are inserted after the file they
+  // belong to: remember where each field's own entry ends up.
   fetchSequenceFiles(resourceData);
+  std::vector<size_t> fieldEntries;
+  {
+    size_t i = 0;
+    for (auto it = m_fields.constBegin(); it != m_fields.constEnd(); ++it) {
+      TFilePath path;
+      QString fieldPath = it.value()->getPath();
+      if (!fieldPath.isEmpty())
+        path = m_scene->decodeFilePath(TFilePath(fieldPath));
+      while (i < resourceData.size() && resourceData[i].m_path != path) ++i;
+      fieldEntries.push_back(i++);
+    }
+  }
 
   // Rename resources if checkbox is checked
   if (m_renameCheckBox->isChecked()) {
@@ -610,11 +529,12 @@ void XDTSImportPopup::accept() {
     );
   }
 
-  // Update fields with potentially converted paths
-  int index = 0;
-  for (auto it = m_fields.begin(); it != m_fields.end(); ++it, ++index) {
-    if (index < static_cast<int>(resourceData.size())) {
-      it.value()->setPath(resourceData[index].m_path.getQString());
-    }
+  // Update fields with potentially renamed or converted paths
+  size_t field = 0;
+  for (auto it = m_fields.begin(); it != m_fields.end(); ++it, ++field) {
+    size_t entry = fieldEntries[field];
+    if (entry < resourceData.size() && !resourceData[entry].m_path.isEmpty())
+      it.value()->setPath(
+          m_scene->codeFilePath(resourceData[entry].m_path).getQString());
   }
 }

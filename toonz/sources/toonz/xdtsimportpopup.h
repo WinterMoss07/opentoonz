@@ -91,17 +91,9 @@ private:
    * Updates path suggestions based on a sample path.
    *
    * Searches for files matching level names in the directory of the
-   * sample path and its subdirectories.
+   * sample path and its sub-folders (up to 3 levels deep).
    */
   void updateSuggestions(const QString& samplePath);
-
-  /**
-   * Fallback search for path suggestions.
-   *
-   * Performs a broader search when the initial suggestion method
-   * doesn't find matching files.
-   */
-  void updateSuggestions(const TFilePath& path);
 
 private slots:
   /**
