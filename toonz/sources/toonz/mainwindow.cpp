@@ -2679,7 +2679,6 @@ void MainWindow::defineActions() {
   createToolAction(T_Rotate, "rotate", QT_TR_NOOP("Rotate Tool"), "R");
   createToolAction(T_Hand, "hand", QT_TR_NOOP("Hand Tool"), "H");
   createToolAction(T_Ruler, "ruler", QT_TR_NOOP("Ruler Tool"), "");
-  createToolAction(T_Finger, "finger", QT_TR_NOOP("Finger Tool"), "");
   createToolAction(T_EditAssistants, "assistant", QT_TR_NOOP("Edit Assistants"),
                    "");
   // Viewer Navigation tools (available only during the shortcut key is pressed)

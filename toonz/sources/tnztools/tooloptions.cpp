@@ -2192,44 +2192,6 @@ void EraserToolOptionsBox::onColorModeChanged(int index) {
 
 //=============================================================================
 //
-// EraserToolOptionsBox
-//
-//=============================================================================
-
-FingerToolOptionsBox::FingerToolOptionsBox(QWidget *parent, TTool *tool,
-                                           TPaletteHandle *pltHandle,
-                                           ToolHandle *toolHandle)
-    : ToolOptionsBox(parent), m_colorMode(0), m_invertMode(0) {
-  TPropertyGroup *props = tool->getProperties(0);
-  assert(props->getPropertyCount() > 0);
-
-  ToolOptionControlBuilder builder(this, tool, pltHandle, toolHandle);
-  if (tool && tool->getProperties(0)) tool->getProperties(0)->accept(builder);
-
-  hLayout()->addStretch(1);
-
-  m_colorMode  = dynamic_cast<ToolOptionCombo *>(m_controls.value("Mode:"));
-  m_invertMode = dynamic_cast<ToolOptionCheckbox *>(m_controls.value("Invert"));
-  m_selectiveMode =
-      dynamic_cast<ToolOptionCheckbox *>(m_controls.value("Selective"));
-
-  bool ret = true;
-  if (m_colorMode) {
-    ret = ret && connect(m_colorMode, SIGNAL(currentIndexChanged(int)), this,
-                         SLOT(onColorModeChanged(int)));
-    if (m_invertMode)
-      m_invertMode->setEnabled(m_colorMode->currentIndex() == 0);  // INK
-    if (m_selectiveMode)
-      m_selectiveMode->setEnabled(m_colorMode->currentIndex() == 1);  // PAINT
-  }
-}
-
-void FingerToolOptionsBox::onColorModeChanged(int i) {
-  if (m_invertMode) m_invertMode->setEnabled(i == 0);
-  if (m_selectiveMode) m_selectiveMode->setEnabled(i == 1);
-}
-//=============================================================================
-//
 // RulerToolOptionsBox
 //
 //=============================================================================
@@ -3039,8 +3001,6 @@ void ToolOptions::onToolSwitched() {
         panel = new RotateToolOptionsBox(0, tool, currPalette, currTool);
       else if (tool->getName() == T_Hand)
         panel = new HandToolOptionsBox(0, tool, currPalette, currTool);
-      else if (tool->getName() == "T_Finger")
-        panel = new FingerToolOptionsBox(0, tool, currPalette, currTool);
       else
         panel = tool->createOptionsBox();  // Future: Use this virtual method
       // for all tools

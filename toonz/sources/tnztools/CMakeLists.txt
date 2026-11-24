@@ -101,7 +101,6 @@ set(SOURCES
     rasterselection.cpp
     strokeselection.cpp
     screenpicker.cpp
-    fingertool.cpp
     rulertool.cpp
     mypainttoonzbrush.cpp
     shifttracetool.cpp

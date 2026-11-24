@@ -29,7 +29,6 @@
 #define T_Rotate "T_Rotate"
 #define T_Hand "T_Hand"
 #define T_Ruler "T_Ruler"
-#define T_Finger "T_Finger"
 #define T_EditAssistants "T_EditAssistants"
 
 // Viewer Navigation tools (available only during the shortcut key is pressed)

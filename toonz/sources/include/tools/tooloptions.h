@@ -606,27 +606,6 @@ protected slots:
 
 //=============================================================================
 //
-// FingerToolOptionsBox
-//
-//=============================================================================
-
-class FingerToolOptionsBox final : public ToolOptionsBox {
-  Q_OBJECT
-
-  ToolOptionCombo *m_colorMode;
-  ToolOptionCheckbox *m_invertMode;
-  ToolOptionCheckbox *m_selectiveMode;
-
-public:
-  FingerToolOptionsBox(QWidget *parent, TTool *tool, TPaletteHandle *pltHandle,
-                       ToolHandle *toolHandle);
-
-protected slots:
-  void onColorModeChanged(int);
-};
-
-//=============================================================================
-//
 // RulerToolOptionsBox
 //
 //=============================================================================

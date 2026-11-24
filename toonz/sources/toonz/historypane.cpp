@@ -29,7 +29,6 @@ const struct {
     {HistoryType::GeometricTool, "history_geometric"},
     {HistoryType::ControlPointEditorTool, "history_controlpointeditor"},
     {HistoryType::EditTool_Move, "history_move"},
-    {HistoryType::FingerTool, "history_finger"},
     //{HistoryType::PickTool,			"history_pick"},
     {HistoryType::Palette, "history_palette"},
     {HistoryType::Fx, "history_fx"},

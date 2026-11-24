@@ -11,7 +11,6 @@
 		<file>icons/dark/tools/20x20/fill.svg</file>
 		<file>icons/dark/tools/20x20/controlpointeditor.svg</file>
 		<file>icons/dark/tools/20x20/cutter.svg</file>
-		<file>icons/dark/tools/20x20/finger.svg</file>
 		<file>icons/dark/tools/20x20/hook.svg</file>
 		<file>icons/dark/tools/20x20/iron.svg</file>
 		<file>icons/dark/tools/20x20/magnet.svg</file>
@@ -700,7 +699,6 @@
 		<file>Resources/history_geometric.png</file>
 		<file>Resources/history_controlpointeditor.png</file>
 		<file>Resources/history_move.png</file>
-		<file>Resources/history_finger.png</file>
 		<file>Resources/history_palette.png</file>
 		<file>Resources/history_fx.png</file>
 		<file>Resources/history_schematic.png</file>

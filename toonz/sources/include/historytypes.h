@@ -15,7 +15,6 @@ enum {
   GeometricTool,
   ControlPointEditorTool,
   EditTool_Move,
-  FingerTool,
   Fx,
   Schematic,
   Palette,
