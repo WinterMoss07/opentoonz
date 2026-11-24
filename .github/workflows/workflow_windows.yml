@@ -7,6 +7,10 @@ on:
         description: 'Dump the symbols of every object file (dead code analysis)'
         type: boolean
         default: false
+      release:
+        description: 'Publish a release with this version (e.g. 26.11.1), notes from .github/release-notes/v<version>.md'
+        type: string
+        default: ''
   push:
     branches:
       - master  # Specify branches where the workflow should run
@@ -30,6 +34,8 @@ jobs:
   Windows:
     # Keep optimized Windows artifacts on the drawing-tested v142 configuration.
     runs-on: windows-2022
+    permissions:
+      contents: write
     env:
       # QT related variable
       SCCACHE_GHA_ENABLED: "true"
@@ -189,6 +195,21 @@ jobs:
         with:
           name: Opentoonz-${{ runner.os }}-${{ github.sha }}
           path: artifact
+
+      # Release: OpenToonz.zip extracting to an OpenToonz folder
+      - name: Publish release
+        if: github.event_name == 'workflow_dispatch' && inputs.release != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.release }}
+        run: |
+          if not exist .github\release-notes\v%VERSION%.md exit /b 1
+          mkdir release
+          xcopy toonz\build\Opentoonz release\OpenToonz\ /E /H /Y /Q || exit /b 1
+          cd release
+          7z a -tzip OpenToonz.zip OpenToonz || exit /b 1
+          gh release create v%VERSION% OpenToonz.zip --target ${{ github.sha }} --title "OpenToonz %VERSION%" --notes-file ..\.github\release-notes\v%VERSION%.md || exit /b 1
+        shell: cmd
 
       - name: sccache stats
         if: always()
