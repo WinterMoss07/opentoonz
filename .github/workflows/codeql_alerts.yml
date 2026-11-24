@@ -1,0 +1,46 @@
+name: CodeQL alerts
+
+# Dismisses the open code scanning alerts matching the given rules and
+# paths, then copies the list of the remaining open alerts to the
+# "analysis-codeql-alerts" branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      dismiss:
+        description: 'JSON array of {"rule","path","reason","comment"} (reason: false positive / won''t fix / used in tests)'
+        default: '[]'
+
+permissions:
+  contents: write
+  security-events: write
+
+jobs:
+  alerts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dismiss and list
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISMISS: ${{ inputs.dismiss }}
+        run: |
+          gh api --paginate "repos/${{ github.repository }}/code-scanning/alerts?state=open&per_page=100" > open.json
+          jq -s 'add' open.json > all.json
+          echo "$DISMISS" > dismiss.json
+          jq -c --slurpfile d dismiss.json '.[] as $a | $d[0][] as $x | select($x.rule == $a.rule.id and ($a.most_recent_instance.location.path | endswith($x.path))) | {number: $a.number, reason: $x.reason, comment: $x.comment}' all.json > todo.jsonl
+          echo "To dismiss: $(wc -l < todo.jsonl)"
+          while read -r line; do
+            n=$(jq -r .number <<< "$line")
+            gh api -X PATCH "repos/${{ github.repository }}/code-scanning/alerts/$n" -f state=dismissed -f dismissed_reason="$(jq -r .reason <<< "$line")" -f dismissed_comment="$(jq -r .comment <<< "$line")" --jq '"\(.number) \(.state)"'
+          done < todo.jsonl
+          gh api --paginate "repos/${{ github.repository }}/code-scanning/alerts?state=open&per_page=100" | jq -s 'add | map({number, rule: .rule.id, severity: .rule.security_severity_level, path: .most_recent_instance.location.path, line: .most_recent_instance.location.start_line, message: .most_recent_instance.message.text})' > alerts.json
+          echo "Open: $(jq length alerts.json)"
+      - name: Push
+        run: |
+          mkdir out && cp alerts.json out/ && cd out
+          git init -q
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git add alerts.json
+          git commit -q -m "open alerts after run ${{ github.run_id }}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:refs/heads/analysis-codeql-alerts
