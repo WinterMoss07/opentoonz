@@ -5,7 +5,6 @@ set(HEADERS
     ../include/ext/StrokeParametricDeformer.h
     ../include/ext/Types.h
     ../include/ext/Designer.h
-    ../include/ext/OverallDesigner.h
     ../include/ext/CornerDeformation.h
     ../include/ext/SmoothDeformation.h
     ../include/ext/StraightCornerDeformation.h
@@ -55,7 +54,6 @@ set(SOURCES
     StrokeDeformation.cpp
     StrokeDeformationImpl.cpp
     Designer.cpp
-    OverallDesigner.cpp
     meshbuilder.cpp
     meshtexturizer.cpp
     meshutils.cpp

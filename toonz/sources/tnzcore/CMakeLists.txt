@@ -23,7 +23,6 @@ set(HEADERS ${MOC_HEADERS}
     ../common/psdlib/psdutils.h
     ../common/trop/runsmap.h
     ../common/tvectorimage/tvectorimageP.h
-    ../common/tvectorimage/tsegmentadjuster.h
     ../common/tvectorimage/tl2lautocloser.h
     ../common/tvrender/tellipticbrushP.h
     ../include/tatomicvar.h
@@ -42,7 +41,6 @@ set(HEADERS ${MOC_HEADERS}
     ../include/tthreadmessage.h
     ../include/tutil.h
     ../include/tcolorfunctions.h
-    ../include/tcolorvalue.h
     ../include/tcolumnset.h
     ../include/tpixel.h
     ../include/tpixelcm.h
@@ -67,7 +65,6 @@ set(HEADERS ${MOC_HEADERS}
     ../include/tregion.h
     ../include/tstroke.h
     ../include/tstrokeoutline.h
-    ../include/tsweepboundary.h
     ../include/tvectorimage.h
     ../include/tgl.h
     ../include/tstencilcontrol.h
@@ -108,7 +105,6 @@ set(HEADERS ${MOC_HEADERS}
     ../include/tiio.h
     ../include/tiio_bmp.h
     ../include/tiio_jpg.h
-    ../include/tiio_jpg_util.h
     ../include/tiio_jpg_exif.h
     ../include/tiio_std.h
     ../include/ttoonzimage.h
@@ -138,7 +134,6 @@ set(SOURCES
     ../common/tcore/tundo.cpp
     ../common/tcore/tfunctorinvoker.cpp
     ../common/tcolor/tcolorfunctions.cpp
-    ../common/tcolor/tcolorvalue.cpp
     ../common/tcolor/tpixel.cpp
     ../common/tcolor/tpixelutils.cpp
     ../common/tcolor/tspectrum.cpp
@@ -164,8 +159,6 @@ set(SOURCES
     ../common/tvectorimage/tregion.cpp
     ../common/tvectorimage/tstroke.cpp
     ../common/tvectorimage/tstrokeoutline.cpp
-    ../common/tvectorimage/tsegmentadjuster.cpp
-    ../common/tvectorimage/tsweepboundary.cpp
     ../common/tvectorimage/tvectorimage.cpp
     ../common/tgl/tgl.cpp
     ../common/tgl/tstencilcontrol.cpp
@@ -180,7 +173,6 @@ set(SOURCES
     ../common/tvrender/tcolorstyles.cpp
     ../common/tvrender/tellipticbrush.cpp
     ../common/tvrender/qtofflinegl.cpp
-    ../common/tvrender/tglcurves.cpp
     ../common/tvrender/tglregions.cpp
     ../common/tvrender/tinbetween.cpp
     ../common/tvrender/tofflinegl.cpp
@@ -223,7 +215,6 @@ set(SOURCES
     ../common/tiio/tiio.cpp
     ../common/tiio/tiio_bmp.cpp
     ../common/tiio/tiio_jpg.cpp
-    ../common/tiio/tiio_jpg_util.cpp
     ../common/tiio/tiio_jpg_exif.cpp
     ../common/tiio/tiio_std.cpp
     ../common/tiio/compatibility/tfile_io.c

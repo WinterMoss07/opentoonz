@@ -86,18 +86,12 @@ set(HEADERS
     ../include/toonz/fxdag.h
     ../include/toonz/glrasterpainter.h
     ../include/toonz/hook.h
-    ../include/toonz/ikengine.h
-    ../include/toonz/ikjacobian.h
-    ../include/toonz/iknode.h
-    ../include/toonz/ikskeleton.h
-    ../include/toonz/imagelocation.h
     ../include/toonz/imagemanager.h
     ../include/toonz/imagepainter.h
     ../include/toonz/imagestyles.h
     ../include/toonz/levelproperties.h
     ../include/toonz/levelset.h
     ../include/toonz/levelupdater.h
-    ../include/toonz/logger.h
     ../include/toonz/mypaint.h
     ../include/toonz/mypaintbrushstyle.h
     ../include/toonz/mypainthelpers.hpp
@@ -111,7 +105,6 @@ set(HEADERS
     ../include/toonz/scenefx.h
     ../include/toonz/sceneproperties.h
     ../include/toonz/sceneresources.h
-    ../include/toonz/skeleton.h
     ../include/toonz/stage.h
     ../include/toonz/stage2.h
     ../include/toonz/stageobjectutil.h
@@ -187,19 +180,13 @@ set(SOURCES
     fxdag.cpp
     glrasterpainter.cpp
     hook.cpp
-    ikengine.cpp
-    ikjacobian.cpp
-    iknode.cpp
-    ikskeleton.cpp
     imagebuilders.cpp
-    imagelocation.cpp
     imagemanager.cpp
     imagepainter.cpp
     imagestyles.cpp
     levelproperties.cpp
     levelset.cpp
     levelupdater.cpp
-    logger.cpp
     movierenderer.cpp
     multimediarenderer.cpp
     mypaintbrushstyle.cpp
@@ -227,7 +214,6 @@ set(SOURCES
     scriptbinding_scene.cpp
     scriptbinding_toonz_raster_converter.cpp
     scriptengine.cpp
-    skeleton.cpp
     skeletonlut.cpp
     stage.cpp
     stage2.cpp
@@ -292,15 +278,10 @@ set(SOURCES
     sandor_fxs/CallCircle.cpp
     sandor_fxs/CallParam.cpp
     sandor_fxs/EraseContour.cpp
-    sandor_fxs/InputParam.cpp
-    sandor_fxs/Params.cpp
     sandor_fxs/Pattern.cpp
     sandor_fxs/PatternMapParam.cpp
     sandor_fxs/PatternPosition.cpp
     sandor_fxs/SDirection.cpp
-    sandor_fxs/SError.cpp
-    sandor_fxs/STColSelPic.cpp
-    sandor_fxs/STPic.cpp
     sandor_fxs/YOMBInputParam.cpp
     sandor_fxs/YOMBParam.cpp
     sandor_fxs/calligraph.cpp

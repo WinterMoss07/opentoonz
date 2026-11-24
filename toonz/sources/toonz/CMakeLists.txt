@@ -35,7 +35,6 @@ set(MOC_HEADERS
     dvwidgets.h
     exportlevelpopup.h
     exportalllevelspopup.h
-    exportpanel.h
     exportscenepopup.h
     filebrowser.h
     filebrowsermodel.h
@@ -45,7 +44,6 @@ set(MOC_HEADERS
     flipbook.h
     formatsettingspopups.h
     frameheadgadget.h
-    fxparameditorpopup.h
     histogrampopup.h
     historypane.h
     imageviewer.h
@@ -209,7 +207,6 @@ set(SOURCES
     exportalllevelspopup.cpp
     exportscenepopup.cpp
     colormodelviewer.cpp
-    exportpanel.cpp
     filebrowser.cpp
     filebrowserversioncontrol.cpp
     filmstrip.cpp
@@ -244,7 +241,6 @@ set(SOURCES
     dvdirtreeview.cpp
     filebrowserpopup.cpp
     formatsettingspopups.cpp
-    fxparameditorpopup.cpp
     histogrampopup.cpp
     insertfxpopup.cpp
     layerfooterpanel.cpp

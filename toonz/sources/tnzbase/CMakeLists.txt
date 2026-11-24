@@ -35,8 +35,6 @@ set(HEADERS ${MOC_HEADERS}
     ../include/ttzpimagefx.h
     ../include/tcli.h
     ../include/tcolorutils.h
-    ../include/tparamundo.h
-    ../include/ttest.h
     ../include/texpression.h
     ../include/tgrammar.h
     ../include/tparser.h
@@ -82,8 +80,6 @@ set(SOURCES
     ../common/tfx/zeraryFx.cpp
     ../common/tapptools/tcli.cpp
     ../common/tapptools/tcolorutils.cpp
-    ../common/tapptools/tparamundo.cpp
-    ../common/ttest/ttest.cpp
     ../common/expressions/texpression.cpp
     ../common/expressions/tgrammar.cpp
     ../common/expressions/tparser.cpp

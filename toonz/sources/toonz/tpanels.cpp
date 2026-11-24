@@ -5,7 +5,6 @@
 // Tnz6 includes
 #include "pane.h"
 #include "viewerpane.h"
-#include "exportpanel.h"
 #include "scriptconsolepanel.h"
 
 #include "floatingpanelcommand.h"
@@ -1249,27 +1248,6 @@ public:
     panel->setIsMaximizable(false);
   }
 } filmStripFactory;
-//=============================================================================
-// ExportFactory
-//-----------------------------------------------------------------------------
-
-// class ExportFactory final : public TPanelFactory {
-// public:
-//  ExportFactory() : TPanelFactory("Export") {}
-//
-//  TPanel *createPanel(QWidget *parent) {
-//    ExportPanel *panel = new ExportPanel(parent);
-//    panel->setObjectName(getPanelType());
-//    panel->setWindowTitle(QObject::tr("Export"));
-//    return panel;
-//  }
-//
-//  void initialize(TPanel *panel) { assert(0); }
-//} exportFactory;
-//
-// OpenFloatingPanel openExportPanelCommand(MI_OpenExport, "Export",
-//                                         QObject::tr("Export"));
-
 //=============================================================================
 // ColorModelViewerFactory
 //-----------------------------------------------------------------------------

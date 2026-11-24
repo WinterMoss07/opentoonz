@@ -24,11 +24,9 @@ set(HEADERS
     igs_hls_add.h
     igs_hls_adjust.h
     igs_hls_noise.h
-    igs_hls_noise_in_camera.h
     igs_hsv_add.h
     igs_hsv_adjust.h
     igs_hsv_noise.h
-    igs_hsv_noise_in_camera.h
     igs_ifx_common.h
     igs_level_auto.h
     igs_level_auto_in_camera.h
@@ -169,22 +167,18 @@ set(SOURCES
     unmultiplyfx.cpp
     warp.cpp
     warpfx.cpp
-    igs_attenuation_distribution.cpp
     igs_color_blend.cpp
     igs_color_rgb_hls.cpp
     igs_color_rgb_hsv.cpp
     igs_density.cpp
     igs_fog.cpp
-    igs_gauss_distribution.cpp
     igs_gaussian_blur.cpp
     igs_hls_add.cpp
     igs_hls_adjust.cpp
     igs_hls_noise.cpp
-    igs_hls_noise_in_camera.cpp
     igs_hsv_add.cpp
     igs_hsv_adjust.cpp
     igs_hsv_noise.cpp
-    igs_hsv_noise_in_camera.cpp
     igs_level_auto.cpp
     igs_level_auto_in_camera.cpp
     igs_levels.cpp
