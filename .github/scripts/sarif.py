@@ -74,6 +74,8 @@ def msvc(build, root, out):
                 })
     Path(out).write_text(json.dumps(sarif("MSVC /analyze", rules, results)), encoding="utf-8")
     print(f"{len(files)} logs, {len(results)} results, {len(rules)} rules")
+    if not files:
+        sys.exit("no /analyze log found")
 
 
 LINE = re.compile(r"^(.*?):(\d+):(\d+): (warning|error): (.*) \[([^\]]+)\]$")

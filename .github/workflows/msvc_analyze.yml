@@ -82,7 +82,7 @@ jobs:
       # (Qt, Boost, OpenCV) are external and not analyzed.
       - name: Build with /analyze
         env:
-          CL: /analyze /analyze:external- /external:anglebrackets /external:W0 /analyze:log:format:sarif /analyze:log:includesuppressed-
+          CL: /analyze /analyze:external- /external:anglebrackets /external:W0 /analyze:log:format:sarif
         run: |
           cd toonz\build
           ninja -k 0
