@@ -616,7 +616,12 @@ void ProjectSettingsPopup::onChooseProjectChanged(int index) {
   // In case the project file was upgraded to current version, save it now
   if (project->getProjectPath() != projectFp) {
     m_projectPaths[index] = project->getProjectPath();
-    project->save();
+    try {
+      project->save();
+    } catch (TSystemException se) {
+      DVGui::warning(QString::fromStdWString(se.getMessage()));
+    } catch (...) {
+    }
   }
 
   updateFieldsFromProject(project);
@@ -633,6 +638,9 @@ void ProjectSettingsPopup::onSomethingChanged() {
     project->save();
   } catch (TSystemException se) {
     DVGui::warning(QString::fromStdWString(se.getMessage()));
+    return;
+  } catch (...) {
+    DVGui::warning(tr("Cannot save the project settings."));
     return;
   }
   DvDirModel::instance()->refreshFolder(project->getProjectFolder());

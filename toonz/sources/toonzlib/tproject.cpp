@@ -381,7 +381,7 @@ bool TProject::isConstantFolder(int index) const {
 
 //-------------------------------------------------------------------
 //! Returns the number of the folders contained in the project folder.
-int TProject::getFolderCount() const { return m_folders.size(); }
+int TProject::getFolderCount() const { return m_folderNames.size(); }
 
 //-------------------------------------------------------------------
 //! Returns the name of the folder indexed with \b index.
@@ -594,9 +594,18 @@ bool TProject::save(const TFilePath &projectPath) {
   /*-- +scenes だけでなく、全てのProject Folderにscenes.xmlを生成する --*/
   std::vector<std::string> foldernames;
   pm->getFolderNames(foldernames);
-  for (int f = 0; f < foldernames.size(); f++) {
-    TFilePath folderpath = decode(getFolder(foldernames.at(f)));
-    if (folderpath.isEmpty() || !isConstantFolder(f)) continue;
+  // By name: the project's folder order differs from project_folders.txt as
+  // soon as a folder was unassigned (it is not saved, then appended at the end
+  // when assigned again). Testing the folder of the same index made a
+  // "$scenepath" folder pass as constant, and writing in that non-existing
+  // folder threw out of the Project Settings popup.
+  for (const std::string &name : foldernames) {
+    TFilePath folder = getFolder(name);
+    if (folder.isEmpty() ||
+        folder.getWideString().find(L"$scene") != wstring::npos)
+      continue;
+    TFilePath folderpath = decode(folder);
+    if (!TFileStatus(folderpath).isDirectory()) continue;
 
     TFilePath xmlPath = folderpath + "scenes.xml";
     TFileStatus xmlfs(xmlPath);
@@ -605,12 +614,15 @@ bool TProject::save(const TFilePath &projectPath) {
     TFilePath relativeProjectFolder =
         makeRelative(folderpath, m_path.getParentDir());
 
-    TOStream os2(xmlPath);
-    std::map<std::string, string> attr;
-    attr["type"] = "projectFolder";
-    os2.openChild("parentProject", attr);
-    os2 << relativeProjectFolder;
-    os2.closeChild();
+    try {
+      TOStream os2(xmlPath);
+      std::map<std::string, string> attr;
+      attr["type"] = "projectFolder";
+      os2.openChild("parentProject", attr);
+      os2 << relativeProjectFolder;
+      os2.closeChild();
+    } catch (...) {
+    }
   }
 
   // The project has been successfully saved. In case there are other
