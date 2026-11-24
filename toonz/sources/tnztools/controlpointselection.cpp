@@ -128,9 +128,6 @@ ControlPointEditorStroke &ControlPointEditorStroke::operator=(
   return *this;
 }
 
-ControlPointEditorStroke *ControlPointEditorStroke::clone() const {
-  return new ControlPointEditorStroke(*this);
-}
 //-----------------------------------------------------------------------------
 
 int ControlPointEditorStroke::nextIndex(int index) const {
@@ -261,8 +258,15 @@ TThickPoint ControlPointEditorStroke::getPureDependentPoint(int index) const {
   TPointD oldSpeedOutP = stroke->getControlPoint(pointIndex + 1);
   TPointD oldSpeedInP  = stroke->getControlPoint(pointIndex + 3);
 
-  double dist = tdistance(oldSpeedOutP, oldSpeedInP);
-  double t = (dist > 1e-4) ? tdistance(oldSpeedInP, convert(oldP)) / dist : 0.5;
+  // Where the point sits between the two handles, kept when they move. A
+  // ratio of distances went past 1 when the point was off the handles' line
+  // (non-smooth joins, Tape tool), and the point was then put beyond the
+  // handles: the curve leaned more on every drag. Projected and clamped now.
+  TPointD handles = oldSpeedOutP - oldSpeedInP;
+  double len2     = handles * handles;
+  double t        = (len2 > 1e-8) ? ((convert(oldP) - oldSpeedInP) * handles) / len2
+                                  : 0.5;
+  t               = std::min(1.0, std::max(0.0, t));
 
   TPointD speedOutPoint(getSpeedOutPoint(index));
   TPointD nextSpeedInPoint(getSpeedInPoint(nextIndex));

@@ -83,7 +83,6 @@ public:
   ControlPointEditorStroke& operator=(const ControlPointEditorStroke& other);
 
   // Create a deep copy of this stroke editor
-  ControlPointEditorStroke* clone() const;
 
   /*! Modify stroke: between two linear or cusp points there must be an even
      number of chunks. WARNING: This function may add control points to the

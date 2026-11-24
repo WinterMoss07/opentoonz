@@ -579,7 +579,7 @@ void ControlPointEditorTool::leftButtonDown(const TPointD &pos,
         m_moveSegmentLimitation.first  = precPointIndex;
         m_moveSegmentLimitation.second = nextPointIndex;
       }
-      m_moveControlPointEditorStroke = *m_controlPointEditorStroke.clone();
+      m_moveControlPointEditorStroke = m_controlPointEditorStroke;
       // Se e' premuto shift setto a cusp i due punti di controllo che
       // delimitano il segmento.
       if (e.isShiftPressed()) {
@@ -704,7 +704,7 @@ void ControlPointEditorTool::leftButtonDrag(const TPointD &pos,
   }
   if (m_action == SEGMENT_MOVEMENT) {
     if (e.isHighFrequent()) return;
-    m_moveControlPointEditorStroke = *m_controlPointEditorStroke.clone();
+    m_moveControlPointEditorStroke = m_controlPointEditorStroke;
     moveSegment(delta, true, e.isShiftPressed());
     m_isImageChanged = true;
   }
