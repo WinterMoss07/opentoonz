@@ -1425,27 +1425,28 @@ void DvDirTreeView::onRefreshStatusDone(const QString &text) {
 
   bool nodeChanged = false;
 
-  // If needed, transform the DvDirVersionControlNode "vcNode" to a
-  // DvDirVersionControlProjectNode
-  // And put it on the tree (removing the previous entry)
-  if (m_currentRefreshedNode->getNodeType() != "Project" &&
+  // A folder of a repository that became a project (checked out, updated) is
+  // rebuilt by its parent, which makes project nodes for projects. The
+  // repository nodes at the top of the tree stay as they are: replacing one
+  // appended a copy at the bottom of the tree on every refresh and left the
+  // root's list of repositories pointing to the removed node.
+  DvDirVersionControlNode *parentVcNode =
+      dynamic_cast<DvDirVersionControlNode *>(
+          m_currentRefreshedNode->getParent());
+  if (parentVcNode && m_currentRefreshedNode->getNodeType() != "Project" &&
       TProjectManager::instance()->isProject(nodePath)) {
-    DvDirModelNode *parentNode = m_currentRefreshedNode->getParent();
-    if (parentNode) {
-      std::wstring name = m_currentRefreshedNode->getName();
-
-      // Remove the old node (which is not a project node)
-      DvDirModel::instance()->removeRows(
-          m_currentRefreshedNode->getRow(), 1,
-          DvDirModel::instance()->getIndexByNode(parentNode));
-
-      // Add a new project node instead of the old one
-      DvDirVersionControlProjectNode *newNode =
-          new DvDirVersionControlProjectNode(parentNode, name, nodePath);
-      parentNode->addChild(newNode);
-      nodeChanged            = true;
-      m_currentRefreshedNode = newNode;
+    QModelIndex parentIndex =
+        DvDirModel::instance()->getIndexByNode(parentVcNode);
+    DvDirModel::instance()->removeRows(m_currentRefreshedNode->getRow(), 1,
+                                       parentIndex);
+    DvDirModel::instance()->refresh(parentIndex);
+    m_currentRefreshedNode = dynamic_cast<DvDirVersionControlNode *>(
+        parentVcNode->getNodeByPath(nodePath));
+    if (!m_currentRefreshedNode) {
+      setRefreshVersionControlEnabled(true);
+      return;
     }
+    nodeChanged = true;
   }
 
   SVNStatusReader sr(text);

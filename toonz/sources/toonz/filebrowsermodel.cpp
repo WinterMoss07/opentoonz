@@ -87,6 +87,31 @@ TFilePath getDesktopPath() {
   return TFilePath(dir.absolutePath().toStdString());
 #endif
 }
+//! Flags the children of a project node that are folders of the project
+void markProjectFolders(DvDirModelNode *projectNode,
+                        const TFilePath &projectPath) {
+  auto project = std::make_shared<TProject>();
+  project->load(projectPath);
+  for (int i = 0; i < projectNode->getChildCount(); i++) {
+    DvDirModelFileFolderNode *node =
+        dynamic_cast<DvDirModelFileFolderNode *>(projectNode->getChild(i));
+    if (node)
+      node->setIsProjectFolder(project->getFolderIndexFromPath(
+                                   node->getPath()) >= 0);
+  }
+}
+
+//! Adds "+folder" children for the project folders outside the project
+void addProjectFolderNames(const TFilePath &projectPath,
+                           std::vector<std::wstring> &names) {
+  auto project = std::make_shared<TProject>();
+  project->load(projectPath);
+  for (int i = 0; i < project->getFolderCount(); i++) {
+    if (project->getFolder(i).isAbsolute() && project->isConstantFolder(i))
+      names.push_back(L"+" + ::to_wstring(project->getFolderName(i)));
+  }
+}
+
 }  // namespace
 
 //=============================================================================
@@ -291,8 +316,6 @@ void DvDirModelFileFolderNode::getChildrenNames(
   QStringList dirItems;
   TSystem::readDirectory_DirItems(dirItems, m_path);
   for (const QString &name : dirItems) names.push_back(name.toStdWString());
-
-  QDir dir(toQString(m_path));
 }
 
 int DvDirModelFileFolderNode::rowByName(const std::wstring &name) const {
@@ -623,34 +646,13 @@ QPixmap DvDirVersionControlProjectNode::getPixmap(bool isOpen) const {
 
 void DvDirVersionControlProjectNode::refreshChildren() {
   DvDirModelFileFolderNode::refreshChildren();
-  int i;
-  TProjectManager *pm = TProjectManager::instance();
-  auto project        = std::make_shared<TProject>();
-  project->load(getProjectPath());
-  for (i = 0; i < getChildCount(); i++) {
-    DvDirModelFileFolderNode *node =
-        dynamic_cast<DvDirModelFileFolderNode *>(getChild(i));
-    if (node) {
-      int k = project->getFolderIndexFromPath(node->getPath());
-      node->setIsProjectFolder(k >= 0);
-    }
-  }
+  markProjectFolders(this, getProjectPath());
 }
 
 void DvDirVersionControlProjectNode::getChildrenNames(
     std::vector<std::wstring> &names) const {
   DvDirVersionControlNode::getChildrenNames(names);
-  TProjectManager *pm = TProjectManager::instance();
-  auto project        = std::make_shared<TProject>();
-  project->load(getProjectPath());
-  int i;
-  for (i = 0; i < project->getFolderCount(); i++) {
-    std::string folderName = project->getFolderName(i);
-    TFilePath folderPath   = project->getFolder(i);
-    if (folderPath.isAbsolute() && project->isConstantFolder(i)) {
-      names.push_back(L"+" + ::to_wstring(folderName));
-    }
-  }
+  addProjectFolderNames(getProjectPath(), names);
 }
 
 //=============================================================================
@@ -689,34 +691,13 @@ QPixmap DvDirModelProjectNode::getPixmap(bool isOpen) const {
 
 void DvDirModelProjectNode::refreshChildren() {
   DvDirModelFileFolderNode::refreshChildren();
-  int i;
-  TProjectManager *pm = TProjectManager::instance();
-  auto project        = std::make_shared<TProject>();
-  project->load(getProjectPath());
-  for (i = 0; i < getChildCount(); i++) {
-    DvDirModelFileFolderNode *node =
-        dynamic_cast<DvDirModelFileFolderNode *>(getChild(i));
-    if (node) {
-      int k = project->getFolderIndexFromPath(node->getPath());
-      node->setIsProjectFolder(k >= 0);
-    }
-  }
+  markProjectFolders(this, getProjectPath());
 }
 
 void DvDirModelProjectNode::getChildrenNames(
     std::vector<std::wstring> &names) const {
   DvDirModelFileFolderNode::getChildrenNames(names);
-  TProjectManager *pm = TProjectManager::instance();
-  auto project        = std::make_shared<TProject>();
-  project->load(getProjectPath());
-  int i;
-  for (i = 0; i < project->getFolderCount(); i++) {
-    std::string folderName = project->getFolderName(i);
-    TFilePath folderPath   = project->getFolder(i);
-    if (folderPath.isAbsolute() && project->isConstantFolder(i)) {
-      names.push_back(L"+" + ::to_wstring(folderName));
-    }
-  }
+  addProjectFolderNames(getProjectPath(), names);
 }
 
 DvDirModelNode *DvDirModelProjectNode::makeChild(std::wstring name) {
