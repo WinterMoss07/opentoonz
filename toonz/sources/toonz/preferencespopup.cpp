@@ -1380,8 +1380,6 @@ QString PreferencesPopup::getUIString(PreferencesItemId id) {
       {SVNEnabled, tr("Enable Version Control*")},
       {automaticSVNFolderRefreshEnabled,
        tr("Automatically Refresh Folder Contents")},
-      {latestVersionCheckEnabled,
-       tr("Check for the Latest Version of OpenToonz on Launch")},
 
       // Touch / Tablet Settings
       // Touch Gesture is a checkable command and not in preferences.ini
@@ -2387,7 +2385,6 @@ QWidget* PreferencesPopup::createVersionControlPage() {
   lay->addLayout(svnUserLay, 3, 0);
   lay->addLayout(svnRepLay, 4, 0);
   insertUI(automaticSVNFolderRefreshEnabled, lay);
-  insertUI(latestVersionCheckEnabled, lay);
 
   lay->setRowStretch(lay->rowCount(), 1);
   insertFootNote(lay);

@@ -3,64 +3,27 @@
 #ifndef TVER_INCLUDED
 #define TVER_INCLUDED
 
+#include <string>
+
 namespace TVER {
 
+// Version of this fork: year.month.release (26.11.1 = first release of
+// November 2026), based on OpenToonz 1.8
 class ToonzVersion {
 public:
-  std::string getAppName(void);
-  float getAppRevision(void);
-  std::string getAppNote(void);
-  std::string getSystemVarPrefix(void);
-  bool hasAppNote(void);
-  std::string getAppVersionString(void);
-  std::string getAppRevisionString(void);
-  std::string getAppVersionInfo(std::string msg);
+  std::string getAppName(void) { return applicationName; }
+  std::string getSystemVarPrefix(void) { return systemVarPrefix; }
+  std::string getAppVersionString(void) { return applicationVersion; }
+  std::string getAppVersionInfo(std::string msg) {
+    return std::string(applicationName) + " " + msg + " v" +
+           applicationVersion;
+  }
 
 private:
-  const char *applicationName     = "OpenToonz";
-  const float applicationVersion  = 1.8f;
-  const float applicationRevision = 0;
-  const char *applicationNote     = "";
-  const char *systemVarPrefix     = "TOONZ";
+  const char *applicationName    = "OpenToonz";
+  const char *applicationVersion = "26.11.1";
+  const char *systemVarPrefix    = "TOONZ";
 };
-
-std::string ToonzVersion::getAppName(void) {
-  std::string appname = applicationName;
-  return appname;
-}
-float ToonzVersion::getAppRevision(void) {
-  float apprev = applicationRevision;
-  return apprev;
-}
-std::string ToonzVersion::getAppNote(void) {
-  std::string appnote = applicationNote;
-  return appnote;
-}
-std::string ToonzVersion::getSystemVarPrefix(void) {
-  std::string prefix = systemVarPrefix;
-  return prefix;
-}
-bool ToonzVersion::hasAppNote(void) { return *applicationNote != 0; }
-std::string ToonzVersion::getAppVersionString(void) {
-  char buffer[50];
-  snprintf(buffer, sizeof(buffer), "%.1f", applicationVersion);
-  std::string appver = std::string(buffer);
-  return appver;
-}
-std::string ToonzVersion::getAppRevisionString(void) {
-  char buffer[50];
-  snprintf(buffer, sizeof(buffer), "%g", applicationRevision);
-  std::string apprev = std::string(buffer);
-  return apprev;
-}
-std::string ToonzVersion::getAppVersionInfo(std::string msg) {
-  std::string appinfo = std::string(applicationName);
-  appinfo += " " + msg + " v";
-  appinfo += getAppVersionString();
-  appinfo += "." + getAppRevisionString();
-  if (hasAppNote()) appinfo += " " + std::string(applicationNote);
-  return appinfo;
-}
 
 }  // namespace TVER
 

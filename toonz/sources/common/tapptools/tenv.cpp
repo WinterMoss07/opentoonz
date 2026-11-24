@@ -172,16 +172,8 @@ public:
   }
 
   void init() {
-    if (m_version.getAppRevision() != 0) {
-      m_applicationVersion = m_version.getAppVersionString() + "." +
-                             m_version.getAppRevisionString();
-    } else {
-      m_applicationVersion = m_version.getAppVersionString();
-    }
-
+    m_applicationVersion  = m_version.getAppVersionString();
     m_applicationFullName = m_version.getAppName() + " " + m_applicationVersion;
-    if (m_version.hasAppNote())
-      m_applicationFullName += " " + m_version.getAppNote();
 
     m_moduleName  = m_version.getAppName();
     m_rootVarName = m_version.getSystemVarPrefix() + "ROOT";

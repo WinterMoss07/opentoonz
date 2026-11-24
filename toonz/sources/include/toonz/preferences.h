@@ -512,9 +512,6 @@ public:
   bool isAutomaticSVNFolderRefreshEnabled() const {
     return getBoolValue(automaticSVNFolderRefreshEnabled);
   }
-  bool isLatestVersionCheckEnabled() const {
-    return getBoolValue(latestVersionCheckEnabled);
-  }
 
   // Tablet tab
   bool isWinInkEnabled() const { return getBoolValue(winInkEnabled); }

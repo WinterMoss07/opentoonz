@@ -685,8 +685,6 @@ void Preferences::definePreferenceItems() {
   define(SVNEnabled, "SVNEnabled", QMetaType::Bool, false);
   define(automaticSVNFolderRefreshEnabled, "automaticSVNFolderRefreshEnabled",
          QMetaType::Bool, true);
-  define(latestVersionCheckEnabled, "latestVersionCheckEnabled",
-         QMetaType::Bool, true);
 
   // Touch / Tablet Settings
   define(winInkEnabled, "winInkEnabled", QMetaType::Bool, false);

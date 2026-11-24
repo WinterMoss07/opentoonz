@@ -69,7 +69,6 @@ set(MOC_HEADERS
     ../include/toonzqt/tonecurvefield.h
     ../include/toonzqt/treemodel.h
     ../include/toonzqt/tselectionhandle.h
-    ../include/toonzqt/updatechecker.h
     ../include/toonzqt/validatedchoicedialog.h
 )
 
@@ -181,7 +180,6 @@ set(SOURCES
     functiontoolbar.cpp
     functiontreeviewer.cpp
     functionviewer.cpp
-    updatechecker.cpp
     validatedchoicedialog.cpp
     trepetitionguard.cpp
     camerasettingswidget.cpp

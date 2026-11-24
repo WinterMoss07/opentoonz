@@ -25,7 +25,6 @@
 #include "toonzqt/gutil.h"
 #include "toonzqt/icongenerator.h"
 #include "toonzqt/viewcommandids.h"
-#include "toonzqt/updatechecker.h"
 #include "toonzqt/paletteviewer.h"
 #include "toonzqt/seethroughwindow.h"
 
@@ -205,36 +204,6 @@ void makePrivate(Room *room) {
 
 void makePrivate(std::vector<Room *> &rooms) {
   for (int i = 0; i < (int)rooms.size(); i++) makePrivate(rooms[i]);
-}
-
-// major version  :  7 bits
-// minor version  :  8 bits
-// revision number: 16 bits
-int get_version_code_from(std::string ver) {
-  int version = 0;
-
-  // major version: assume that the major version is less than 127.
-  std::string::size_type const a = ver.find('.');
-  std::string const major = (a == std::string::npos) ? ver : ver.substr(0, a);
-  version += std::stoi(major) << 24;
-  if ((a == std::string::npos) || (a + 1 == ver.length())) {
-    return version;
-  }
-
-  // minor version: assume that the minor version is less than 255.
-  std::string::size_type const b = ver.find('.', a + 1);
-  std::string const minor        = (b == std::string::npos)
-                                       ? ver.substr(a + 1)
-                                       : ver.substr(a + 1, b - a - 1);
-  version += std::stoi(minor) << 16;
-  if ((b == std::string::npos) || (b + 1 == ver.length())) {
-    return version;
-  }
-
-  // revision number: assume that the revision number is less than 32767.
-  version += std::stoi(ver.substr(b + 1));
-
-  return version;
 }
 
 }  // namespace
@@ -1492,53 +1461,6 @@ void MainWindow::showEvent(QShowEvent *event) {
     startupPopup->show();
     m_startupPopupShown = true;
   }
-}
-extern const char *applicationName;
-extern const char *applicationVersion;
-//-----------------------------------------------------------------------------
-void MainWindow::checkForUpdates() {
-  // Since there is only a single version of Opentoonz, we can do a simple check
-  // against a string
-  QString updateUrl("http://opentoonz.github.io/opentoonz-version.txt");
-
-  m_updateChecker = new UpdateChecker(updateUrl);
-  connect(m_updateChecker, SIGNAL(done(bool)), this,
-          SLOT(onUpdateCheckerDone(bool)));
-}
-//-----------------------------------------------------------------------------
-
-void MainWindow::onUpdateCheckerDone(bool error) {
-  if (error) {
-    // Get the last update date
-    return;
-  }
-
-  int const software_version =
-      get_version_code_from(TEnv::getApplicationVersion());
-  int const latest_version =
-      get_version_code_from(m_updateChecker->getLatestVersion().toStdString());
-  if (software_version < latest_version) {
-    QStringList buttons;
-    buttons.push_back(QObject::tr("Visit Web Site"));
-    buttons.push_back(QObject::tr("Cancel"));
-    DVGui::MessageAndCheckboxDialog *dialog = DVGui::createMsgandCheckbox(
-        DVGui::INFORMATION,
-        QObject::tr("An update is available for this software.\nVisit the Web "
-                    "site for more information."),
-        QObject::tr("Check for the latest version on launch."), buttons, 0,
-        Qt::Checked);
-    int ret = dialog->exec();
-    if (dialog->getChecked() == Qt::Unchecked)
-      Preferences::instance()->setValue(latestVersionCheckEnabled, false);
-    dialog->deleteLater();
-    if (ret == 1) {
-      // Write the new last date to file
-      QDesktopServices::openUrl(QObject::tr("https://opentoonz.github.io/e/"));
-    }
-  }
-
-  disconnect(m_updateChecker);
-  m_updateChecker->deleteLater();
 }
 
 //-----------------------------------------------------------------------------

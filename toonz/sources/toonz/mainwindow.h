@@ -18,7 +18,6 @@
 
 class QStackedWidget;
 class TPanel;
-class UpdateChecker;
 class ComboViewerPanel;
 class TopBar;
 //-----------------------------------------------------------------------------
@@ -75,7 +74,6 @@ class MainWindow final : public QMainWindow {
   bool m_wasMaximized      = false;
   int m_oldRoomIndex;
   QString m_currentRoomsChoice;
-  UpdateChecker *m_updateChecker;
 
   TopBar *m_topBar;
 
@@ -109,7 +107,6 @@ public:
   void onOpenWhatsNew();
   void onOpenCommunityForum();
   void onOpenReportABug();
-  void checkForUpdates();
   int getRoomCount() const;
   Room *getRoom(int index) const;
 
@@ -230,7 +227,6 @@ protected slots:
   void onInkCheckTriggered(bool on);
   void onInk1CheckTriggered(bool on);
 
-  void onUpdateCheckerDone(bool);
   void onActiveViewerChanged();
 
 public slots:

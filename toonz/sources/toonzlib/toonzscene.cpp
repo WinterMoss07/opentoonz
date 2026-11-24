@@ -415,7 +415,6 @@ void ToonzScene::loadResources(bool withProgressDialog) {
 //-----------------------------------------------------------------------------
 
 void ToonzScene::loadTnzFile(const TFilePath &fp) {
-  bool reading22 = false;
   TIStream is(fp);
   if (!is) throw TException(fp.getWideString() + L": Can't open file");
   try {
@@ -437,10 +436,7 @@ void ToonzScene::loadTnzFile(const TFilePath &fp) {
       is.setVersion(versionNumber);
       while (is.matchTag(tagName)) {
         if (tagName == "generator") {
-          std::string program = is.getString();
-          // TODO: This obsolete condition should be removed before releasing OT
-          // v2.2 !
-          reading22 = program.find("2.2") != std::string::npos;
+          is.getString();
         } else if (tagName == "properties")
           m_properties->loadData(is, false);
         else if (tagName == "palette")  // per compatibilita' beta1
@@ -451,8 +447,7 @@ void ToonzScene::loadTnzFile(const TFilePath &fp) {
         } else if (tagName == "levelSet")
           m_levelSet->loadData(is);
         else if (tagName == "levels") {
-          // obsoleto
-          if (!reading22) assert(0);
+          // Toonz 2.2 scenes
           while (!is.eos()) {
             TPersist *p = 0;
             is >> p;
@@ -460,7 +455,7 @@ void ToonzScene::loadTnzFile(const TFilePath &fp) {
             if (xshLevel) {
               xshLevel->setScene(this);
               TXshSimpleLevel *sl = xshLevel->getSimpleLevel();
-              if (reading22 && sl && sl->getPath() == TFilePath()) {
+              if (sl && sl->getPath() == TFilePath()) {
                 sl->setType(PLI_XSHLEVEL);
                 sl->setPath(TFilePath("+drawings/") +
                             (sl->getName() + L".pli"));
