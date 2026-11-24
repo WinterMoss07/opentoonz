@@ -7,6 +7,7 @@
 #endif
 #include "tsop.h"
 #include <set>
+#include <vector>
 #include "tsystem.h"
 
 #include <mmsystem.h>
@@ -89,8 +90,7 @@ public:
 
   std::set<TSoundOutputDeviceListener *> m_listeners;
   DWORD m_notifyThreadId;
-
-  HANDLE m_closeDevice;
+  HANDLE m_notifyThread;  //!< callback thread of the device opened last
 
   TSoundOutputDeviceImp();
   ~TSoundOutputDeviceImp();
@@ -98,6 +98,7 @@ public:
   bool doOpenDevice(const TSoundTrackFormat &format);
   bool doPlay(WAVEHDR *whdr, const TSoundTrackFormat format);
   bool doCloseDevice();
+  bool waitNotifyThread();
 
   bool verifyRate();
   void insertAllRate();
@@ -397,21 +398,26 @@ WAVEHDR *WavehdrQueue::get() {
 bool WavehdrQueue::popFront(int count) {
   TThread::MutexLocker sl(&m_mutex);
   // assert(m_queuedItems.size() > 0);
-  if (m_queuedItems.size() <= 0) return false;
+  if (m_queuedItems.empty()) return false;
+  // Older headers whose WHDR_DONE notification was lost (seen on win2k) are
+  // freed first. A header still in use can't be unprepared: stop there (the
+  // loop used to retry forever, then read the front of an empty list).
   WAVEHDR *whdr = m_queuedItems.front();
-  // controllo introdotto pr via che su win2k si perde alcune
-  // notifiche di WHDR_DONE
   while ((DWORD)count > whdr->dwUser) {
-    MMRESULT ret =
-        waveOutUnprepareHeader(m_devImp->m_wout, whdr, sizeof(WAVEHDR));
-    if (ret == MMSYSERR_NOERROR) {
-      m_queuedItems.pop_front();
-      delete[] whdr->lpData;
-      delete whdr;
-      whdr = m_queuedItems.front();
-    }
+    if (waveOutUnprepareHeader(m_devImp->m_wout, whdr, sizeof(WAVEHDR)) !=
+        MMSYSERR_NOERROR)
+      return false;
+    m_queuedItems.pop_front();
+    delete[] whdr->lpData;
+    delete whdr;
+    if (m_queuedItems.empty()) return false;
+    whdr = m_queuedItems.front();
   }
   assert(whdr->dwFlags & WHDR_DONE);
+  // a prepared header must be unprepared before its memory is freed
+  if (waveOutUnprepareHeader(m_devImp->m_wout, whdr, sizeof(WAVEHDR)) !=
+      MMSYSERR_NOERROR)
+    return false;
   m_queuedItems.pop_front();
   delete[] whdr->lpData;
   delete whdr;
@@ -468,18 +474,15 @@ TSoundOutputDeviceImp::TSoundOutputDeviceImp()
     , m_isPlaying(false)
     , m_looped(false)
     , m_scrubbing(false)
-    , m_wout(0) {
+    , m_wout(0)
+    , m_notifyThreadId(0)
+    , m_notifyThread(0) {
   m_whdrQueue = new WavehdrQueue(this, 4);
 
   insertAllRate();
   if (!verifyRate())
     throw TSoundDeviceException(TSoundDeviceException::FailedInit,
                                 "Unable to verify supported rates");
-
-  m_closeDevice = CreateEvent(NULL,   // no security attributes
-                              FALSE,  // auto-reset event
-                              FALSE,  // initial state is not signaled
-                              NULL);  // object not named
 }
 
 //----------------------------------------------------------------------------
@@ -499,21 +502,35 @@ bool TSoundOutputDeviceImp::doOpenDevice(const TSoundTrackFormat &format) {
   wf.cbSize          = 0;
 
   TThread::MutexLocker sl(&m_mutex);
-  CloseHandle(CreateThread(NULL, 0, MyWaveOutCallbackThread, (LPVOID)this, 0,
-                           &m_notifyThreadId));
+  // A device reopened with another format: the old one is closed (it leaked)
+  // and its thread quits on its own (it can't be waited for here: it may be
+  // the calling thread, or waiting for m_mutex)
+  if (m_wout) {
+    waveOutReset(m_wout);
+    waveOutClose(m_wout);
+    m_wout = 0;
+  }
+  if (m_notifyThread) {
+    PostThreadMessage(m_notifyThreadId, WM_QUIT, 0, 0);
+    CloseHandle(m_notifyThread);
+  }
+  m_notifyThread = CreateThread(NULL, 0, MyWaveOutCallbackThread, (LPVOID)this,
+                                0, &m_notifyThreadId);
+  if (!m_notifyThread) return false;
 
   MMRESULT ret;
   if ((ret = waveOutOpen(&m_wout, WAVE_MAPPER, &wf, (DWORD_PTR)m_notifyThreadId,
                          (DWORD_PTR)this, CALLBACK_THREAD)) !=
       MMSYSERR_NOERROR) {
-    while (!PostThreadMessage(m_notifyThreadId, WM_QUIT, 0, 0))
-      ;
+    m_wout = 0;
+    // the thread may not have its message queue yet
+    for (int i = 0;
+         i < 100 && !PostThreadMessage(m_notifyThreadId, WM_QUIT, 0, 0); ++i)
+      Sleep(10);
+    return false;
   }
-  if (ret != MMSYSERR_NOERROR) return false;
-
-  if (ret != MMSYSERR_NOERROR) return false;
   m_currentFormat = format;
-  return (ret == MMSYSERR_NOERROR);
+  return true;
 }
 
 //----------------------------------------------------------------------------
@@ -606,8 +623,30 @@ TSoundOutputDevice::TSoundOutputDevice() : m_imp(new TSoundOutputDeviceImp()) {}
 
 TSoundOutputDevice::~TSoundOutputDevice() {
   close();
-  WaitForSingleObject(m_imp->m_closeDevice, INFINITE);
-  CloseHandle(m_imp->m_closeDevice);
+  // The callback thread uses m_imp: if it doesn't quit in time, m_imp is kept
+  // alive rather than freezing the application (the destructor used to wait
+  // forever for an event the thread could never set, #7270)
+  if (!m_imp->waitNotifyThread()) {
+    static std::vector<std::shared_ptr<TSoundOutputDeviceImp>> stuckDevices;
+    stuckDevices.push_back(m_imp);
+  }
+}
+
+//------------------------------------------------------------------------------
+
+//! Asks the callback thread to quit and waits for it, at most 3 seconds.
+//! Must not be called from that thread, nor with m_mutex locked.
+bool TSoundOutputDeviceImp::waitNotifyThread() {
+  if (!m_notifyThread) return true;
+  if (WaitForSingleObject(m_notifyThread, 0) == WAIT_TIMEOUT) {
+    for (int i = 0;
+         i < 100 && !PostThreadMessage(m_notifyThreadId, WM_QUIT, 0, 0); ++i)
+      Sleep(10);
+    if (WaitForSingleObject(m_notifyThread, 3000) == WAIT_TIMEOUT) return false;
+  }
+  CloseHandle(m_notifyThread);
+  m_notifyThread = 0;
+  return true;
 }
 
 //------------------------------------------------------------------------------
@@ -636,20 +675,14 @@ DWORD WINAPI MyWaveOutCallbackThread(LPVOID lpParameter) {
         }
       }
 
+      // popFront() frees the played header (pWaveHdr). This used to wait
+      // for an event set only when this loop ends (the thread blocked for
+      // good, then the device destructor waiting for it froze the UI), then
+      // freed pWaveHdr a second time.
       WAVEHDR *whdr = 0;
       if (devImp->m_whdrQueue->popFront(pWaveHdr->dwUser)) {
         whdr = devImp->m_whdrQueue->get();
         if (whdr) devImp->doPlay(whdr, devImp->m_currentFormat);
-
-        WaitForSingleObject(devImp->m_closeDevice, INFINITE);
-        CloseHandle(devImp->m_closeDevice);
-
-        MMRESULT ret =
-            waveOutUnprepareHeader(devImp->m_wout, pWaveHdr, sizeof(WAVEHDR));
-        if (ret == MMSYSERR_NOERROR) {
-          delete pWaveHdr->lpData;
-          delete pWaveHdr;
-        }
       }
 
       if (!whdr && devImp->m_whdrQueue->size() == 0) {
@@ -677,7 +710,6 @@ DWORD WINAPI MyWaveOutCallbackThread(LPVOID lpParameter) {
     }
   }
 
-  SetEvent(devImp->m_closeDevice);
   return 0;
 }
 
