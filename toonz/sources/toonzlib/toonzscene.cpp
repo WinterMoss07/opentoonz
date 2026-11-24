@@ -1338,15 +1338,33 @@ TFilePath ToonzScene::codeFilePath(const TFilePath &path) const {
     return fp;
   }
 
-  if (project)
+  // Project folders can be nested (+extras inside +drawings) or share a
+  // path: the deepest folder containing the file wins, then the folder this
+  // kind of file goes to
+  if (project) {
+    std::string type = fp.getType();
+    std::string preferredFolder =
+        (type == "tlv" || type == "pli") ? TProject::Drawings
+        : (type == "tnz")                ? TProject::Scenes
+                                         : TProject::Extras;
+    int best = -1;
+    size_t bestLength = 0;
+    TFilePath bestPath;
     for (int i = 0; i < project->getFolderCount(); i++) {
-      TFilePath folderName("+" + project->getFolderName(i));
-      TFilePath folderPath = decodeFilePath(folderName);
-      if (folderPath.isAncestorOf(fp)) {
-        fp = folderName + (fp - folderPath);
-        return fp;
+      std::string name     = project->getFolderName(i);
+      TFilePath folderPath = decodeFilePath(TFilePath("+" + name));
+      if (!folderPath.isAncestorOf(fp)) continue;
+      size_t length = folderPath.getWideString().length();
+      if (best < 0 || length > bestLength ||
+          (length == bestLength && name == preferredFolder)) {
+        best       = i;
+        bestLength = length;
+        bestPath   = folderPath;
       }
     }
+    if (best >= 0)
+      return TFilePath("+" + project->getFolderName(best)) + (fp - bestPath);
+  }
 
   if (priority == Preferences::ProjectFolderAliases)
     codeFilePathWithSceneFolder(fp);
