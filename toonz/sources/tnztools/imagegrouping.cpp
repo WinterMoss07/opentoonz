@@ -30,46 +30,74 @@
 namespace {
 //-----------------------------------------------------------------------------
 
-void groupWithoutUndo(TVectorImage *vimg, StrokeSelection *selection) {
-  int count = 0, fromStroke = -1, lastSelected = -1;
+//! A moveStrokes() call, kept to be undone
+struct StrokeMove {
+  int m_from, m_count, m_moveBefore;
+};
 
-  for (int i = 0; i < (int)vimg->getStrokeCount(); i++)
-    if (selection->isSelected(i)) {
-      if (fromStroke == -1)
-        fromStroke = i;
-      else if (lastSelected != i - 1)  // non sono contigui gli stroke
-                                       // selezionati: faccio affiorare quelli
-                                       // sotto
-      {
-        int j = 0;
-        for (j = 0; j < count; j++) selection->select(fromStroke + j, false);
-        vimg->moveStrokes(fromStroke, count, i);
-        fromStroke = i - count;
-        for (j = 0; j < count; j++) selection->select(fromStroke + j, true);
-      }
-      lastSelected = i;
-      count++;
+//! Groups the strokes at \b indexes (increasing). Strokes that aren't next to
+//! each other are first brought up to the following ones, as listed in
+//! \b moves. Returns the index of the first stroke of the new group.
+int groupStrokes(TVectorImage *vimg, const std::vector<int> &indexes,
+                 std::vector<StrokeMove> &moves) {
+  int first = -1, count = 0, last = -1;
+  for (int i : indexes) {
+    if (first == -1)
+      first = i;
+    else if (last != i - 1) {
+      vimg->moveStrokes(first, count, i);
+      moves.push_back({first, count, i});
+      first = i - count;
     }
-
+    last = i;
+    count++;
+  }
   assert(count > 0);
-
-  vimg->group(fromStroke, count);
-  TTool::getApplication()->getCurrentTool()->getTool()->notifyImageChanged();
+  if (count > 0) vimg->group(first, count);
+  return first;
 }
 
 //-----------------------------------------------------------------------------
 
-void ungroupWithoutUndo(TVectorImage *vimg, StrokeSelection *selection) {
+//! Ungroups the outer group of every selected grouped stroke. Returns the
+//! ungrouped ranges (first stroke, stroke count), so that each group can be
+//! rebuilt on its own.
+std::vector<std::pair<int, int>> ungroupStrokes(TVectorImage *vimg,
+                                                StrokeSelection *selection) {
+  std::vector<std::pair<int, int>> ranges;
   for (int i = 0; i < (int)vimg->getStrokeCount();)
-    if (selection->isSelected(i)) {
-      if (!vimg->isStrokeGrouped(i)) {
-        i++;
-        continue;
-      }
-      i += vimg->ungroup(i);
+    if (selection->isSelected(i) && vimg->isStrokeGrouped(i)) {
+      int count = vimg->ungroup(i);
+      if (count <= 0) count = 1;
+      ranges.push_back({i, count});
+      i += count;
     } else
       i++;
-  TTool::getApplication()->getCurrentTool()->getTool()->notifyImageChanged();
+  return ranges;
+}
+
+//-----------------------------------------------------------------------------
+
+std::vector<int> selectedIndexes(TVectorImage *vimg,
+                                 StrokeSelection *selection) {
+  std::vector<int> indexes;
+  for (int i = 0; i < (int)vimg->getStrokeCount(); i++)
+    if (selection->isSelected(i)) indexes.push_back(i);
+  return indexes;
+}
+
+//-----------------------------------------------------------------------------
+
+//! Selects the given stroke ranges in the current stroke selection, if any:
+//! strokes change index when grouping
+void selectStrokes(const std::vector<std::pair<int, int>> &ranges) {
+  StrokeSelection *selection = dynamic_cast<StrokeSelection *>(
+      TTool::getApplication()->getCurrentSelection()->getSelection());
+  if (!selection) return;
+  selection->selectNone();
+  for (const auto &range : ranges)
+    for (int j = range.first; j < range.first + range.second; j++)
+      selection->select(j, true);
 }
 
 //=============================================================================
@@ -77,24 +105,47 @@ void ungroupWithoutUndo(TVectorImage *vimg, StrokeSelection *selection) {
 //-----------------------------------------------------------------------------
 
 class GroupUndo final : public ToolUtils::TToolUndo {
-  std::unique_ptr<StrokeSelection> m_selection;
+  std::vector<int> m_indexes;  //!< selected strokes, before grouping
+  mutable std::vector<StrokeMove> m_moves;
+  mutable int m_first;
 
 public:
   GroupUndo(TXshSimpleLevel *level, const TFrameId &frameId,
-            StrokeSelection *selection)
-      : ToolUtils::TToolUndo(level, frameId), m_selection(selection) {}
+            const std::vector<int> &indexes,
+            const std::vector<StrokeMove> &moves, int first)
+      : ToolUtils::TToolUndo(level, frameId)
+      , m_indexes(indexes)
+      , m_moves(moves)
+      , m_first(first) {}
 
+  // Undo used to only ungroup: the strokes brought together stayed moved
   void undo() const override {
     TVectorImageP image = m_level->getFrame(m_frameId, true);
-    if (image) ungroupWithoutUndo(image.getPointer(), m_selection.get());
+    if (!image) return;
+    QMutexLocker lock(image->getMutex());
+    image->ungroup(m_first);
+    for (auto it = m_moves.rbegin(); it != m_moves.rend(); ++it)
+      image->moveStrokes(it->m_moveBefore - it->m_count, it->m_count,
+                         it->m_from);
+    selectStrokes({});
+    notifyImageChanged();
   }
 
+  // Redo used to group with the selection the first run had modified
   void redo() const override {
     TVectorImageP image = m_level->getFrame(m_frameId, true);
-    if (image) groupWithoutUndo(image.getPointer(), m_selection.get());
+    if (!image) return;
+    QMutexLocker lock(image->getMutex());
+    m_moves.clear();
+    m_first = groupStrokes(image.getPointer(), m_indexes, m_moves);
+    selectStrokes({{m_first, (int)m_indexes.size()}});
+    notifyImageChanged();
   }
 
-  int getSize() const override { return sizeof(*this); }
+  int getSize() const override {
+    return sizeof(*this) + m_indexes.size() * sizeof(int) +
+           m_moves.size() * sizeof(StrokeMove);
+  }
 
   QString getToolName() override { return QObject::tr("Group"); }
 };
@@ -104,24 +155,36 @@ public:
 //-----------------------------------------------------------------------------
 
 class UngroupUndo final : public ToolUtils::TToolUndo {
-  std::unique_ptr<StrokeSelection> m_selection;
+  std::vector<std::pair<int, int>> m_ranges;  //!< ungrouped groups
 
 public:
   UngroupUndo(TXshSimpleLevel *level, const TFrameId &frameId,
-              StrokeSelection *selection)
-      : ToolUtils::TToolUndo(level, frameId), m_selection(selection) {}
+              const std::vector<std::pair<int, int>> &ranges)
+      : ToolUtils::TToolUndo(level, frameId), m_ranges(ranges) {}
 
+  // Each group is rebuilt on its own: regrouping the whole selection made
+  // one group of all of them (#1840)
   void undo() const override {
     TVectorImageP image = m_level->getFrame(m_frameId, true);
-    if (image) groupWithoutUndo(image.getPointer(), m_selection.get());
+    if (!image) return;
+    QMutexLocker lock(image->getMutex());
+    for (const auto &range : m_ranges) image->group(range.first, range.second);
+    selectStrokes(m_ranges);
+    notifyImageChanged();
   }
 
   void redo() const override {
     TVectorImageP image = m_level->getFrame(m_frameId, true);
-    if (image) ungroupWithoutUndo(image.getPointer(), m_selection.get());
+    if (!image) return;
+    QMutexLocker lock(image->getMutex());
+    for (const auto &range : m_ranges) image->ungroup(range.first);
+    selectStrokes(m_ranges);
+    notifyImageChanged();
   }
 
-  int getSize() const override { return sizeof(*this); }
+  int getSize() const override {
+    return sizeof(*this) + m_ranges.size() * sizeof(std::pair<int, int>);
+  }
 
   QString getToolName() override { return QObject::tr("Ungroup"); }
 };
@@ -149,68 +212,26 @@ public:
   ~MoveGroupUndo() {}
 
   void undo() const override {
-    int refStroke;
-    int moveBefore;
-    switch (m_moveType) {
-    case TGroupCommand::FRONT:
-      refStroke  = m_moveBefore - m_count;
-      moveBefore = m_refStroke;
-      break;
-    case TGroupCommand::FORWARD:
-      refStroke  = m_moveBefore - m_count;
-      moveBefore = m_refStroke;
-      break;
-    case TGroupCommand::BACK:
-      refStroke  = m_moveBefore;
-      moveBefore = m_refStroke + m_count;
-      break;
-    case TGroupCommand::BACKWARD:
-      refStroke  = m_moveBefore;
-      moveBefore = m_refStroke + m_count;
-      break;
-    default:
-      assert(!"group move not defined!");
-      break;
-    }
+    // moved up (front, forward) or down (back, backward)
+    bool movedUp = m_moveBefore > m_refStroke;
+    move(movedUp ? m_moveBefore - m_count : m_moveBefore,
+         movedUp ? m_refStroke : m_refStroke + m_count);
+  }
+
+  void redo() const override { move(m_refStroke, m_moveBefore); }
+
+  void move(int refStroke, int moveBefore) const {
     TVectorImageP image = m_level->getFrame(m_frameId, true);
     if (!image) return;
     QMutexLocker lock(image->getMutex());
     image->moveStrokes(refStroke, m_count, moveBefore);
-    StrokeSelection *selection = dynamic_cast<StrokeSelection *>(
-        TTool::getApplication()->getCurrentSelection()->getSelection());
-    if (selection) {  // Se la selezione corrente e' la StrokeSelection
-      // seleziono gli stroke che ho modificato con l'undo
-      selection->selectNone();
-
-      for (int i = 0; i < (int)m_selectedGroups.size(); i++) {
-        int index = image->getStrokeIndex(m_selectedGroups[i].first);
-        if (index == -1) continue;
-        for (int j = index; j < index + m_selectedGroups[i].second; j++)
-          selection->select(j, true);
-      }
+    // select the moved strokes in the current stroke selection
+    std::vector<std::pair<int, int>> ranges;
+    for (const auto &group : m_selectedGroups) {
+      int index = image->getStrokeIndex(group.first);
+      if (index != -1) ranges.push_back({index, group.second});
     }
-    TTool::getApplication()->getCurrentScene()->notifySceneChanged();
-    notifyImageChanged();
-  }
-
-  void redo() const override {
-    TVectorImageP image = m_level->getFrame(m_frameId, true);
-    if (!image) return;
-    QMutexLocker lock(image->getMutex());
-    image->moveStrokes(m_refStroke, m_count, m_moveBefore);
-    StrokeSelection *selection = dynamic_cast<StrokeSelection *>(
-        TTool::getApplication()->getCurrentSelection()->getSelection());
-    if (selection) {  // Se la selezione corrente e' la StrokeSelection
-      // seleziono gli stroke che ho modificato con il redo
-      selection->selectNone();
-
-      for (int i = 0; i < (int)m_selectedGroups.size(); i++) {
-        int index = image->getStrokeIndex(m_selectedGroups[i].first);
-        if (index == -1) continue;
-        for (int j = index; j < index + m_selectedGroups[i].second; j++)
-          selection->select(j, true);
-      }
-    }
+    selectStrokes(ranges);
     TTool::getApplication()->getCurrentScene()->notifySceneChanged();
     notifyImageChanged();
   }
@@ -230,8 +251,6 @@ public:
 
 //-----------------------------------------------------------------------------
 }  // namespace
-//-----------------------------------------------------------------------------
-
 //-----------------------------------------------------------------------------
 // TGroupCommand
 //-----------------------------------------------------------------------------
@@ -269,7 +288,6 @@ UCHAR TGroupCommand::getGroupingOptions() {
   if (!vimg) return 0;
 
   UCHAR mask = 0;
-  int count  = 0;
   UINT i, j;
 
   // spostamento: si possono  spostare solo gruppi interi  oppure  stroke   non
@@ -277,36 +295,6 @@ UCHAR TGroupCommand::getGroupingOptions() {
 
   std::vector<std::pair<TStroke *, int>> strokeIndexes =
       getSelectedGroups(vimg, m_sel);
-
-  /*
-  //spostamento: si puo' spostare solo un gruppo(e uno solo per volta) oppure
-una stroke singola  non gruppata
-for (i=0; i<vimg->getStrokeCount(); i++)
-  if (m_sel->isSelected(i))
-  {
-          if (strokeIndex != -1)
-                  {
-                  if (!vimg->isStrokeGrouped(i) ||
-!vimg->sameSubGroup(strokeIndex, i))
-                          break;
-                  }
-          else
-                  {
-                  strokeIndex = i;
-                  if (vimg->isStrokeGrouped(i))
-                          {
-                          for (j=0; j<vimg->getStrokeCount(); j++)
-                                  if (!m_sel->isSelected(j) &&
-vimg->sameSubGroup(i, j))
-                                          break;//non tutto il gruppo e'
-selezionato
-                          if (j<vimg->getStrokeCount())
-                                  break;
-                          }
-                  }
-          count++;
-          }
-   */
 
   if (strokeIndexes.empty()) return 0;  // no stroke selected
 
@@ -323,22 +311,6 @@ selezionato
     mask |= FORWARD;
   }
 
-  /*
-if (i == vimg->getStrokeCount())
-{
-  if (strokeIndex+count<(int)vimg->getStrokeCount())
-    {
-          mask |= FRONT;
-          mask |= FORWARD;
-    }
-  if (strokeIndex>0)
-    {
-          mask |= BACK;
-          mask |= BACKWARD;
-    }
-}
-*/
-
   // PER l'UNGROUP: si ungruppa solo se tutti gli stroke selezionati stanno nel
   // gruppo (anche piu' gruppi insieme)
 
@@ -378,96 +350,6 @@ if (i == vimg->getStrokeCount())
 
   return mask;
 }
-
-//-----------------------------------------------------------------------------
-
-#ifdef NUOVO
-
-UCHAR TGroupCommand::getGroupingOptions() {
-  TTool *tool = TTool::getApplication()->getCurrentTool()->getTool();
-  if (!tool) return 0;
-  TVectorImage *vimg = dynamic_cast<TVectorImage *>(tool->getImage(false));
-  if (!vimg) return 0;
-
-  int strokeIndex = -1;
-  UCHAR mask      = 0;
-  int count       = 0;
-  UINT i, j;
-  bool valid = true;
-  // spostamento: si puo' spostare solo un gruppo(e uno solo per volta) oppure
-  // una stroke singola  non gruppata
-  std::vector<pair<int, int>> groups;
-
-  for (i = 0; i < vimg->getStrokeCount() && valid;)
-    if (m_sel->isSelected(i)) {
-      strokeIndex = i;
-      count       = 1;
-      if (vimg->isStrokeGrouped(i)) {
-        for (j = i + 1; j < vimg->getStrokeCount() && valid; j++)
-          if (m_sel->isSelected(j) && vimg->sameSubGroup(i, j))
-            count++;
-          else if (!m_sel->isSelected(j) && vimg->sameSubGroup(i, j))
-            valid = false;  // non tutto il gruppo e' selezionato
-      }
-      groups.push_back(pair<int, int>(strokeIndex, count));
-
-      i = i + count;
-    }
-
-  if (groups.empty()) return 0;  // no stroke selected
-
-  if (!valid) return 0;
-
-  if (strokeIndex + count < (int)vimg->getStrokeCount()) {
-    mask |= FRONT;
-    mask |= FORWARD;
-  }
-  if (strokeIndex > 0) {
-    mask |= BACK;
-    mask |= BACKWARD;
-  }
-
-  // PER l'UNGROUP: si ungruppa solo se tutti gli stroke selezionati stanno nel
-  // gruppo (anche piu' gruppi insieme)
-
-  for (i = 0; i < vimg->getStrokeCount(); i++) {
-    if (m_sel->isSelected(i)) {
-      if (!vimg->isStrokeGrouped(i)) break;
-      for (j = 0; j < vimg->getStrokeCount(); j++)
-        if (!m_sel->isSelected(j) && vimg->sameSubGroup(i, j)) break;
-      if (j < vimg->getStrokeCount()) break;
-    }
-  }
-  if (i == vimg->getStrokeCount()) mask |= UNGROUP;
-
-  // PER il GROUP: si raggruppa solo  se:
-  // //almeno una delle  stroke selezionate non fa parte di gruppi o e' di un
-  // gruppo diverso
-  // e se c'e' una stroke di un gruppo, allora tutto il gruppo della stroke e'
-  // selezionato
-
-  bool groupingMakesSense = false;
-  int refStroke           = -1;
-  for (i = 0; i < vimg->getStrokeCount(); i++)
-    if (m_sel->isSelected(i)) {
-      if (vimg->isStrokeGrouped(i)) {
-        if (refStroke == -1)
-          refStroke = i;
-        else if (!vimg->sameSubGroup(refStroke, i))
-          groupingMakesSense = true;  // gli storke selezionati non sono gia'
-                                      // tutti dello stesso gruppo
-        for (j = 0; j < vimg->getStrokeCount(); j++)
-          if (!m_sel->isSelected(j) && vimg->sameGroup(i, j)) return mask;
-      } else
-        groupingMakesSense = true;
-    }
-
-  if (groupingMakesSense) mask |= GROUP;
-
-  return mask;
-}
-
-#endif
 
 //-----------------------------------------------------------------------------
 
@@ -487,11 +369,18 @@ void TGroupCommand::group() {
   }
 
   QMutexLocker lock(vimg->getMutex());
-  groupWithoutUndo(vimg, m_sel);
+  std::vector<int> indexes = selectedIndexes(vimg, m_sel);
+  std::vector<StrokeMove> moves;
+  int first = groupStrokes(vimg, indexes, moves);
+  // the grouped strokes may have moved: keep them selected
+  m_sel->selectNone();
+  for (int j = first; j < first + (int)indexes.size(); j++)
+    m_sel->select(j, true);
+  tool->notifyImageChanged();
   TXshSimpleLevel *level =
       TTool::getApplication()->getCurrentLevel()->getSimpleLevel();
   TUndoManager::manager()->add(
-      new GroupUndo(level, tool->getCurrentFid(), new StrokeSelection(*m_sel)));
+      new GroupUndo(level, tool->getCurrentFid(), indexes, moves, first));
 }
 
 //-----------------------------------------------------------------------------
@@ -555,96 +444,16 @@ void TGroupCommand::ungroup() {
   }
 
   QMutexLocker lock(vimg->getMutex());
-  ungroupWithoutUndo(vimg, m_sel);
+  std::vector<std::pair<int, int>> ranges = ungroupStrokes(vimg, m_sel);
+  tool->notifyImageChanged();
   TXshSimpleLevel *level =
       TTool::getApplication()->getCurrentLevel()->getSimpleLevel();
-  TUndoManager::manager()->add(new UngroupUndo(level, tool->getCurrentFid(),
-                                               new StrokeSelection(*m_sel)));
+  TUndoManager::manager()->add(
+      new UngroupUndo(level, tool->getCurrentFid(), ranges));
 }
 
 //-----------------------------------------------------------------------------
 
-/*
-void computeMovingBounds(TVectorImage*vimg, int fromIndex, int toIndex,
-int&lower, int& upper)
-{
-lower = 0;
-upper = vimg->getStrokeCount();
-
-int refDepth = vimg->getGroupDepth(fromIndex)-1;
-
-if (refDepth==0)
-  return;
-
-int i;
-for (i=fromIndex-1; i>=0; i--)
-  if (vimg->getCommonGroupDepth(fromIndex, i)<refDepth)
-    {
-    lower = i+1;
-    break;
-    }
-
-for (i=fromIndex+1; i<vimg->getStrokeCount(); i++)
-  if (vimg->getCommonGroupDepth(fromIndex, i)<refDepth)
-    {
-    upper = i;
-    break;
-    }
-}
-*/
-//-----------------------------------------------------------------------------
-namespace {
-
-int commonDepth(TVectorImage *vimg, int index1, int count, int index2) {
-  int i, ret = 1000;
-  for (i = index1; i < index1 + count; i++)
-    ret = std::min(ret, vimg->getCommonGroupDepth(i, index2));
-  return ret;
-}
-
-//-----------------------------------------------------------------------------
-
-/*
-bool cantMove1(TVectorImage* vimg, int refStroke, int count, int moveBefore,
-bool rev)
-  {
-  if (moveBefore<(int)vimg->getStrokeCount() && moveBefore>0 &&
-             vimg->getCommonGroupDepth(moveBefore-1,
-moveBefore)>commonDepth(vimg, refStroke, count, moveBefore) &&
-             vimg->getCommonGroupDepth(moveBefore-1,
-moveBefore)>commonDepth(vimg, refStroke, count, moveBefore-1))
-    return true;
-
-  int prev = (rev)?moveBefore:moveBefore-1;
-
-  if (refStroke>0 && commonDepth(vimg, refStroke, count,
-refStroke-1)>commonDepth(vimg, refStroke, count, prev))
-    return true;
-  if (refStroke+count<(int)vimg->getStrokeCount() && commonDepth(vimg,
-refStroke, count, refStroke+count)>commonDepth(vimg, refStroke, count, prev))
-    return true;
-
-  return false;
-  }
-*/
-
-}  // namespace
-
-//-----------------------------------------------------------------------------
-
-/*
-  int i, refStroke=-1, count=0;
-  for (i=0; i<(int)vimg->getStrokeCount(); i++)
-    if(m_sel->isSelected(i))
-      {
-      assert(refStroke==-1 || i==0  || m_sel->isSelected(i-1));
-      if (refStroke==-1)
-        refStroke = i;
-      count++;
-      }
-
-  if(count==0) return;
-  */
 
 static int doMoveGroup(
     UCHAR moveType, TVectorImage *vimg,
