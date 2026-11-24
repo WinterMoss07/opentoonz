@@ -817,7 +817,12 @@ void TImageCache::Imp::doCompress() {
   for (; itu != m_itemHistory.end() && notEnoughMemory();) {
     std::map<std::string, CacheItemP>::iterator it =
         m_uncompressedItems.find(itu->second);
-    assert(it != m_uncompressedItems.end());
+    // a history entry left without its item: dereferencing end() crashed in
+    // release builds
+    if (it == m_uncompressedItems.end()) {
+      itu = m_itemHistory.erase(itu);
+      continue;
+    }
     CacheItemP item = it->second;
 
     UncompressedOnMemoryCacheItemP uitem = item;
@@ -828,18 +833,10 @@ void TImageCache::Imp::doCompress() {
     }
     std::string id = it->first;
 
-#ifdef _WIN32
     assert(itu->first == it->second->m_historyCount);
     itu = m_itemHistory.erase(itu);
     m_itemsByImagePointer.erase(getPointer(item->getImage()));
     m_uncompressedItems.erase(it);
-#else
-    std::map<TUINT32, std::string>::iterator itu2 = itu;
-    itu++;
-    m_itemHistory.erase(itu2);
-    m_itemsByImagePointer.erase(item->getImage().getPointer());
-    m_uncompressedItems.erase(it);
-#endif
 
     if (m_compressedItems.find(id) == m_compressedItems.end()) {
       assert(uitem);
@@ -916,17 +913,11 @@ void TImageCache::Imp::doCompress(std::string id) {
   while (itu != m_itemHistory.end() && itu->second != id) ++itu;
   if (itu == m_itemHistory.end()) return;  // id not found: return
 
-// delete itu from m_itemHistory
-#ifdef _WIN32
+  // delete itu from m_itemHistory (m_itemsByImagePointer is keyed by
+  // getPointer(): the other platforms erased the image pointer instead)
   assert(itu->first == it->second->m_historyCount);
   itu = m_itemHistory.erase(itu);
   m_itemsByImagePointer.erase(getPointer(item->getImage()));
-#else
-  std::map<TUINT32, std::string>::iterator itu2 = itu;
-  itu++;
-  m_itemHistory.erase(itu2);
-  m_itemsByImagePointer.erase(item->getImage().getPointer());
-#endif
 
   // delete item from m_uncompressedItems
   m_uncompressedItems.erase(it);
@@ -1009,7 +1000,12 @@ UCHAR *TImageCache::Imp::compressAndMalloc(TUINT32 size) {
   {
     std::map<std::string, CacheItemP>::iterator it =
         m_uncompressedItems.find(itu->second);
-    assert(it != m_uncompressedItems.end());
+    // a history entry left without its item: dereferencing end() crashed in
+    // release builds
+    if (it == m_uncompressedItems.end()) {
+      itu = m_itemHistory.erase(itu);
+      continue;
+    }
     CacheItemP item = it->second;
 
     UncompressedOnMemoryCacheItemP uitem = item;
@@ -1035,18 +1031,10 @@ UCHAR *TImageCache::Imp::compressAndMalloc(TUINT32 size) {
       m_compressedItems[it->first] = newItem;
     }
 
-#ifdef _WIN32
     assert(itu->first == it->second->m_historyCount);
     itu = m_itemHistory.erase(itu);
     m_itemsByImagePointer.erase(getPointer(item->getImage()));
     m_uncompressedItems.erase(it);
-#else
-    std::map<TUINT32, std::string>::iterator itu2 = itu;
-    itu++;
-    m_itemHistory.erase(itu2);
-    m_itemsByImagePointer.erase(item->getImage().getPointer());
-    m_uncompressedItems.erase(it);
-#endif
   }
 
   if (buf != 0) return buf;
