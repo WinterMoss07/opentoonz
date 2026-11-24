@@ -1,0 +1,2186 @@
+[
+  {
+    "number": 297,
+    "rule": "cpp/world-writable-file-creation",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 492,
+    "message": "A file may be created here with mode 0666, which would make it world-writable."
+  },
+  {
+    "number": 296,
+    "rule": "cpp/world-writable-file-creation",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 1197,
+    "message": "A file may be created here with mode 0666, which would make it world-writable."
+  },
+  {
+    "number": 295,
+    "rule": "cpp/world-writable-file-creation",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 3142,
+    "message": "A file may be created here with mode 0666, which would make it world-writable."
+  },
+  {
+    "number": 294,
+    "rule": "cpp/world-writable-file-creation",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 3195,
+    "message": "A file may be created here with mode 0666, which would make it world-writable."
+  },
+  {
+    "number": 293,
+    "rule": "cpp/world-writable-file-creation",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 3252,
+    "message": "A file may be created here with mode 0666, which would make it world-writable."
+  },
+  {
+    "number": 292,
+    "rule": "cpp/world-writable-file-creation",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 3297,
+    "message": "A file may be created here with mode 0666, which would make it world-writable."
+  },
+  {
+    "number": 291,
+    "rule": "cpp/world-writable-file-creation",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 3343,
+    "message": "A file may be created here with mode 0666, which would make it world-writable."
+  },
+  {
+    "number": 290,
+    "rule": "cpp/world-writable-file-creation",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 3389,
+    "message": "A file may be created here with mode 0666, which would make it world-writable."
+  },
+  {
+    "number": 289,
+    "rule": "cpp/world-writable-file-creation",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 3446,
+    "message": "A file may be created here with mode 0666, which would make it world-writable."
+  },
+  {
+    "number": 288,
+    "rule": "cpp/world-writable-file-creation",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 3492,
+    "message": "A file may be created here with mode 0666, which would make it world-writable."
+  },
+  {
+    "number": 287,
+    "rule": "cpp/world-writable-file-creation",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 3538,
+    "message": "A file may be created here with mode 0666, which would make it world-writable."
+  },
+  {
+    "number": 286,
+    "rule": "cpp/world-writable-file-creation",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 3970,
+    "message": "A file may be created here with mode 0666, which would make it world-writable."
+  },
+  {
+    "number": 280,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 1106,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 279,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 2187,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 278,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 3098,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 277,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 3664,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 276,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/image/ffmpeg/tiio_ffmpeg.cpp",
+    "line": 732,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 275,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsound_nt.cpp",
+    "line": 260,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 274,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsop.cpp",
+    "line": 906,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 273,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsop.cpp",
+    "line": 1023,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 272,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/toonzqt/stageschematicscene.cpp",
+    "line": 398,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 271,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/toonzqt/stageschematicscene.cpp",
+    "line": 609,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 270,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/toonzqt/fxschematicscene.cpp",
+    "line": 595,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 269,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/toonzqt/fxschematicnode.cpp",
+    "line": 522,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 268,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/toonzqt/fxschematicnode.cpp",
+    "line": 515,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 267,
+    "rule": "cpp/incorrect-allocation-error-handling",
+    "severity": "high",
+    "path": "toonz/sources/toonzqt/fxschematicnode.cpp",
+    "line": 508,
+    "message": "This allocation cannot return null. This check is unnecessary."
+  },
+  {
+    "number": 251,
+    "rule": "cpp/uncontrolled-allocation-size",
+    "severity": "high",
+    "path": "toonz/sources/image/pli/pli_io.cpp",
+    "line": 927,
+    "message": "This allocation size is derived from user input (string read by fread) and could allocate arbitrary amounts of memory.\nThis allocation size is derived from user input (string read by fread) and could allocate arbitrary amounts of memory.\nThis allocation size is derived from user input (string read by fread) and could allocate arbitrary amounts of memory."
+  },
+  {
+    "number": 250,
+    "rule": "cpp/uncontrolled-allocation-size",
+    "severity": "high",
+    "path": "thirdparty/lzo/driver/lzocompress.c",
+    "line": 55,
+    "message": "This allocation size is derived from user input (a command-line argument) and could allocate arbitrary amounts of memory."
+  },
+  {
+    "number": 249,
+    "rule": "cpp/uncontrolled-allocation-size",
+    "severity": "high",
+    "path": "thirdparty/lzo/driver/lzocompress.c",
+    "line": 50,
+    "message": "This allocation size is derived from user input (a command-line argument) and could allocate arbitrary amounts of memory."
+  },
+  {
+    "number": 248,
+    "rule": "cpp/uncontrolled-allocation-size",
+    "severity": "high",
+    "path": "thirdparty/lzo/driver/lzodecompress.c",
+    "line": 59,
+    "message": "This allocation size is derived from user input (a command-line argument) and could allocate arbitrary amounts of memory."
+  },
+  {
+    "number": 247,
+    "rule": "cpp/uncontrolled-allocation-size",
+    "severity": "high",
+    "path": "thirdparty/lzo/driver/lzodecompress.c",
+    "line": 55,
+    "message": "This allocation size is derived from user input (a command-line argument) and could allocate arbitrary amounts of memory."
+  },
+  {
+    "number": 244,
+    "rule": "cpp/comma-before-misleading-indentation",
+    "severity": "high",
+    "path": "toonz/sources/toonz/exportlevelcommand.cpp",
+    "line": 563,
+    "message": "The indentation level may be misleading for some tab sizes."
+  },
+  {
+    "number": 243,
+    "rule": "cpp/redundant-null-check-simple",
+    "severity": "high",
+    "path": "toonz/sources/image/avi/tiio_avi.cpp",
+    "line": 846,
+    "message": "This null check is redundant because the value is dereferenced in any case."
+  },
+  {
+    "number": 242,
+    "rule": "cpp/wrong-type-format-argument",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 355,
+    "message": "This format specifier for type 'int' does not match the argument type 'unsigned long long'."
+  },
+  {
+    "number": 241,
+    "rule": "cpp/wrong-type-format-argument",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 615,
+    "message": "This format specifier for type 'int' does not match the argument type 'unsigned long long'."
+  },
+  {
+    "number": 240,
+    "rule": "cpp/wrong-type-format-argument",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 4797,
+    "message": "This format specifier for type 'unsigned int' does not match the argument type 'unsigned short *'."
+  },
+  {
+    "number": 239,
+    "rule": "cpp/wrong-type-format-argument",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 4788,
+    "message": "This format specifier for type 'int' does not match the argument type 'unsigned long long'."
+  },
+  {
+    "number": 238,
+    "rule": "cpp/wrong-type-format-argument",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 4765,
+    "message": "This format specifier for type 'unsigned int' does not match the argument type 'unsigned short *'."
+  },
+  {
+    "number": 237,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/ttilesaver.cpp",
+    "line": 22,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 236,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/ttilesaver.cpp",
+    "line": 73,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 235,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/trastercentroid.cpp",
+    "line": 200,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 234,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/stagevisitor.cpp",
+    "line": 498,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 233,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/stagevisitor.cpp",
+    "line": 1274,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 232,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/tbinarizer.cpp",
+    "line": 194,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 231,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/tbinarizer.cpp",
+    "line": 116,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 230,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/tbinarizer.cpp",
+    "line": 113,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 229,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/tbinarizer.cpp",
+    "line": 109,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 228,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/tbinarizer.cpp",
+    "line": 105,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 227,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/tbinarizer.cpp",
+    "line": 103,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 226,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/sandor_fxs/STColSelPic.h",
+    "line": 61,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 225,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/sandor_fxs/STColSelPic.h",
+    "line": 65,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 224,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/sandor_fxs/CallCircle.h",
+    "line": 124,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 223,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/sandor_fxs/SDirection.cpp",
+    "line": 341,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 222,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/sandor_fxs/SDirection.cpp",
+    "line": 361,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 221,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/sandor_fxs/SDirection.cpp",
+    "line": 390,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 220,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/sandor_fxs/STPic.h",
+    "line": 128,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 219,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/sandor_fxs/PatternPosition.cpp",
+    "line": 181,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 218,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/sandor_fxs/EraseContour.cpp",
+    "line": 83,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 217,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/sandor_fxs/EraseContour.cpp",
+    "line": 70,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 216,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/plasticdeformerfx.cpp",
+    "line": 432,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 215,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/fillutil.cpp",
+    "line": 1184,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 214,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/autoclose.cpp",
+    "line": 897,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 213,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/boardsettings.cpp",
+    "line": 145,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'qreal'."
+  },
+  {
+    "number": 212,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/boardsettings.cpp",
+    "line": 145,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'qreal'."
+  },
+  {
+    "number": 211,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/Naa2TlvConverter.cpp",
+    "line": 813,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 210,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzlib/autoadjust.cpp",
+    "line": 233,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 209,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonz/xsheetdragtool.cpp",
+    "line": 357,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 208,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonz/xshcellmover.cpp",
+    "line": 139,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 207,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonz/xshcellmover.cpp",
+    "line": 153,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 206,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonz/xshcellmover.cpp",
+    "line": 74,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 205,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonz/xshcellmover.cpp",
+    "line": 73,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 204,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonz/celldata.cpp",
+    "line": 62,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 203,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonz/celldata.cpp",
+    "line": 55,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 202,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonz/celldata.cpp",
+    "line": 103,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 201,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonz/celldata.cpp",
+    "line": 155,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 200,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonz/canvassizepopup.cpp",
+    "line": 733,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 199,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/tnztools/stylepicker.cpp",
+    "line": 354,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 198,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/tnztools/stylepicker.cpp",
+    "line": 387,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 197,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/tnztools/autofilltlv.cpp",
+    "line": 204,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 196,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/tnzext/tlin/tlin_superlu_wrap.cpp",
+    "line": 61,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 195,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/tnzext/tlin/tlin_superlu_wrap.cpp",
+    "line": 107,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 194,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/tnzext/tlin/tlin_superlu_wrap.cpp",
+    "line": 181,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 193,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/tnzext/tlin/tlin_superlu_wrap.cpp",
+    "line": 338,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 192,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/tnzext/tlin/tlin_superlu_wrap.cpp",
+    "line": 380,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 191,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particlesengine.cpp",
+    "line": 374,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 190,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particlesengine.cpp",
+    "line": 349,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 189,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particlesengine.cpp",
+    "line": 334,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 188,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particlesengine.cpp",
+    "line": 320,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 187,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particlesengine.cpp",
+    "line": 282,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 186,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particlesengine.cpp",
+    "line": 1405,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 185,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 205,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 184,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 197,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 183,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 195,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 182,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 183,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 181,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 176,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 180,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 173,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 179,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 149,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 178,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 255,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 177,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 236,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 176,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 234,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 175,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 232,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 174,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 506,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 173,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 496,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 172,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 481,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 171,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 454,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 170,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 444,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 169,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 438,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 168,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/particles.cpp",
+    "line": 524,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 167,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/naru_lazybrush.cpp",
+    "line": 221,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 166,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/noisefx.cpp",
+    "line": 127,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 165,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/noisefx.cpp",
+    "line": 122,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 164,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/noisefx.cpp",
+    "line": 117,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 163,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/noisefx.cpp",
+    "line": 101,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 162,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/naru_lazybrush.cpp",
+    "line": 528,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 161,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/naru_lazybrush.cpp",
+    "line": 527,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 160,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/naru_lazybrush.cpp",
+    "line": 526,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 159,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/naru_lazybrush.cpp",
+    "line": 525,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 158,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/naru_lazybrush.cpp",
+    "line": 511,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 157,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/naru_lazybrush.cpp",
+    "line": 510,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 156,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/naru_lazybrush.cpp",
+    "line": 509,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 155,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/naru_lazybrush.cpp",
+    "line": 508,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 154,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/motionblurfx.cpp",
+    "line": 205,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 153,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/motionblurfx.cpp",
+    "line": 204,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 152,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/motionblurfx.cpp",
+    "line": 203,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 151,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/motionblurfx.cpp",
+    "line": 202,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 150,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/motionblurfx.cpp",
+    "line": 357,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 149,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/motionblurfx.cpp",
+    "line": 356,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 148,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/motionblurfx.cpp",
+    "line": 355,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 147,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/motionblurfx.cpp",
+    "line": 354,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 146,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/localblurfx.cpp",
+    "line": 77,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 145,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/localblurfx.cpp",
+    "line": 76,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 144,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/localblurfx.cpp",
+    "line": 75,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 143,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/localblurfx.cpp",
+    "line": 74,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 142,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_tangentflowfx.cpp",
+    "line": 158,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 141,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_tangentflowfx.cpp",
+    "line": 403,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 140,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_tangentflowfx.cpp",
+    "line": 395,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 139,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_tangentflowfx.cpp",
+    "line": 394,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 138,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_tangentflowfx.cpp",
+    "line": 378,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 137,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particlesengine.cpp",
+    "line": 435,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 136,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particlesengine.cpp",
+    "line": 402,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 135,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particlesengine.cpp",
+    "line": 384,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 134,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particlesengine.cpp",
+    "line": 367,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 133,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particlesengine.cpp",
+    "line": 317,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 132,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 153,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 131,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 151,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 130,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 143,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 129,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 141,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 128,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 135,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 127,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 129,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 126,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 125,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 125,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 118,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 124,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 114,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 123,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 96,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 122,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 93,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 121,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 237,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 120,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 218,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 119,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 216,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 118,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 214,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 117,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 1070,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 116,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particlesengine.cpp",
+    "line": 915,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 115,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particlesengine.cpp",
+    "line": 914,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 114,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 490,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 113,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 480,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 112,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 465,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 111,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 438,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 110,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 428,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 109,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 422,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 108,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 509,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 107,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particles.cpp",
+    "line": 1142,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 106,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_particlesengine.cpp",
+    "line": 1217,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 105,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_flowpaintbrushfx.cpp",
+    "line": 372,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 104,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_flowpaintbrushfx.cpp",
+    "line": 336,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 103,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_flowpaintbrushfx.cpp",
+    "line": 457,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 102,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_flowpaintbrushfx.cpp",
+    "line": 436,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 101,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_flowpaintbrushfx.cpp",
+    "line": 417,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 100,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_fractalnoisefx.cpp",
+    "line": 421,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 99,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_fractalnoisefx.cpp",
+    "line": 349,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 98,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_fractalnoisefx.cpp",
+    "line": 238,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 97,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_flowblurfx.cpp",
+    "line": 457,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 96,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_flowblurfx.cpp",
+    "line": 431,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 95,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_flowblurfx.cpp",
+    "line": 423,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 94,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/iwa_flowblurfx.cpp",
+    "line": 405,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 93,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_warp_hv.cpp",
+    "line": 170,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 92,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_warp_hv.cpp",
+    "line": 153,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 91,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_warp_hv.cpp",
+    "line": 146,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 90,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_spin_blur.cpp",
+    "line": 187,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 89,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_spin_blur.cpp",
+    "line": 181,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 88,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_radial_blur.cpp",
+    "line": 220,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 87,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_radial_blur.cpp",
+    "line": 214,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 86,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_negate.cpp",
+    "line": 48,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 85,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_motion_wind.cpp",
+    "line": 209,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 84,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_motion_wind.cpp",
+    "line": 201,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 83,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_motion_blur.cpp",
+    "line": 192,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 82,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_median_filter.cpp",
+    "line": 80,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 81,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_median.cpp",
+    "line": 95,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 80,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_maxmin.cpp",
+    "line": 115,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 79,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_level_master.cpp",
+    "line": 144,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 78,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_level_rgba.cpp",
+    "line": 236,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 77,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_level_auto.cpp",
+    "line": 68,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 76,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_hsv_noise.cpp",
+    "line": 130,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 75,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_hsv_adjust.cpp",
+    "line": 113,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 74,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_hsv_add.cpp",
+    "line": 120,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 73,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_hsv_add.cpp",
+    "line": 114,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 72,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_hls_noise.cpp",
+    "line": 130,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 71,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_hls_adjust.cpp",
+    "line": 113,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 70,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_hls_add.cpp",
+    "line": 117,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 69,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_hls_add.cpp",
+    "line": 111,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 68,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_fog.cpp",
+    "line": 103,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 67,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_density.cpp",
+    "line": 70,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 66,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_common.cpp",
+    "line": 268,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 65,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_blur.cpp",
+    "line": 128,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 64,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/ino_blur.cpp",
+    "line": 122,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 63,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_line_blur.cpp",
+    "line": 4792,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 62,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_motion_blur.cpp",
+    "line": 521,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 61,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_gaussian_blur.cpp",
+    "line": 459,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 60,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_gaussian_blur.cpp",
+    "line": 458,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 59,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/stdfx/igs_gaussian_blur.cpp",
+    "line": 457,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 58,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/sound/wav/tsio_wav.cpp",
+    "line": 289,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 57,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/sound/aiff/tsio_aiff.cpp",
+    "line": 426,
+    "message": "Multiplication result may overflow 'unsigned int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 56,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/sound/aiff/tsio_aiff.cpp",
+    "line": 408,
+    "message": "Multiplication result may overflow 'unsigned int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 55,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/sound/aiff/tsio_aiff.cpp",
+    "line": 389,
+    "message": "Multiplication result may overflow 'unsigned int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 54,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/sound/aiff/tsio_aiff.cpp",
+    "line": 375,
+    "message": "Multiplication result may overflow 'unsigned int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 53,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/sprite/tiio_sprite.cpp",
+    "line": 104,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 52,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/avi/tiio_avi.cpp",
+    "line": 965,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 51,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/png/tiio_png.cpp",
+    "line": 783,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 50,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/png/tiio_png.cpp",
+    "line": 854,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 49,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/pli/pli_io.cpp",
+    "line": 1638,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 48,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/ffmpeg/tiio_ffmpeg.cpp",
+    "line": 648,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 47,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/exr/tiio_exr.cpp",
+    "line": 389,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 46,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/exr/tiio_exr.cpp",
+    "line": 442,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 45,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/exr/tiio_exr.cpp",
+    "line": 440,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 44,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/exr/tiio_exr.cpp",
+    "line": 439,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 43,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/exr/tiio_exr.cpp",
+    "line": 438,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 42,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/exr/tiio_exr.cpp",
+    "line": 461,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 41,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/exr/tiio_exr.cpp",
+    "line": 459,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 40,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/exr/tiio_exr.cpp",
+    "line": 458,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 39,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/exr/tiio_exr.cpp",
+    "line": 457,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 38,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/exr/tiio_exr.cpp",
+    "line": 480,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 37,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/exr/tiio_exr.cpp",
+    "line": 478,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 36,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/exr/tiio_exr.cpp",
+    "line": 477,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 35,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/image/exr/tiio_exr.cpp",
+    "line": 476,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_type'."
+  },
+  {
+    "number": 34,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsound_nt.cpp",
+    "line": 365,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 33,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsound_nt.cpp",
+    "line": 279,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 32,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsop.cpp",
+    "line": 1218,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 31,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsop.cpp",
+    "line": 1215,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 30,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsop.cpp",
+    "line": 1213,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 29,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsop.cpp",
+    "line": 1211,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 28,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsop.cpp",
+    "line": 1257,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 27,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsop.cpp",
+    "line": 1254,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 26,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsound.cpp",
+    "line": 49,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 25,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsound.cpp",
+    "line": 47,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 24,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/tsound/tsound.cpp",
+    "line": 42,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 23,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trop/tresample.cpp",
+    "line": 3986,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 22,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trop/tresample.cpp",
+    "line": 3985,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 21,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trop/tresample.cpp",
+    "line": 3984,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 20,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trop/tresample.cpp",
+    "line": 3983,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 19,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trop/tresample.cpp",
+    "line": 3895,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 18,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trop/tresample.cpp",
+    "line": 3894,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 17,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trop/tresample.cpp",
+    "line": 3893,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 16,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trop/tresample.cpp",
+    "line": 3892,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 15,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trop/tblur.cpp",
+    "line": 218,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 14,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trop/tblur.cpp",
+    "line": 217,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 13,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trop/tblur.cpp",
+    "line": 216,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 12,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trop/tblur.cpp",
+    "line": 215,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'double'."
+  },
+  {
+    "number": 11,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trop/tblur.cpp",
+    "line": 831,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 10,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trasterimage/tcodec.cpp",
+    "line": 400,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 9,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/trasterimage/tcodec.cpp",
+    "line": 642,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 8,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/timage_io/timage_io.cpp",
+    "line": 297,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'ptrdiff_t'."
+  },
+  {
+    "number": 7,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/tcache/timagecache.cpp",
+    "line": 373,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'unsigned long long'."
+  },
+  {
+    "number": 6,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/common/tcache/timagecache.cpp",
+    "line": 621,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'streamsize'."
+  },
+  {
+    "number": 5,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzqt/plugin_tile_interface.cpp",
+    "line": 77,
+    "message": "Multiplication result may overflow 'int' before it is converted to 'size_t'."
+  },
+  {
+    "number": 4,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzqt/gutil.cpp",
+    "line": 221,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'qreal'."
+  },
+  {
+    "number": 3,
+    "rule": "cpp/integer-multiplication-cast-to-long",
+    "severity": "high",
+    "path": "toonz/sources/toonzqt/gutil.cpp",
+    "line": 220,
+    "message": "Multiplication result may overflow 'float' before it is converted to 'qreal'."
+  }
+]
