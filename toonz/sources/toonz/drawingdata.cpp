@@ -34,9 +34,10 @@ namespace {
 
 //-----------------------------------------------------------------------------
 
-QString makeCacheId(UINT id, const TFrameId &fid) {
+// The full frame id: the number alone made 1 and 1a share their cached image
+QString makeCacheId(uintptr_t id, const TFrameId &fid) {
   return "DrawingData" + QString::number(id) + "-" +
-         QString::number(fid.getNumber());
+         QString::fromStdString(fid.expand());
 }
 
 //-----------------------------------------------------------------------------
@@ -165,8 +166,8 @@ void DrawingData::setLevelFrames(TXshSimpleLevel *sl,
 
     // Clone the image and store it in the image cache
     QString id = makeCacheId(
-        (uintptr_t) this,
-        it->getNumber());  // Cloning is necessary since the user may
+        (uintptr_t)this,
+        frameId);  // Cloning is necessary since the user may
     TImageCache::instance()->add(
         id, img->cloneImage());  // modify and save the original AFTER the copy
     m_imageSet[frameId] = id;    // has been done.

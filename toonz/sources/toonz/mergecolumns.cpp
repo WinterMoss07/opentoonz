@@ -364,7 +364,7 @@ void mergeColumns(int column, int mColumn, bool isRedo, bool groupLevels) {
       if (!isRedo) {
         QString id = "MergeColumnsUndo" +
                      QString::number(MergeColumnsSessionId) + "-" +
-                     QString::number(fid.getNumber());
+                     QString::fromStdString(fid.expand());
         TImageCache::instance()->add(
             id, (timg) ? timg->cloneImage() : vimg->cloneImage());
         images[fid] = id;

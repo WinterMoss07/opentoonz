@@ -68,52 +68,19 @@ TFrameId operator+(const TFrameId &fid, int d) {
 }
 
 //-----------------------------------------------------------------------------
-/*
-void doUpdateXSheet(TXshSimpleLevel *sl, std::vector<TFrameId> oldFids,
-                    std::vector<TFrameId> newFids, TXsheet *xsh,
-                    std::vector<TXshChildLevel *> &childLevels) {
-  for (int c = 0; c < xsh->getColumnCount(); ++c) {
-    int r0, r1;
-    int n = xsh->getCellRange(c, r0, r1);
-    if (n > 0) {
-      bool changed = false;
-      std::vector<TXshCell> cells(n);
-      xsh->getCells(r0, c, n, &cells[0]);
-      for (int i = 0; i < n; i++) {
-        TXshCell currCell = cells[i];
-        // check the sub xsheets too
-        if (!cells[i].isEmpty() &&
-            cells[i].m_level->getType() == CHILD_XSHLEVEL) {
-          TXshChildLevel *level = cells[i].m_level->getChildLevel();
-          // make sure we haven't already checked the level
-          if (level && std::find(childLevels.begin(), childLevels.end(),
-                                 level) == childLevels.end()) {
-            childLevels.push_back(level);
-            TXsheet *subXsh = level->getXsheet();
-            doUpdateXSheet(sl, oldFids, newFids, subXsh, childLevels);
-          }
-        }
-        for (int j = 0; j < oldFids.size(); j++) {
-          if (oldFids.at(j) == newFids.at(j)) continue;
-          TXshCell tempCell(sl, oldFids.at(j));
-          bool sameSl  = tempCell.getSimpleLevel() == currCell.getSimpleLevel();
-          bool sameFid = tempCell.getFrameId() == currCell.getFrameId();
-          if (sameSl && sameFid) {
-            TXshCell newCell(sl, newFids.at(j));
-            cells[i] = newCell;
-            changed  = true;
-            break;
-          }
-        }
-      }
-      if (changed) {
-        xsh->setCells(r0, c, n, &cells[0]);
-        TApp::instance()->getCurrentXsheet()->notifyXsheetChanged();
-      }
-    }
-  }
+
+//! Image cache id for a frame saved by a command. Ids made of the level
+//! pointer and the frame number were shared by frames 1 and 1a, and by two
+//! commands on the same frame: the second one replaced the image the undo of
+//! the first one restores.
+static QString frameCacheId(const char *prefix, const TFrameId &fid) {
+  static unsigned int count = 0;
+  return QString("%1%2-%3")
+      .arg(prefix)
+      .arg(++count)
+      .arg(QString::fromStdString(fid.expand()));
 }
-*/
+
 //-----------------------------------------------------------------------------
 
 static void updateXSheet(TXshSimpleLevel *sl, std::vector<TFrameId> oldFids,
@@ -127,31 +94,32 @@ static void updateXSheet(TXshSimpleLevel *sl, std::vector<TFrameId> oldFids,
 }
 
 //=============================================================================
-// makeSpaceForFid
-// TODO: If necessary, renumber other frame IDs in the level
-// before inserting framesToInsert, so that the IDs are free.
+// makeSpaceForFids
 //-----------------------------------------------------------------------------
 
+/*! Renumbers the frames of \b sl so that the ids of \b framesToInsert are
+    free: a frame on one of them moves to the next number, and so do the
+    following ones as long as they would come before it.
+    The frames keep their order. The undos of the insertions remove the
+    inserted frames then renumber the level with its old ids, by position:
+    moving 2a to 3a while 3 stayed swapped those two on undo (#2426).
+*/
 void makeSpaceForFids(TXshSimpleLevel *sl,
                       const std::set<TFrameId> &framesToInsert) {
   std::vector<TFrameId> fids, oldFids;
   sl->getFids(fids);
-  oldFids = fids;
-  std::set<TFrameId> touchedFids;
-  for (const TFrameId &fidBase : framesToInsert) {
-    TFrameId fid = fidBase;
-    auto j       = fids.begin();
-    while ((j = std::find(j, fids.end(), fid)) != fids.end()) {
-      touchedFids.insert(fid);
+  oldFids      = fids;
+  bool changed = false;
+  for (size_t i = 0; i < fids.size(); ++i) {
+    TFrameId fid = fids[i];
+    while (framesToInsert.count(fid) || (i > 0 && !(fids[i - 1] < fid)))
       fid = fid + 1;
-      touchedFids.insert(fid);
-      *j = fid;
- // Now I need to check that the new fid is not already
-// in the remaining part of the fids array
-      ++j;
+    if (fid != fids[i]) {
+      fids[i] = fid;
+      changed = true;
     }
   }
-  if (!touchedFids.empty()) {
+  if (changed) {
     if (Preferences::instance()->isSyncLevelRenumberWithXsheetEnabled())
       updateXSheet(sl, oldFids, fids);
     sl->renumber(fids);
@@ -389,11 +357,7 @@ std::map<TFrameId, QString> clearFramesWithoutUndo(
   if (!sl || frames.empty()) return clearedFrames;
 
   for (const TFrameId &frameId : frames) {
-/* You shouldn’t cast to UINT */
-// QString id =
-// "clearFrames"+QString::number((UINT)sl.getPointer())+"-"+QString::number(it->getNumber());
-    QString id = "clearFrames" + QString::number((uintptr_t)sl.getPointer()) +
-                 "-" + QString::number(frameId.getNumber());
+    QString id = frameCacheId("clearFrames", frameId);
     TImageCache::instance()->add(id, sl->getFrame(frameId, false));
     clearedFrames[frameId] = id;
     TImageP emptyFrame     = sl->createEmptyFrame();
@@ -424,10 +388,8 @@ void cutFramesWithoutUndo(TXshSimpleLevel *sl, std::set<TFrameId> &frames) {
 
   HookSet *levelHooks   = sl->getHookSet();
   int currentFrameIndex = TApp::instance()->getCurrentFrame()->getFrameIndex();
-  int i                 = 0;
   for (const TFrameId &frameId : frames) {
-    QString id = "cutFrames" + QString::number((uintptr_t)sl) + "-" +
-                 QString::number(frameId.getNumber());
+    QString id = frameCacheId("cutFrames", frameId);
     TImageCache::instance()->add(id, sl->getFrame(frameId, false));
     imageSet[frameId] = id;
   }
@@ -656,7 +618,7 @@ public:
     for (const TFrameId &fid : m_frames) {
       if (!first) str += QString(", ");
       first = false;
-      str += QString::number(fid.getNumber());
+      str += QString::fromStdString(fid.expand(TFrameId::NO_PAD));
     }
     return str;
   }
@@ -761,7 +723,7 @@ public:
     for (const TFrameId &fid : m_frames) {
       if (!first) str += QString(", ");
       first = false;
-      str += QString::number(fid.getNumber());
+      str += QString::fromStdString(fid.expand(TFrameId::NO_PAD));
     }
     return str;
   }
@@ -885,7 +847,7 @@ public:
     for (const TFrameId &fid : m_frames) {
       if (!first) str += QString(", ");
       first = false;
-      str += QString::number(fid.getNumber());
+      str += QString::fromStdString(fid.expand(TFrameId::NO_PAD));
     }
     return str;
   }
@@ -933,7 +895,7 @@ public:
     for (const TFrameId &fid : m_frames) {
       if (!first) str += QString(", ");
       first = false;
-      str += QString::number(fid.getNumber());
+      str += QString::fromStdString(fid.expand(TFrameId::NO_PAD));
     }
     return str;
   }
@@ -988,7 +950,7 @@ public:
     for (const TFrameId &fid : m_framesCutted) {
       if (!first) str += QString(", ");
       first = false;
-      str += QString::number(fid.getNumber());
+      str += QString::fromStdString(fid.expand(TFrameId::NO_PAD));
     }
     return str;
   }
@@ -1032,7 +994,7 @@ public:
     for (const TFrameId &fid : m_framesRemoved) {
       if (!first) str += QString(", ");
       first = false;
-      str += QString::number(fid.getNumber());
+      str += QString::fromStdString(fid.expand(TFrameId::NO_PAD));
     }
     return str;
   }
@@ -1105,7 +1067,7 @@ public:
     for (const TFrameId &fid : m_insertedFids) {
       if (!first) str += QString(", ");
       first = false;
-      str += QString::number(fid.getNumber());
+      str += QString::fromStdString(fid.expand(TFrameId::NO_PAD));
     }
     return str;
   }
@@ -1619,10 +1581,8 @@ void FilmstripCmd::remove(TXshSimpleLevel *sl, std::set<TFrameId> &frames) {
   if (!sl || frames.empty() || sl->isSubsequence() || sl->isReadOnly()) return;
 
   std::map<TFrameId, QString> imageSet;
-  int i = 0;
   for (const TFrameId &frameId : frames) {
-    QString id = "removeFrames" + QString::number((uintptr_t)sl) + "-" +
-                 QString::number(frameId.getNumber());
+    QString id = frameCacheId("removeFrames", frameId);
     TImageCache::instance()->add(id, sl->getFrame(frameId, false));
     imageSet[frameId] = id;
   }
@@ -2190,8 +2150,7 @@ void FilmstripCmd::duplicate(TXshSimpleLevel *sl, std::set<TFrameId> &frames,
   for (const TFrameId &fid : frames) {
     TImageP img      = sl->getFrame(fid, false);
     TImageP imgClone = (img) ? img->cloneImage() : nullptr;
-    QString id       = "dupFrames" + QString::number((uintptr_t)sl) + "-" +
-                 QString::number(fid.getNumber());
+    QString id       = frameCacheId("dupFrames", fid);
     TImageCache::instance()->add(id, imgClone);
     framesToInsert[insertPoint + i] = id;
     newFrames.insert(insertPoint + i);
