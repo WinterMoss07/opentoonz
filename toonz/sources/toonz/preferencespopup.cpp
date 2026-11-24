@@ -611,7 +611,13 @@ void PreferencesPopup::onUnitChanged() {
       (m_pref->getStringValue(linearUnits) == "pixel" ||
        m_pref->getStringValue(cameraUnits) == "pixel")) {
     pixelsOnlyCB->setCheckState(Qt::Checked);
+    return;  // onPixelsOnlyChanged() updates the fields
   }
+  // show the default level size in the new unit
+  getUI<MeasuredDoubleLineEdit*>(DefLevelWidth)
+      ->setValue(m_pref->getDoubleValue(DefLevelWidth));
+  getUI<MeasuredDoubleLineEdit*>(DefLevelHeight)
+      ->setValue(m_pref->getDoubleValue(DefLevelHeight));
 }
 
 //-----------------------------------------------------------------------------

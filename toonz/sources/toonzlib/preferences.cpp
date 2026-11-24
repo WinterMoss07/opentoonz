@@ -995,8 +995,11 @@ void Preferences::setUnits() {
   setCurrentUnits("length.y", units);
   setCurrentUnits("length.lx", units);
   setCurrentUnits("length.ly", units);
+  // the level size fields (New Level popup, Preferences > Drawing) kept the
+  // unit of the first start
+  setCurrentUnits("level.lx", units);
+  setCurrentUnits("level.ly", units);
   setCurrentUnits("fxLength", units);
-  setCurrentUnits("pippo", units);
 }
 
 //-----------------------------------------------------------------
