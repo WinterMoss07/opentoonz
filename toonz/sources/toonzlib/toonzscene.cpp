@@ -1379,8 +1379,8 @@ TFilePath ToonzScene::getDefaultLevelPath(int levelType,
   case OVL_XSHLEVEL: {
     QString rasterLevelType = Preferences::instance()->getDefRasterFormat();
     TFrameId tmplFId        = getProperties()->formatTemplateFIdForInput();
-    levelPath = TFilePath(levelName + L"." + rasterLevelType.toStdWString())
-                    .withFrame(tmplFId);
+    levelPath = TFilePath::levelPath(levelName,
+                                     rasterLevelType.toStdString(), tmplFId);
   } break;
   case PLI_XSHLEVEL:
     levelPath = TFilePath(levelName).withType("pli");

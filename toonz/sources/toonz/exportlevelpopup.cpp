@@ -652,7 +652,7 @@ bool ExportLevelPopup::execute() {
         }
         FilePath = TFilePath(FilePath.getWideString() + L"\\" + sl->getName());
       }
-      ret = ret && IoCmd::exportLevel(FilePath.withType(ext).withFrame(tmplFId),
+      ret = ret && IoCmd::exportLevel(FilePath.withLevelType(ext, tmplFId),
                                       sl, opts, &overwriteCB, &progressCB);
       if (ret)
         ++m_levelExportedCount;
@@ -684,7 +684,7 @@ bool ExportLevelPopup::execute() {
           TFilePath(FilePath.getWideString() + L"\\" + FileName.toStdWString());
     }
 
-    ret = IoCmd::exportLevel(FilePath.withType(ext).withFrame(tmplFId),
+    ret = IoCmd::exportLevel(FilePath.withLevelType(ext, tmplFId),
                              *outputLevels.begin(), opts, 0, 0);
     m_levelExportedCount = 1;
   }

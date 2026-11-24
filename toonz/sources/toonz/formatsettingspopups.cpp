@@ -32,15 +32,6 @@
 #include <QMainWindow>
 #include <QGroupBox>
 
-namespace {
-bool checkForSeqNum(QString type) {
-  TFileType::Type typeInfo = TFileType::getInfoFromExtension(type);
-  if ((typeInfo & TFileType::IMAGE) && !(typeInfo & TFileType::LEVEL))
-    return true;
-  else
-    return false;
-}
-};  // namespace
 
 //**********************************************************************************
 //    FormatSettingsPopup  implementation
@@ -110,7 +101,7 @@ FormatSettingsPopup::FormatSettingsPopup(QWidget *parent,
   }
 #endif
 
-  if (checkForSeqNum(QString::fromStdString(format)) && tmplFrameId) {
+  if (TFileType::isSequenceExtension(QString::fromStdString(format)) && tmplFrameId) {
     m_sepCharCB = new QComboBox(this);
     m_paddingCB = new QComboBox(this);
 
@@ -394,7 +385,7 @@ bool openFormatSettingsPopup(QWidget *parent, const std::string &format,
                              TPropertyGroup *props, TFrameId *tmplFId,
                              bool forInput, const TFilePath &levelPath) {
   if ((!props || props->getPropertyCount() == 0) &&
-      !(checkForSeqNum(QString::fromStdString(format)) && tmplFId))
+      !(TFileType::isSequenceExtension(QString::fromStdString(format)) && tmplFId))
     return false;
 
   FormatSettingsPopup *popup =

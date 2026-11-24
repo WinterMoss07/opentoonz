@@ -86,6 +86,11 @@ inline bool isLevelExtension(const QString &fileExtension) {
   return (getInfoFromExtension(fileExtension) & LEVEL) != 0;
 }
 
+//! Image formats saved one file per frame, with the frame number in the name
+inline bool isSequenceExtension(const QString &fileExtension) {
+  Type type = getInfoFromExtension(fileExtension);
+  return (type & IMAGE) && !(type & LEVEL);
+}
 inline bool isLevelFilePath(const TFilePath &fp) {
   return (getInfo(fp) & LEVEL) != 0;
 }

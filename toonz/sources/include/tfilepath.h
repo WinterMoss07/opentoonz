@@ -281,6 +281,17 @@ type is a string indicating the file extension (e.g., .bmp or bmp)*/
     return withFrame(TFrameId(TFrameId::NO_FRAME));
   }  // pippo.tif
 
+  /*!Returns the path of the level "name" of file type "type": "name..type"
+     (with the separator of "frame") for image sequences, "name.type"
+     otherwise. The name is taken as is: in "shot_1" the "_1" is part of the
+     name, never a frame number (TFilePath("shot_1.tif") is frame 1 of
+     "shot_").*/
+  static TFilePath levelPath(const std::wstring &name, const std::string &type,
+                             const TFrameId &frame = TFrameId());
+  /*!Same level with another file type, see levelPath().*/
+  TFilePath withLevelType(const std::string &type,
+                          const TFrameId &frame = TFrameId()) const;
+
   TFilePath operator+(const TFilePath &fp) const;
   TFilePath &operator+=(const TFilePath &fp) /*{*this=*this+fp;return *this;}*/;
 

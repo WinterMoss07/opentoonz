@@ -79,13 +79,6 @@ bool isNumbers(std::wstring str, int fromSeg, int toSeg) {
   return true;  // We're good!
 }
 
-bool checkForSeqNum(QString type) {
-  TFileType::Type typeInfo = TFileType::getInfoFromExtension(type);
-  if ((typeInfo & TFileType::IMAGE) && !(typeInfo & TFileType::LEVEL))
-    return true;
-  else
-    return false;
-}
 
 bool parseFrame(const std::wstring &str, int &frame, QString &letter,
                 int &padding) {
@@ -595,7 +588,7 @@ std::string TFilePath::getDots() const {
     j = str.substr(0, i).rfind(L"_");
 
   if (j != (int)std::wstring::npos)
-    return (j == i - 1 || (checkForSeqNum(type) && isNumbers(str, j, i))) ? ".."
+    return (j == i - 1 || (TFileType::isSequenceExtension(type) && isNumbers(str, j, i))) ? ".."
                                                                           : ".";
   else
     return ".";
@@ -617,14 +610,14 @@ QChar TFilePath::getSepChar() const {
   int j = str.substr(0, i).rfind(L".");
 
   if (j != (int)std::wstring::npos)
-    return (j == i - 1 || (checkForSeqNum(type) && isNumbers(str, j, i)))
+    return (j == i - 1 || (TFileType::isSequenceExtension(type) && isNumbers(str, j, i)))
                ? QChar('.')
                : QChar();
   if (!m_underscoreFormatAllowed) return QChar();
 
   j = str.substr(0, i).rfind(L"_");
   if (j != (int)std::wstring::npos)
-    return (j == i - 1 || (checkForSeqNum(type) && isNumbers(str, j, i)))
+    return (j == i - 1 || (TFileType::isSequenceExtension(type) && isNumbers(str, j, i)))
                ? QChar('_')
                : QChar();
   else
@@ -684,10 +677,10 @@ std::wstring TFilePath::getWideName() const  // noDot! noSlash!
   if (i == (int)std::wstring::npos) return str;
   int j = str.substr(0, i).rfind(L".");
   if (j != (int)std::wstring::npos) {
-    if (checkForSeqNum(type) && isNumbers(str, j, i)) i = j;
+    if (TFileType::isSequenceExtension(type) && isNumbers(str, j, i)) i = j;
   } else if (m_underscoreFormatAllowed) {
     j = str.substr(0, i).rfind(L"_");
-    if (j != (int)std::wstring::npos && checkForSeqNum(type) &&
+    if (j != (int)std::wstring::npos && TFileType::isSequenceExtension(type) &&
         isNumbers(str, j, i))
       i = j;
   }
@@ -733,7 +726,7 @@ std::wstring TFilePath::getLevelNameW() const {
   if (j == i || j - i == 1)  // prova.tif or prova..tif
     return str;
 
-  if (!checkForSeqNum(type) || !isNumbers(str, i, j) ||
+  if (!TFileType::isSequenceExtension(type) || !isNumbers(str, i, j) ||
       i == (int)std::wstring::npos)
     return str;
   // prova.0001.tif
@@ -767,7 +760,7 @@ bool TFilePath::isLevelName() const {
   }
 
   QString type = QString::fromStdString(getType()).toLower();
-  if (isFfmpegType() || !checkForSeqNum(type)) return false;
+  if (isFfmpegType() || !TFileType::isSequenceExtension(type)) return false;
   try {
     return getFrame() == TFrameId(TFrameId::EMPTY_FRAME);
   } catch (...) {
@@ -798,7 +791,7 @@ TFrameId TFilePath::getFrame() const {
 
   // Exclude cases with non-numeric characters inbetween. (In case the file name
   // contains "_" or ".")
-  if (!checkForSeqNum(type) || !isNumbers(str, j, i))
+  if (!TFileType::isSequenceExtension(type) || !isNumbers(str, j, i))
     return TFrameId(TFrameId::NO_FRAME);
 
   return TFrameId(str.substr(j + 1, i - j - 1), str[j]);
@@ -894,7 +887,7 @@ TFilePath TFilePath::withName(const std::wstring &name) const {
 
   if (k == (int)(std::wstring::npos))
     k = j;
-  else if (k != j - 1 && (!checkForSeqNum(type) || !isNumbers(str, k, j)))
+  else if (k != j - 1 && (!TFileType::isSequenceExtension(type) || !isNumbers(str, k, j)))
     k = j;
 
   return TFilePath(m_path.substr(0, i + 1) + name + str.substr(k));
@@ -914,7 +907,7 @@ TFilePath TFilePath::withFrame(const TFrameId &frame,
   if (!TFilePath::m_useStandard) {
     TFilePathInfo info = analyzePath();
     // Override format input because it may be wrong.
-    if (checkForSeqNum(info.extension)) format = frame.getCurrentFormat();
+    if (TFileType::isSequenceExtension(info.extension)) format = frame.getCurrentFormat();
     // override format if the original fid is available
     else if (info.fId.getNumber() != TFrameId::NO_FRAME)
       format = info.fId.getCurrentFormat();
@@ -949,7 +942,7 @@ TFilePath TFilePath::withFrame(const TFrameId &frame,
   int j          = str.rfind(L'.');
   const char *ch = ".";
   // Override format input because it may be wrong.
-  if (!isFfmpegType() && checkForSeqNum(type))
+  if (!isFfmpegType() && TFileType::isSequenceExtension(type))
     format = frame.getCurrentFormat();
   if (m_underscoreFormatAllowed && (format == TFrameId::UNDERSCORE_FOUR_ZEROS ||
                                     format == TFrameId::UNDERSCORE_NO_PAD ||
@@ -967,7 +960,7 @@ TFilePath TFilePath::withFrame(const TFrameId &frame,
   int k = str.substr(0, j).rfind(L'.');
 
   bool hasValidFrameNum = false;
-  if (!isFfmpegType() && checkForSeqNum(type) && isNumbers(str, k, j))
+  if (!isFfmpegType() && TFileType::isSequenceExtension(type) && isNumbers(str, k, j))
     hasValidFrameNum = true;
   std::string frameString;
   if (frame.isNoFrame())
@@ -989,7 +982,7 @@ TFilePath TFilePath::withFrame(const TFrameId &frame,
     k = str.substr(0, j).rfind(L'_');
     if (k != (int)std::wstring::npos &&
         (k == j - 1 ||
-         (checkForSeqNum(type) &&
+         (TFileType::isSequenceExtension(type) &&
           isNumbers(str, k,
                     j))))  // -- In case of "_." or "_[numbers]." --
       return TFilePath(m_path.substr(0, k + i + 1) +
@@ -1000,6 +993,24 @@ TFilePath TFilePath::withFrame(const TFrameId &frame,
   }
   return TFilePath(m_path.substr(0, j + i + 1) + ::to_wstring(frameString) +
                    str.substr(j));
+}
+
+//-----------------------------------------------------------------------------
+
+TFilePath TFilePath::levelPath(const std::wstring &name,
+                               const std::string &type,
+                               const TFrameId &frame) {
+  if (type.empty()) return TFilePath(name);
+  if (!TFileType::isSequenceExtension(QString::fromStdString(type)))
+    return TFilePath(name + L"." + ::to_wstring(type));
+  return TFilePath(name + L".." + ::to_wstring(type)).withFrame(frame);
+}
+
+//-----------------------------------------------------------------------------
+
+TFilePath TFilePath::withLevelType(const std::string &type,
+                                   const TFrameId &frame) const {
+  return getParentDir() + levelPath(getWideName(), type, frame);
 }
 
 //-----------------------------------------------------------------------------
@@ -1136,7 +1147,7 @@ TFilePath::TFilePathInfo TFilePath::analyzePath() const {
     info.extension = match.captured(5);
 
     // ignore frame numbers on non-sequential (i.e. movie) extension case
-    if (!checkForSeqNum(info.extension)) {
+    if (!TFileType::isSequenceExtension(info.extension)) {
       info.levelName = match.captured(1) + match.captured(2);
       if (!match.captured(3).isEmpty()) info.levelName += match.captured(3);
       if (!match.captured(4).isEmpty()) info.levelName += match.captured(4);

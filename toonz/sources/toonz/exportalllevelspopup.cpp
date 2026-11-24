@@ -251,8 +251,7 @@ bool ExportAllLevelsPopup::execute() {
       ret = IoCmd::exportLevel(
                 TFilePath(FilePath.getWideString() + L"\\" +
                           level_to_foldername.find(sl->getName())->second)
-                    .withType(ext)
-                    .withFrame(tmplFId),
+                    .withLevelType(ext, tmplFId),
                 sl, opts, &overwriteCB, &progressCB) &&
             ret;
       if (ret) {
@@ -296,8 +295,7 @@ bool ExportAllLevelsPopup::execute() {
     TXshSimpleLevel *sl = outputLevels.back()->getSimpleLevel();
     ret = IoCmd::exportLevel(TFilePath(FilePath.getWideString() + L"\\" +
                                        m_nameField->text().toStdWString())
-                                 .withType(ext)
-                                 .withFrame(tmplFId),
+                                 .withLevelType(ext, tmplFId),
                              sl, opts) &&
           ret;
 

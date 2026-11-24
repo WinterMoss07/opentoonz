@@ -145,13 +145,6 @@ enum ThreadsOption {
 
 enum GranularityOption { c_off, c_large, c_medium, c_small };
 
-bool checkForSeqNum(QString type) {
-  TFileType::Type typeInfo = TFileType::getInfoFromExtension(type);
-  if ((typeInfo & TFileType::IMAGE) && !(typeInfo & TFileType::LEVEL))
-    return true;
-  else
-    return false;
-}
 }  // anonymous namespace
 //-----------------------------------------------------------------------------
 
@@ -1177,10 +1170,10 @@ void OutputSettingsPopup::onFormatChanged(const QString &str) {
   TOutputProperties *prop = getProperties();
   bool wasMultiRenderInvalid =
       isMultiRenderInvalid(prop->getPath().getType(), m_allowMT);
-  // remove sepchar, ..
-  TFilePath fp = prop->getPath().withNoFrame().withType(str.toStdString());
-  // .. then add sepchar for sequencial image formats
-  if (checkForSeqNum(str)) fp = fp.withFrame(prop->formatTemplateFId());
+  // keeps a name like "shot_1" (withNoFrame() would make it frame 1 of
+  // "shot_")
+  TFilePath fp = prop->getPath().withLevelType(str.toStdString(),
+                                               prop->formatTemplateFId());
 
   if (prop->getPath() != fp) {
     prop->setPath(fp);
@@ -1222,9 +1215,8 @@ void OutputSettingsPopup::openSettingsPopup() {
           prop->formatTemplateFId().getZeroPadding() ||
       oldTmplFId.getStartSeqInd() !=
           prop->formatTemplateFId().getStartSeqInd()) {
-    TFilePath fp =
-        prop->getPath().withNoFrame().withFrame(prop->formatTemplateFId());
-    prop->setPath(fp);
+    prop->setPath(
+        prop->getPath().withLevelType(ext, prop->formatTemplateFId()));
   }
 }
 
