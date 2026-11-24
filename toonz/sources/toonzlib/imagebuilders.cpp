@@ -33,7 +33,6 @@
 #include <QImage>
 #include <QThread>
 #include <QOpenGLContext>
-#include <QOffscreenSurface>
 #include <QOpenGLFramebufferObject>
 
 #include "imagebuilders.h"
@@ -329,85 +328,60 @@ TImageP ImageRasterizer::build(int imFlags, void *extData) {
           rd.m_antiAliasing = m_antiAliasing;
           rd.m_show0ThickStrokes = Preferences::instance()->getShow0ThickLines();
 
-          //Is this too slow?
-          {
-            QSurfaceFormat format;
-            format.setProfile(QSurfaceFormat::CompatibilityProfile);
+          // build() also runs where no context is current (icon and loading
+          // threads with "Show vector as raster" and "Load Column Icons at
+          // once": crash creating the framebuffer, #3294). There it draws in
+          // an offscreen context of its own. In a viewer it draws in a
+          // framebuffer of the current context: the one kept in a static
+          // belonged to whatever context was current when it was created (and
+          // the static "bboxChanged" was never reset, so it was rebuilt each
+          // time anyway).
+          auto drawImage = [&]() {
+            glViewport(0, 0, d.lx, d.ly);
+            glClearColor(0, 0, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            gluOrtho2D(bbox.x0, bbox.x1, bbox.y0, bbox.y1);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            tglDraw(rd, vi.getPointer());
+            glFlush();
+          };
 
-            static QOffscreenSurface *surface = nullptr;
-            if (!surface) {
-              surface = new QOffscreenSurface();
-              surface->setFormat(format);
-              surface->create();
-            }
-
-            TRaster32P ras(d);
-
+          TRaster32P ras(d);
+          if (QOpenGLContext::currentContext()) {
             glPushAttrib(GL_ALL_ATTRIB_BITS);
             glMatrixMode(GL_MODELVIEW), glPushMatrix();
             glMatrixMode(GL_PROJECTION), glPushMatrix();
             {
-              static std::unique_ptr<QOpenGLFramebufferObject> fb;
-              static int lastLx = 0, lastLy = 0;
-              static bool bboxChanged;
-
-              if (!fb || d.lx != lastLx || d.ly != lastLy) {
-                bboxChanged = true;
-              }
-              if (bboxChanged){
-                fb.reset(new QOpenGLFramebufferObject(d.lx, d.ly));
-                lastLx = d.lx;
-                lastLy = d.ly;
-              }
-              fb->bind();
-
-              if (bboxChanged) {
-                glViewport(0, 0, d.lx, d.ly);
-                glClearColor(0, 0, 0, 0);
-                glClear(GL_COLOR_BUFFER_BIT);
-
-                glMatrixMode(GL_PROJECTION);
-                glLoadIdentity();
-                gluOrtho2D(bbox.x0, bbox.x1, bbox.y0, bbox.y1);
-
-                glMatrixMode(GL_MODELVIEW);
-                glLoadIdentity();
-              }
-              
-              tglDraw(rd, vi.getPointer());
-
-              glFlush();
-
+              QOpenGLFramebufferObject fb(d.lx, d.ly);
+              fb.bind();
+              drawImage();
               glReadPixels(0, 0, d.lx, d.ly, GL_BGRA, GL_UNSIGNED_BYTE,
                            ras->getRawData());
-
-              fb->release();
+              fb.release();
             }
             glMatrixMode(GL_MODELVIEW), glPopMatrix();
             glMatrixMode(GL_PROJECTION), glPopMatrix();
-
             glPopAttrib();
-
-            TRasterImageP ri = TRasterImageP(ras);
-
-            int offsetX      = bbox.x1 - (d.lx / 2);
-            int offsetY      = bbox.y1 - (d.ly / 2);
-            ri->setOffset(TPoint(offsetX, offsetY));
-
-            assert(glGetError() == 0);
-
-            return ri;
+          } else {
+            TOfflineGL ogl(d);
+            ogl.makeCurrent();
+            drawImage();
+            ogl.getRaster(ras);
+            ogl.doneCurrent();
           }
+
+          TRasterImageP ri = TRasterImageP(ras);
+          int offsetX      = bbox.x1 - (d.lx / 2);
+          int offsetY      = bbox.y1 - (d.ly / 2);
+          ri->setOffset(TPoint(offsetX, offsetY));
+          return ri;
       }
     }
   }
   return TRasterImageP();
-  // Error case: return a dummy image (is it really required?)
-
-  TRaster32P ras(10,10);
-  ras->fill(TPixel32(127, 0, 127, 127));
-
-  return TRasterImageP(ras);
 }
 
 //***************************************************************************************
