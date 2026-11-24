@@ -29,6 +29,7 @@
 #include "tlevel_io.h"
 #include "ttoonzimage.h"
 #include "tsystem.h"
+#include "tfiletype.h"
 
 #include "toonzqt/gutil.h"
 #include "toonz/namebuilder.h"
@@ -243,32 +244,37 @@ void getLevelSelectedFids(std::set<TFrameId> &fids, TXshSimpleLevel *level,
 
 //-----------------------------------------------------------------------------
 
+//! Replaces the selected frames of sl with the ones of the file at path. When
+//! addedFids is given, frames of the file missing from the level are added
+//! too (they are loaded when shown) and listed in addedFids.
 bool loadFids(const TFilePath &path, TXshSimpleLevel *sl,
-              const std::set<TFrameId> &selectedFids) {
+              const std::set<TFrameId> &selectedFids,
+              std::set<TFrameId> *addedFids = nullptr) {
   assert(sl && !selectedFids.empty());
 
   TLevelReaderP levelReader = TLevelReaderP(path);
   if (!levelReader.getPointer()) return false;
 
-  // Carico il livello e sostituisco i frames.
   TLevelP level = levelReader->loadInfo();
   if (!level || level->getFrameCount() == 0) return false;
-  TLevel::Iterator levelIt         = level->begin();
-  bool almostOneUnpaintedFidLoaded = false;
-  for (; levelIt != level->end(); ++levelIt) {
-    TFrameId fid                          = levelIt->first;
-    std::set<TFrameId>::const_iterator it = selectedFids.find(fid);
-    if (it == selectedFids.end()) continue;
-    TImageP img = levelReader->getFrameReader(fid)->load();
-    if (!img.getPointer()) continue;
-    almostOneUnpaintedFidLoaded = true;
-    sl->setFrame(fid, img);
+  std::set<TFrameId> loadedFids;
+  for (TLevel::Iterator levelIt = level->begin(); levelIt != level->end();
+       ++levelIt) {
+    TFrameId fid = levelIt->first;
+    if (selectedFids.count(fid)) {
+      TImageP img = levelReader->getFrameReader(fid)->load();
+      if (!img.getPointer()) continue;
+      sl->setFrame(fid, img);
+      loadedFids.insert(fid);
+    } else if (addedFids && !sl->isFid(fid)) {
+      sl->setFrame(fid, TImageP());
+      addedFids->insert(fid);
+      loadedFids.insert(fid);
+    }
   }
-  if (almostOneUnpaintedFidLoaded) {
-    invalidateIcons(sl, selectedFids);
-    return true;
-  }
-  return false;
+  if (loadedFids.empty()) return false;
+  invalidateIcons(sl, loadedFids);
+  return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -288,10 +294,12 @@ bool loadUnpaintedFids(TXshSimpleLevel *sl,
 
 //-----------------------------------------------------------------------------
 
+//! Image sequences are often rendered by other applications: reloading one
+//! also brings the frames added to the sequence since it was loaded.
 bool loadLastSaveFids(TXshSimpleLevel *sl,
-                      const std::set<TFrameId> &selectedFids) {
-  TFilePath path = sl->getPath();
-  path           = sl->getScene()->decodeFilePath(path);
+                      const std::set<TFrameId> &selectedFids,
+                      std::set<TFrameId> *addedFids) {
+  TFilePath path = sl->getScene()->decodeFilePath(sl->getPath());
 
   if (!TSystem::doesExistFileOrLevel(path)) {
     DVGui::error(
@@ -299,7 +307,10 @@ bool loadLastSaveFids(TXshSimpleLevel *sl,
     return false;
   }
 
-  return loadFids(path, sl, selectedFids);
+  bool isSequence = sl->getType() == OVL_XSHLEVEL &&
+                    TFileType::isSequenceExtension(
+                        QString::fromStdString(path.getType()));
+  return loadFids(path, sl, selectedFids, isSequence ? addedFids : nullptr);
 }
 
 //=============================================================================
@@ -308,57 +319,66 @@ bool loadLastSaveFids(TXshSimpleLevel *sl,
 
 class RevertToCommandUndo final : public TUndo {
   TXshSimpleLevel *m_sl;
-  std::vector<QString> m_replacedImgsId;
-  std::set<TFrameId> m_selectedFids;
+  std::vector<std::pair<TFrameId, QString>> m_replacedImgs;
+  std::set<TFrameId> m_selectedFids, m_addedFids;
   bool m_isCleanedUp;
 
 public:
-  RevertToCommandUndo(TXshSimpleLevel *sl, std::set<TFrameId> &selectedFids,
-                      bool isCleanedUp)
+  RevertToCommandUndo(TXshSimpleLevel *sl,
+                      const std::set<TFrameId> &selectedFids, bool isCleanedUp)
       : m_sl(sl), m_selectedFids(selectedFids), m_isCleanedUp(isCleanedUp) {
     static int revertToCommandCount = 0;
     for (auto const &fid : m_selectedFids) {
       if (!sl->isFid(fid)) continue;
       TImageP image = sl->getFrame(fid, false);
-      assert(image);
+      if (!image) continue;
       QString newImageId = "RevertToUndo" +
                            QString::number(revertToCommandCount) + "-" +
-                           QString::number(fid.getNumber());
+                           QString::fromStdString(fid.expand());
       TImageCache::instance()->add(newImageId, image->cloneImage());
-      m_replacedImgsId.push_back(newImageId);
+      m_replacedImgs.push_back({fid, newImageId});
     }
     revertToCommandCount++;
   }
 
   ~RevertToCommandUndo() {
-    int i;
-    for (i = 0; i < (int)m_replacedImgsId.size(); i++)
-      TImageCache::instance()->remove(m_replacedImgsId[i]);
+    for (const auto &replaced : m_replacedImgs)
+      TImageCache::instance()->remove(replaced.second);
+  }
+
+  //! Loads the frames; false if nothing was loaded
+  bool execute() {
+    m_addedFids.clear();
+    return m_isCleanedUp ? loadUnpaintedFids(m_sl, m_selectedFids)
+                         : loadLastSaveFids(m_sl, m_selectedFids, &m_addedFids);
   }
 
   void undo() const override {
-    assert((int)m_replacedImgsId.size() == (int)m_selectedFids.size());
-    int i = 0;
-    for (auto const &fid : m_selectedFids) {
-      QString imageId = m_replacedImgsId[i];
-      TImageP img = TImageCache::instance()->get(imageId, false)->cloneImage();
-      if (!img.getPointer()) continue;
-      m_sl->setFrame(fid, img);
+    for (const auto &replaced : m_replacedImgs) {
+      TImageP img = TImageCache::instance()->get(replaced.second, false);
+      if (!img) continue;
+      m_sl->setFrame(replaced.first, img->cloneImage());
     }
-    TApp::instance()->getCurrentXsheet()->notifyXsheetChanged();
-    invalidateIcons(m_sl, m_selectedFids);
+    for (const TFrameId &fid : m_addedFids) m_sl->eraseFrame(fid);
+    std::set<TFrameId> fids = m_selectedFids;
+    fids.insert(m_addedFids.begin(), m_addedFids.end());
+    invalidateIcons(m_sl, fids);
+    notify();
   }
 
   void redo() const override {
-    if (m_isCleanedUp)
-      loadUnpaintedFids(m_sl, m_selectedFids);
-    else
-      loadLastSaveFids(m_sl, m_selectedFids);
+    const_cast<RevertToCommandUndo *>(this)->execute();
+    notify();
+  }
+
+  static void notify() {
     TApp::instance()->getCurrentXsheet()->notifyXsheetChanged();
+    TApp::instance()->getCurrentLevel()->notifyLevelChange();
   }
 
   int getSize() const override {
-    return sizeof(*this) + m_selectedFids.size() * sizeof(TFrameId);
+    return sizeof(*this) +
+           (m_selectedFids.size() + m_addedFids.size()) * sizeof(TFrameId);
   }
 
   QString getHistoryString() override {
@@ -369,10 +389,23 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-/*--isCleanedUpが	Trueのとき： "revert to cleaned up" コマンド
-                                        Falseのとき："revert to last saved"
-コマンド
---*/
+
+//! Reverts the frames of one level; false if nothing could be loaded
+bool revertFids(TXshSimpleLevel *sl, const std::set<TFrameId> &fids,
+                bool isCleanedUp) {
+  RevertToCommandUndo *undo = new RevertToCommandUndo(sl, fids, isCleanedUp);
+  if (!undo->execute()) {
+    delete undo;
+    return false;
+  }
+  TUndoManager::manager()->add(undo);
+  if (isCleanedUp) sl->setDirtyFlag(true);
+  return true;
+}
+
+//-----------------------------------------------------------------------------
+/*-- isCleanedUp true: "Revert to Cleaned Up", false: "Reload" (revert to last
+     saved) --*/
 void revertTo(bool isCleanedUp) {
   TApp *app = TApp::instance();
 
@@ -381,7 +414,6 @@ void revertTo(bool isCleanedUp) {
   TCellSelection *cellSelection =
       dynamic_cast<TCellSelection *>(TSelection::getCurrent());
 
-  /*-- FilmStrip選択の場合 --*/
   if (filmstripSelection) {
     std::set<TFrameId> selectedFids = filmstripSelection->getSelectedFids();
     TXshSimpleLevel *sl             = app->getCurrentLevel()->getSimpleLevel();
@@ -389,78 +421,39 @@ void revertTo(bool isCleanedUp) {
       DVGui::error(QObject::tr("The current selection is invalid."));
       return;
     }
-    RevertToCommandUndo *undo =
-        new RevertToCommandUndo(sl, selectedFids, isCleanedUp);
-    bool commandExecuted = false;
-    if (isCleanedUp)
-      commandExecuted = loadUnpaintedFids(sl, selectedFids);
-    else
-      commandExecuted = loadLastSaveFids(sl, selectedFids);
-    if (!commandExecuted)
-      delete undo;
-    else {
-      TUndoManager::manager()->add(undo);
-      if (isCleanedUp) sl->setDirtyFlag(true);
-    }
-    app->getCurrentLevel()->notifyLevelChange();
-  }
-  /*-- セル選択の場合 --*/
-  else if (cellSelection) {
+    revertFids(sl, selectedFids, isCleanedUp);
+    RevertToCommandUndo::notify();
+  } else if (cellSelection) {
     std::set<TXshSimpleLevel *> levels;
     int r0, r1, c0, c1;
     cellSelection->getSelectedCells(r0, c0, r1, c1);
     TXsheet *xsheet = app->getCurrentXsheet()->getXsheet();
-    // Cerco tutti i livelli, con estensensione "tlv", contenuti nella selezione
-    bool selectionContainLevel = false;
-    /*-- セル選択範囲の各セルについて --*/
-    int c, r;
-    for (c = c0; c <= c1; c++)
-      for (r = r0; r <= r1; r++) {
+    // the levels of the selection that can be reverted
+    for (int c = c0; c <= c1; c++)
+      for (int r = r0; r <= r1; r++) {
         TXshCell cell          = xsheet->getCell(r, c);
         TXshSimpleLevel *level = (!cell.isEmpty()) ? cell.getSimpleLevel() : 0;
         if (!level) continue;
-        std::string ext = level->getPath().getType();
-        int type        = level->getType();
-        /*-- Revert可能なLevelタイプの条件 --*/
+        int type = level->getType();
         if ((isCleanedUp && type == TZP_XSHLEVEL) ||
             (!isCleanedUp && (type == TZP_XSHLEVEL || type == PLI_XSHLEVEL ||
-                              type == OVL_XSHLEVEL))) {
+                              type == OVL_XSHLEVEL)))
           levels.insert(level);
-          selectionContainLevel = true;
-        }
       }
-    if (levels.empty() || !selectionContainLevel) {
+    if (levels.empty()) {
       DVGui::error(
           QObject::tr("The Reload command is not supported for "
                       "the current selection."));
       return;
     }
-    // Per ogni livello trovo i TFrameId contenuti nella selezione e richiamo
-    // loadLastSaveFids.
     TUndoManager::manager()->beginBlock();
-    std::set<TXshSimpleLevel *>::iterator it = levels.begin();
-    /*-- Revert対象の各レベルについて --*/
     for (auto const sl : levels) {
       std::set<TFrameId> selectedFids;
-      /*- 選択範囲のFrameIdを取得する -*/
-      getLevelSelectedFids(selectedFids, *it, r0, c0, r1, c1);
-      RevertToCommandUndo *undo =
-          new RevertToCommandUndo(sl, selectedFids, isCleanedUp);
-      bool commandExecuted = false;
-      /*- "Revert to Cleaned up" の場合 -*/
-      if (isCleanedUp) commandExecuted = loadUnpaintedFids(sl, selectedFids);
-      /*- "Revert to Last Saved" の場合 -*/
-      else
-        commandExecuted = loadLastSaveFids(sl, selectedFids);
-      if (!commandExecuted)
-        delete undo;
-      else {
-        TUndoManager::manager()->add(undo);
-        if (isCleanedUp) sl->setDirtyFlag(true);
-      }
+      getLevelSelectedFids(selectedFids, sl, r0, c0, r1, c1);
+      revertFids(sl, selectedFids, isCleanedUp);
     }
     TUndoManager::manager()->endBlock();
-    app->getCurrentXsheet()->notifyXsheetChanged();
+    RevertToCommandUndo::notify();
   } else
     DVGui::error(QObject::tr("The current selection is invalid."));
 }
