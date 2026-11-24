@@ -522,6 +522,8 @@ void TRasterCodecLz4::decompress(const TRasterP &compressedRas,
 
   assert(compressedRas->getLy() == 1 && compressedRas->getPixelSize() == 1);
   UINT inDataSize = compressedRas->getLx();
+  if (inDataSize <= (UINT)headerSize)
+    throw TException("LZO decompression: no data");
 
   compressedRas->lock();
 
@@ -720,8 +722,14 @@ TRasterP TRasterCodecLZO::compress(const TRasterP &inRas, int allocUnit,
 bool TRasterCodecLZO::decompress(const UCHAR *inData, TINT32 inDataSize,
                                  TRasterP &outRas, bool safeMode) {
   int headerSize = sizeof(Header);
+  // the data come from a file: a damaged one must not be read past its end
+  if (!inData || inDataSize <= headerSize)
+    throw TException("LZO decompression: no data");
 
   Header *header = (Header *)inData;
+  if (header->m_lx <= 0 || header->m_ly <= 0 ||
+      (long long)header->m_lx * header->m_ly > 0x7fffffffLL / 8)
+    throw TException("LZO decompression: bad raster size");
   if (!outRas) {
     outRas = header->createRaster();
     if (!outRas) throw TException();
@@ -772,6 +780,8 @@ void TRasterCodecLZO::decompress(const TRasterP &compressedRas,
 
   assert(compressedRas->getLy() == 1 && compressedRas->getPixelSize() == 1);
   UINT inDataSize = compressedRas->getLx();
+  if (inDataSize <= (UINT)headerSize)
+    throw TException("LZO decompression: no data");
 
   compressedRas->lock();
 
