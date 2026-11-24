@@ -2,6 +2,11 @@ name: Windows Build
 
 on:
   workflow_dispatch:
+    inputs:
+      symbols:
+        description: 'Dump the symbols of every object file (dead code analysis)'
+        type: boolean
+        default: false
   push:
     branches:
       - master  # Specify branches where the workflow should run
@@ -119,6 +124,25 @@ jobs:
           cd toonz\build
           ninja || exit /b 1
         shell: cmd
+
+      # Defined (SECT) and referenced (UNDEF) external symbols of every object
+      # file, for the dead code analysis
+      - name: Dump object symbols
+        if: github.event_name == 'workflow_dispatch' && inputs.symbols
+        run: |
+          cd toonz\build
+          dir /s /b *.obj > objs.txt
+          for /f "usebackq delims=" %%f in (objs.txt) do dumpbin /NOLOGO /SYMBOLS "%%f" | findstr /C:"External" /C:"Dump of file" >> symbols.txt
+          7z a -tzip symbols.zip symbols.txt objs.txt
+        shell: cmd
+
+      - name: Upload symbols
+        if: github.event_name == 'workflow_dispatch' && inputs.symbols
+        uses: actions/upload-artifact@v6
+        with:
+          name: Opentoonz-symbols-${{ github.sha }}
+          path: toonz/build/symbols.zip
+          retention-days: 7
 
       # Create the package
       - name: Create Package
