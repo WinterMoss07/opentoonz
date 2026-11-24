@@ -111,17 +111,13 @@ void CleanupPaletteViewer::buildGUI() {
   scrollLayout->setSpacing(10);
   scrollLayout->setContentsMargins(0, 0, 0, 0);
 
-  TPalette *palette = TApp::instance()
-                          ->getPaletteController()
-                          ->getCurrentCleanupPalette()
-                          ->getPalette();
-  assert(palette);
+  TPalette *palette = m_ph->getPalette();
   bool ret             = true;
-  TPalette::Page *page = palette->getPage(0);
-  int i, stylesCount = palette ? page ? page->getStyleCount() : 0 : 0;
+  TPalette::Page *page = palette ? palette->getPage(0) : 0;
+  int i, stylesCount = page ? page->getStyleCount() : 0;
   for (i = 0; i < stylesCount; ++i) {
     TCleanupStyle *cs =
-        dynamic_cast<TCleanupStyle *>(palette->getPage(0)->getStyle(i));
+        dynamic_cast<TCleanupStyle *>(page->getStyle(i));
     if (!cs) continue;
 
     cs->enableContrast(true);
@@ -192,7 +188,7 @@ void CleanupPaletteViewer::setMode(bool greyMode) {
 
 void CleanupPaletteViewer::onAddClicked(bool) {
   TPalette *palette = m_ph->getPalette();
-  assert(palette);
+  if (!palette || !palette->getPage(0)) return;
   palette->getPage(0)->addStyle(new TColorCleanupStyle(TPixel::Red));
   buildGUI();
   update();
@@ -207,7 +203,7 @@ void CleanupPaletteViewer::onRemoveClicked(bool) {
   if (styleIdx < 2) return;
 
   TPalette *palette = m_ph->getPalette();
-  assert(palette);
+  if (!palette || !palette->getPage(0)) return;
 
   QString question;
   question = QObject::tr(
@@ -218,6 +214,7 @@ void CleanupPaletteViewer::onRemoveClicked(bool) {
 
   TPalette::Page *page = palette->getPage(0);
   int indexInPage      = page->search(m_ph->getStyle());
+  if (indexInPage < 0) return;
   page->removeStyle(indexInPage);
   m_ph->setStyleIndex(-1);
 

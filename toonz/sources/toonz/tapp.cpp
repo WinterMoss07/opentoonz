@@ -417,6 +417,16 @@ void TApp::onSceneSwitched() {
 
   // update current tool
   m_currentTool->onImageChanged((TImage::Type)getCurrentImageType());
+
+  // The cleanup palette handle holds a raw pointer to the scene's cleanup
+  // palette. CleanupSettingsModel updates it on scene switch, but only once
+  // it exists (first opening of the Cleanup room, late with Lazy Load
+  // Rooms): until then the handle kept the deleted scene's palette, read by
+  // the Cleanup room when it was built (#6684).
+  CleanupParameters *cp =
+      m_currentScene->getScene()->getProperties()->getCleanupParameters();
+  m_paletteController->getCurrentCleanupPalette()->setPalette(
+      cp ? cp->m_cleanupPalette.getPointer() : 0);
 }
 
 //-----------------------------------------------------------------------------

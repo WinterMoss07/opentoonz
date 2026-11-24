@@ -104,6 +104,8 @@ CleanupSettingsPane::CleanupSettingsPane(QWidget *parent)
   m_lineProcessing      = new QComboBox(this);
   m_lpNoneFormatLabel   = new QLabel(tr("Format:"));
   m_lpNoneFormat        = new QComboBox(this);
+  // the model sets the cleanup palette the viewer shows
+  CleanupSettingsModel::instance();
   m_paletteViewer       = new CleanupPaletteViewer(this);
   m_pathField           = new CleanupSaveInField(this, QString(""));
 
